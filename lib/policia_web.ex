@@ -89,6 +89,8 @@ defmodule PoliciaWeb do
       import Phoenix.HTML
       # Core UI components
       import PoliciaWeb.CoreComponents
+      # Componentes Personalizados del Sitio
+      import PoliciaWeb.CustomComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

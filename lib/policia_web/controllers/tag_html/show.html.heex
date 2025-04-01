@@ -1,0 +1,16 @@
+<h1>{@tag.name}</h1>
+
+<h2>Articles:</h2>
+<ul>
+  <%= if length(@articles) > 0 do %>
+    <%= for article <- @articles do %>
+      <li>
+        <.link href={~p"/articles/#{article.id}"}>
+          {article.title}
+        </.link>
+      </li>
+    <% end %>
+  <% else %>
+    <li>No articles available for this tag.</li>
+  <% end %>
+</ul>
