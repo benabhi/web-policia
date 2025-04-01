@@ -28,19 +28,140 @@
     }
   ]} />
 </header>
-<main class="px-4 py-20 sm:px-6 lg:px-8 bg-blue-50">
+<main class="px-4 py-20 sm:px-6 lg:px-8 bg-blue-100">
   <div class="mx-auto max-w-2xl">
     <.flash_group flash={@flash} />
 
-    <PoliciaWeb.CustomComponents.slider
-      images={[
-        "/images/slider1.jpg",
-        "/images/slider2.jpg"
-      ]}
-      auto_slide={true}
-      slide_interval={5000}
-    />
+    <div>
+      <PoliciaWeb.CustomComponents.slider
+        images={[
+          "/images/slider1.jpg",
+          "/images/slider2.jpg"
+        ]}
+        auto_slide={true}
+        slide_interval={5000}
+      />
+    </div>
+    
+<!-- NOTICIAS -->
+
+    <article class="bg-white text-gray-800 px-6 py-8 md:px-12 md:py-10 rounded-lg shadow-lg">
+      <!-- Imagen destacada -->
+      <div class="mb-6">
+        <img
+          src="/images/seguridad.jpg"
+          alt="Imagen destacada"
+          class="w-full h-auto rounded-lg shadow-md"
+        />
+      </div>
+      
+<!-- Fecha, hora y autor -->
+      <div class="flex justify-between items-center text-gray-500 text-sm mb-4">
+        <p>
+          Publicado el: <span class="font-semibold">01 Abril 2025</span>
+          a las <span class="font-semibold">02:49 AM</span>
+        </p>
+        <p>Por: <span class="font-semibold hover:underline cursor-pointer">Hernán</span></p>
+      </div>
+      
+<!-- Título -->
+      <h1 class="text-3xl font-bold mb-4">
+        Policía de Río Negro implementará nuevas medidas de seguridad
+      </h1>
+      
+<!-- Etiquetas -->
+      <div class="mb-6">
+        <ul class="flex space-x-2">
+          <li>
+            <a href="#" class="text-blue-500 hover:text-blue-700 px-2 py-1 rounded bg-blue-100">
+              Seguridad
+            </a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-500 hover:text-blue-700 px-2 py-1 rounded bg-blue-100">
+              Río Negro
+            </a>
+          </li>
+          <li>
+            <a href="#" class="text-blue-500 hover:text-blue-700 px-2 py-1 rounded bg-blue-100">
+              Policía
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+<!-- Contenido -->
+      <div class="text-gray-600 leading-relaxed">
+        <p class="mb-4">
+          La Policía de Río Negro ha anunciado una serie de nuevas medidas que buscan fortalecer la seguridad en toda la provincia. Estas medidas incluyen el uso de nuevas tecnologías para patrullaje y prevención, así como la implementación de programas comunitarios que buscan acercar a las fuerzas policiales con la ciudadanía.
+        </p>
+        <p class="mb-4">
+          El gobernador expresó su apoyo total a esta iniciativa, resaltando la importancia de contar con fuerzas de seguridad capacitadas y equipadas para proteger a los ciudadanos. Según reportes preliminares, estas medidas comenzarán a aplicarse a partir del próximo mes.
+        </p>
+      </div>
+      
+<!-- Pie de página (Opcional) -->
+      <div class="mt-6 pt-4 border-t border-gray-300">
+        <div class="flex justify-between items-center">
+          <!-- Botón de compartir -->
+          <div class="flex space-x-3">
+            <a href="#" class="text-blue-500 hover:text-blue-700">Compartir en Twitter</a>
+            <a href="#" class="text-blue-500 hover:text-blue-700">Compartir en Facebook</a>
+          </div>
+          <!-- Número de comentarios -->
+          <p class="text-gray-500 text-sm">5 comentarios</p>
+        </div>
+      </div>
+    </article>
 
     {@inner_content}
   </div>
 </main>
+<footer>
+  <footer class="bg-blue-950 text-white py-10">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Column 1 -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Ministerios</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Seguridad y Justicia</a></li>
+          <li><a href="#" class="hover:underline">Agricultura, Ganadería y Pesca</a></li>
+          <li><a href="#" class="hover:underline">Desarrollo Social</a></li>
+          <li><a href="#" class="hover:underline">Economía</a></li>
+          <li><a href="#" class="hover:underline">Autoridades Provinciales</a></li>
+        </ul>
+      </div>
+      
+<!-- Column 2 -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Información y Servicios</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Compras y Licitaciones</a></li>
+          <li><a href="#" class="hover:underline">Transferencias a Municipios</a></li>
+          <li><a href="#" class="hover:underline">Consulta de Expedientes</a></li>
+          <li><a href="#" class="hover:underline">Deuda Pública</a></li>
+          <li><a href="#" class="hover:underline">Presupuesto Fiscal</a></li>
+        </ul>
+      </div>
+      
+<!-- Column 3 -->
+      <div>
+        <h3 class="text-xl font-bold mb-4">Sitios Oficiales</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline">Agencia de Recaudación Tributaria</a></li>
+          <li><a href="#" class="hover:underline">Aguas Rionegrinas</a></li>
+          <li><a href="#" class="hover:underline">Casa de Río Negro en Buenos Aires</a></li>
+          <li><a href="#" class="hover:underline">Defensa Civil</a></li>
+          <li><a href="#" class="hover:underline">Educación</a></li>
+        </ul>
+      </div>
+    </div>
+    
+<!-- Bottom Section -->
+    <div class="mt-10 text-center border-t border-gray-700 pt-5">
+      <p class="text-sm text-gray-400">
+        © 2025 Gobierno de Río Negro. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+</footer>
