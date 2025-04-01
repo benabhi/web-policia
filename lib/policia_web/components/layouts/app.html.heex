@@ -1,0 +1,46 @@
+<header>
+  <PoliciaWeb.CustomComponents.menu menus={[
+    %{title: "Inscripciones", link: "#", submenus: nil},
+    %{
+      title: "Secciones de Interés",
+      link: "#",
+      submenus: [
+        %{title: "Estructura organizacional", link: "#"},
+        %{title: "Notas", link: "#"},
+        %{title: "Búsqueda de utilidades policiales", link: "#"},
+        %{title: "Trámites", link: "#"},
+        %{title: "Legislación", link: "#"},
+        %{title: "Consejos Útiles", link: "#"},
+        %{title: "Servicios", link: "#"},
+        %{title: "Trámites previsionales", link: "#"}
+      ]
+    },
+    %{title: "Turnos", link: "#", submenus: nil},
+    %{title: "Webmail", link: "#", submenus: nil},
+    %{title: "Educación", link: "#", submenus: nil},
+    %{
+      title: "Sistemas",
+      link: "#",
+      submenus: [
+        %{title: "Extranet", link: "#"},
+        %{title: "Autoconsulta", link: "#"}
+      ]
+    }
+  ]} />
+</header>
+<main class="px-4 py-20 sm:px-6 lg:px-8 bg-blue-50">
+  <div class="mx-auto max-w-2xl">
+    <.flash_group flash={@flash} />
+
+    <PoliciaWeb.CustomComponents.slider
+      images={[
+        "/images/slider1.jpg",
+        "/images/slider2.jpg"
+      ]}
+      auto_slide={true}
+      slide_interval={5000}
+    />
+
+    {@inner_content}
+  </div>
+</main>
