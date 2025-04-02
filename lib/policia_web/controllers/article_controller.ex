@@ -10,7 +10,7 @@ defmodule PoliciaWeb.ArticleController do
     conn
     |> assign(:page_title, "Articulos")
     |> assign(:subtitle, "Listado de artículos")
-    |> render(:index, articles: articles, layout: {PoliciaWeb.Layouts, :sidebar_free})
+    |> render(:index, articles: articles)
   end
 
   def new(conn, _params) do
@@ -20,11 +20,7 @@ defmodule PoliciaWeb.ArticleController do
     conn
     |> assign(:page_title, "Crear un artículo")
     |> assign(:subtitle, "Mantente informado sobre las últimas novedades")
-    |> render(:new,
-      changeset: changeset,
-      categories: categories,
-      layout: {PoliciaWeb.Layouts, :sidebar_free}
-    )
+    |> render(:new, changeset: changeset, categories: categories)
   end
 
   def create(conn, %{"article" => article_params}) do
@@ -83,11 +79,7 @@ defmodule PoliciaWeb.ArticleController do
     conn
     |> assign(:page_title, "Todas las Noticias")
     |> assign(:subtitle, "Mantente informado sobre las últimas novedades")
-    |> render(:all_articles,
-      articles: articles,
-      categories: categories,
-      layout: {PoliciaWeb.Layouts, :sidebar_free}
-    )
+    |> render(:all_articles, articles: articles, categories: categories)
   end
 
   def by_category(conn, %{"slug" => slug}) do
@@ -98,11 +90,7 @@ defmodule PoliciaWeb.ArticleController do
     conn
     |> assign(:page_title, "Noticias: #{category.name}")
     |> assign(:subtitle, "Artículos en la categoría #{category.name}")
-    |> render(:all_articles,
-      articles: articles,
-      categories: categories,
-      layout: {PoliciaWeb.Layouts, :sidebar_free}
-    )
+    |> render(:all_articles, articles: articles, categories: categories)
   end
 
   # Función auxiliar para obtener las opciones de categorías

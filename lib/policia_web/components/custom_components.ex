@@ -1068,9 +1068,9 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Nuevo componente para mejorar la estructura del contenido principal
   attr :title, :string, default: nil, doc: "Título principal de la sección de contenido"
   attr :subtitle, :string, default: nil, doc: "Subtítulo opcional de la sección"
+  attr :has_sidebar, :boolean, default: true, doc: "Si debe mostrar la barra lateral"
   attr :wrapper_class, :string, default: "", doc: "Clases adicionales para el contenedor externo"
   slot :hero, doc: "Contenido destacado (slider, banner, etc.)"
   slot :sidebar, doc: "Contenido de la barra lateral"
@@ -1078,39 +1078,37 @@ defmodule PoliciaWeb.CustomComponents do
 
   def content_layout(assigns) do
     ~H"""
-    <div class={"bg-blue-50 py-8 md:py-12 #{@wrapper_class}"}>
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <%= if @title do %>
-          <div class="mb-8 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-blue-950 mb-2">{@title}</h1>
-            <%= if @subtitle do %>
-              <p class="text-lg text-blue-700">{@subtitle}</p>
-            <% end %>
-            <div class="w-20 h-1 bg-blue-600 mx-auto mt-4"></div>
-          </div>
-        <% end %>
-        
-    <!-- Área para contenido destacado (slider) -->
-        <%= if render_slot(@hero) do %>
-          <div class="mb-8">
-            {render_slot(@hero)}
-          </div>
-        <% end %>
-        
-    <!-- Layout principal con contenido y barra lateral (si existe) -->
-        <div class={"grid gap-8 " <> if(render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-3", else: "")}>
-          <div class={if(render_slot(@sidebar), do: "lg:col-span-2", else: "")}>
-            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-blue-100">
-              {render_slot(@inner_block)}
-            </div>
-          </div>
-
-          <%= if render_slot(@sidebar) do %>
-            <div class="lg:col-span-1">
-              {render_slot(@sidebar)}
-            </div>
+    <div>
+      <%= if @title do %>
+        <div class="mb-8 text-center">
+          <h1 class="text-3xl sm:text-4xl font-bold text-blue-950 mb-2">{@title}</h1>
+          <%= if @subtitle do %>
+            <p class="text-lg text-blue-700">{@subtitle}</p>
           <% end %>
+          <div class="w-20 h-1 bg-blue-600 mx-auto mt-4"></div>
         </div>
+      <% end %>
+      
+    <!-- Área para contenido destacado (slider) -->
+      <%= if render_slot(@hero) do %>
+        <div class="mb-8">
+          {render_slot(@hero)}
+        </div>
+      <% end %>
+      
+    <!-- Layout principal con contenido y barra lateral (si existe) -->
+      <div class={"grid gap-8 " <> if(@has_sidebar && render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-3", else: "")}>
+        <div class={if(@has_sidebar && render_slot(@sidebar), do: "lg:col-span-2", else: "")}>
+          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-blue-100">
+            {render_slot(@inner_block)}
+          </div>
+        </div>
+
+        <%= if @has_sidebar && render_slot(@sidebar) do %>
+          <div class="lg:col-span-1">
+            {render_slot(@sidebar)}
+          </div>
+        <% end %>
       </div>
     </div>
     """

@@ -1,32 +1,65 @@
-<!-- Ejemplo de página de inicio (home.html.heex) -->
-<!-- Esta página de inicio aprovechará los componentes personalizados.
-     Coloca este archivo en lib/policia_web/controllers/page_html/home.html.heex -->
+<.content_layout has_sidebar={true}>
+  <:hero>
+    <!-- Banner de alerta para información importante -->
+    <.alert_banner
+      type="info"
+      message="Nuevo sistema de turnos online para trámites. Acceda fácilmente a nuestros servicios digitales."
+      action_text="Reservar turno"
+      action_url="#"
+    />
 
-<div class="space-y-8">
-  <!-- Sección de noticias destacadas -->
-  <div class="mb-8">
-    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-      <h2 class="text-2xl font-bold text-blue-950">Últimas Noticias</h2>
-      <a href="#" class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center">
-        Ver todas
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 ml-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+    <.slider
+      images={[
+        "/images/demo/slide1.png",
+        "/images/demo/slide2.png",
+        "/images/demo/slide3.png"
+      ]}
+      captions={[
+        %{
+          title: "Compromiso con la seguridad",
+          description: "Trabajamos las 24 horas para proteger a la comunidad rionegrina"
+        },
+        %{
+          title: "Acercamiento comunitario",
+          description: "Fortaleciendo lazos con la sociedad a través de programas educativos"
+        },
+        %{
+          title: "A su servicio",
+          description: "Modernizamos nuestras instalaciones para brindar mejor atención"
+        }
+      ]}
+      height="h-96 md:h-[500px]"
+    />
+  </:hero>
+  
+<!-- Contenido principal -->
+  <div class="space-y-8">
+    <!-- Sección de noticias destacadas -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+        <h2 class="text-2xl font-bold text-blue-950">Últimas Noticias</h2>
+        <a
+          href="#"
+          class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center"
         >
-          <path
-            fill-rule="evenodd"
-            d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
-    </div>
-    
+          Ver todas
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+      
 <!-- Grid de artículos/noticias -->
-    <.article_grid articles={
-      [
+      <.article_grid articles={[
         %{
           title: "Nuevo sistema de monitoreo para la seguridad vial",
           date: "3 Abril 2025",
@@ -43,7 +76,6 @@
           excerpt:
             "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
           url: "#",
-          # Capacitación
           category: "Capacitación"
         },
         %{
@@ -55,139 +87,84 @@
           url: "#",
           category: "Infraestructura"
         }
-      ]
-    } />
-  </div>
-  
-<!-- Sección de servicios destacados -->
-  <div class="mb-8">
-    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-      <h2 class="text-2xl font-bold text-blue-950">Servicios Destacados</h2>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Tarjetas de servicios -->
-      <div class="bg-gradient-to-br from-blue-800 to-blue-950 text-white rounded-lg overflow-hidden shadow-lg group hover:shadow-xl transition-all duration-300">
-        <div class="p-6">
-          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Constancias y Certificados</h3>
-          <p class="mb-4 text-blue-100">
-            Obtenga sus documentos oficiales de manera rápida y segura a través de nuestro sistema digitalizado.
-          </p>
-          <a
-            href="#"
-            class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
-          >
-            Solicitar documento
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 ml-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      <div class="bg-gradient-to-br from-blue-700 to-blue-900 text-white rounded-lg overflow-hidden shadow-lg group hover:shadow-xl transition-all duration-300">
-        <div class="p-6">
-          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold mb-2">Reserva de Turnos</h3>
-          <p class="mb-4 text-blue-100">
-            Planifique su visita a nuestras dependencias con anticipación y evite esperas innecesarias.
-          </p>
-          <a
-            href="#"
-            class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
-          >
-            Reservar un turno
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 ml-1"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-<!-- Destacados de la Semana -->
-  <div>
-    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-      <h2 class="text-2xl font-bold text-blue-950">Destacados de la Semana</h2>
+      ]} />
     </div>
     
-<!-- Artículo destacado con componente article -->
-<!--
-#tags={[
-  #  %{text: "Seguridad", link: "#"},
-      #  %{text: "Operativos", link: "#"},
-      #  %{text: "Turismo", link: "#"}
-      #]}
--->
-    <.article
-      image_src="/images/demo/featured-weekly.png"
-      image_alt="Operativo de seguridad"
-      date="1 Abril 2025"
-      time="10:30 AM"
-      author="Departamento de Prensa"
-      title="Operativo de seguridad especial para Semana Santa"
-      category="Seguridad"
-      comment_count={12}
-    >
-      <p>
-        La Policía de Río Negro implementará un operativo especial de seguridad en toda la provincia durante el fin de semana largo de Semana Santa. Se reforzará la presencia policial en las rutas provinciales, zonas turísticas y centros comerciales.
-      </p>
-      <p>
-        "Nuestro objetivo es garantizar que todos los ciudadanos y turistas puedan disfrutar de estas fechas con tranquilidad y seguridad", explicó el comisario Juan Martínez, coordinador del operativo. "Hemos dispuesto controles en los principales accesos y reforzado la vigilancia en zonas de alta concentración de personas".
-      </p>
-      <p>
-        El operativo contará con más de 500 efectivos distribuidos estratégicamente en toda la provincia, unidades móviles y puestos de control en las rutas. Además, se implementará un sistema de patrullaje preventivo en las zonas turísticas y centros urbanos.
-      </p>
-    </.article>
+<!-- Resto del contenido... -->
   </div>
-</div>
+
+  <:sidebar>
+    <!-- Primera tarjeta de barra lateral - Trámites frecuentes -->
+    <.sidebar title="Trámites frecuentes">
+      <.sidebar_links items={[
+        %{
+          icon: "doc",
+          title: "Certificado de Antecedentes",
+          description: "Solicite su certificado de forma online",
+          url: "#"
+        },
+        %{
+          icon: "doc",
+          title: "Licencia de Armas",
+          description: "Renovación y nuevas solicitudes",
+          url: "#"
+        },
+        %{
+          icon: "calendar",
+          title: "Reserva de Turnos",
+          description: "Sistema de turnos para atención presencial",
+          url: "#"
+        },
+        %{
+          icon: "alert",
+          title: "Denuncias Online",
+          description: "Realice su denuncia desde cualquier dispositivo",
+          url: "#"
+        }
+      ]} />
+    </.sidebar>
+    
+<!-- Segunda tarjeta de barra lateral - Enlaces rápidos -->
+    <div class="mt-6">
+      <.sidebar title="Enlaces rápidos">
+        <.sidebar_links items={[
+          %{
+            icon: "info",
+            title: "Preguntas Frecuentes",
+            url: "#"
+          },
+          %{
+            icon: "calendar",
+            title: "Agenda de capacitaciones",
+            url: "#"
+          },
+          %{
+            icon: "doc",
+            title: "Formularios para descarga",
+            url: "#"
+          }
+        ]} />
+      </.sidebar>
+    </div>
+    
+<!-- Tercera tarjeta - Estadísticas -->
+    <div class="mt-6">
+      <.sidebar title="Estadísticas">
+        <div class="text-center space-y-4">
+          <div class="p-3 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-700">95%</div>
+            <div class="text-sm text-gray-600">Satisfacción ciudadana</div>
+          </div>
+          <div class="p-3 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-700">24/7</div>
+            <div class="text-sm text-gray-600">Atención permanente</div>
+          </div>
+          <div class="p-3 bg-blue-50 rounded-lg">
+            <div class="text-2xl font-bold text-blue-700">45</div>
+            <div class="text-sm text-gray-600">Estaciones policiales</div>
+          </div>
+        </div>
+      </.sidebar>
+    </div>
+  </:sidebar>
+</.content_layout>
