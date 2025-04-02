@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="es" class="h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="Policia" suffix=" · Phoenix Framework">
-      {assigns[:page_title]}
+    <.live_title suffix=" · Policía de Río Negro">
+      {assigns[:page_title] || "Inicio"}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
@@ -13,7 +13,10 @@
     <script src="https://unpkg.com/alpinejs" defer>
     </script>
   </head>
-  <body class="bg-white">
-    {@inner_content}
+  <body class="bg-white antialiased h-full">
+    <div class="min-h-full flex flex-col">
+      <!-- Aquí va el contenido del layout anidado (app o sidebar_free) -->
+      {@inner_content}
+    </div>
   </body>
 </html>

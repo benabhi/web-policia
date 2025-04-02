@@ -1,35 +1,187 @@
-<.flash_group flash={@flash} />
+<!-- Ejemplo de página de inicio (home.html.heex) -->
+<!-- Esta página de inicio aprovechará los componentes personalizados.
+     Coloca este archivo en lib/policia_web/controllers/page_html/home.html.heex -->
 
-<.article
-  image_src="/images/seguridad.jpg"
-  image_alt="Fotografía de policías en Río Negro"
-  date="01 Abril 2025"
-  time="02:49 AM"
-  author="Hernán"
-  title="Policía de Río Negro implementará nuevas medidas de seguridad"
-  tags={[
-    %{text: "Seguridad", link: "#"},
-    %{text: "Río Negro", link: "#"},
-    %{text: "Policía", link: "#"}
-  ]}
-  comment_count={5}
->
-  <p>
-    Entre las principales iniciativas se encuentra la implementación de un sistema de videovigilancia con inteligencia artificial, que permitirá detectar comportamientos sospechosos en tiempo real y alertar a las fuerzas de seguridad de manera automática. Además, se reforzarán los controles en puntos estratégicos con el despliegue de unidades especiales y patrullajes preventivos en barrios con altos niveles de incidencia delictiva.
-  </p>
-  <br />
+<div class="space-y-8">
+  <!-- Sección de noticias destacadas -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+      <h2 class="text-2xl font-bold text-blue-950">Últimas Noticias</h2>
+      <a href="#" class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center">
+        Ver todas
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 ml-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </a>
+    </div>
+    
+<!-- Grid de artículos/noticias -->
+    <.article_grid articles={[
+      %{
+        title: "Nuevo sistema de monitoreo para la seguridad vial",
+        date: "3 Abril 2025",
+        image: "/images/demo/featured1.png",
+        excerpt:
+          "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
+        url: "#",
+        tags: [%{text: "Seguridad Vial", link: "#"}]
+      },
+      %{
+        title: "Capacitación en primeros auxilios para el personal policial",
+        date: "1 Abril 2025",
+        image: "/images/demo/featured2.png",
+        excerpt:
+          "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
+        url: "#",
+        tags: [%{text: "Capacitación", link: "#"}]
+      },
+      %{
+        title: "Inauguración de nueva comisaría en El Bolsón",
+        date: "28 Marzo 2025",
+        image: "/images/demo/featured3.png",
+        excerpt:
+          "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
+        url: "#",
+        tags: [%{text: "Infraestructura", link: "#"}]
+      }
+    ]} />
+  </div>
+  
+<!-- Sección de servicios destacados -->
+  <div class="mb-8">
+    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+      <h2 class="text-2xl font-bold text-blue-950">Servicios Destacados</h2>
+    </div>
 
-  <p>
-    El jefe de la Policía de Río Negro, Comisario General Ricardo López, destacó que "estas medidas buscan fortalecer la seguridad en cada rincón de la provincia, aprovechando la tecnología para mejorar la capacidad de respuesta y prevención del delito". Asimismo, enfatizó la importancia de la colaboración ciudadana, invitando a los vecinos a participar activamente a través de líneas de denuncia anónima y la aplicación móvil de seguridad provincial.
-  </p>
-  <br />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Tarjetas de servicios -->
+      <div class="bg-gradient-to-br from-blue-800 to-blue-950 text-white rounded-lg overflow-hidden shadow-lg group hover:shadow-xl transition-all duration-300">
+        <div class="p-6">
+          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Constancias y Certificados</h3>
+          <p class="mb-4 text-blue-100">
+            Obtenga sus documentos oficiales de manera rápida y segura a través de nuestro sistema digitalizado.
+          </p>
+          <a
+            href="#"
+            class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
+          >
+            Solicitar documento
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
 
-  <p>
-    Otra de las novedades anunciadas es la creación de una unidad especial contra el cibercrimen, enfocada en la investigación de fraudes digitales, estafas y otros delitos informáticos que han aumentado en los últimos años. Esta unidad contará con personal altamente capacitado y herramientas de análisis forense digital.
-  </p>
-  <br />
-
-  <p>
-    Las nuevas medidas comenzarán a implementarse de manera progresiva a partir de este mes, con una evaluación constante de su efectividad. Desde el gobierno provincial aseguraron que continuarán invirtiendo en seguridad para garantizar la tranquilidad de los ciudadanos y la lucha contra el crimen en Río Negro.
-  </p>
-</.article>
+      <div class="bg-gradient-to-br from-blue-700 to-blue-900 text-white rounded-lg overflow-hidden shadow-lg group hover:shadow-xl transition-all duration-300">
+        <div class="p-6">
+          <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Reserva de Turnos</h3>
+          <p class="mb-4 text-blue-100">
+            Planifique su visita a nuestras dependencias con anticipación y evite esperas innecesarias.
+          </p>
+          <a
+            href="#"
+            class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
+          >
+            Reservar un turno
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!-- Destacados de la Semana -->
+  <div>
+    <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+      <h2 class="text-2xl font-bold text-blue-950">Destacados de la Semana</h2>
+    </div>
+    
+<!-- Artículo destacado con componente article -->
+    <.article
+      image_src="/images/demo/featured-weekly.png"
+      image_alt="Operativo de seguridad"
+      date="1 Abril 2025"
+      time="10:30 AM"
+      author="Departamento de Prensa"
+      title="Operativo de seguridad especial para Semana Santa"
+      tags={[
+        %{text: "Seguridad", link: "#"},
+        %{text: "Operativos", link: "#"},
+        %{text: "Turismo", link: "#"}
+      ]}
+      comment_count={12}
+    >
+      <p>
+        La Policía de Río Negro implementará un operativo especial de seguridad en toda la provincia durante el fin de semana largo de Semana Santa. Se reforzará la presencia policial en las rutas provinciales, zonas turísticas y centros comerciales.
+      </p>
+      <p>
+        "Nuestro objetivo es garantizar que todos los ciudadanos y turistas puedan disfrutar de estas fechas con tranquilidad y seguridad", explicó el comisario Juan Martínez, coordinador del operativo. "Hemos dispuesto controles en los principales accesos y reforzado la vigilancia en zonas de alta concentración de personas".
+      </p>
+      <p>
+        El operativo contará con más de 500 efectivos distribuidos estratégicamente en toda la provincia, unidades móviles y puestos de control en las rutas. Además, se implementará un sistema de patrullaje preventivo en las zonas turísticas y centros urbanos.
+      </p>
+    </.article>
+  </div>
+</div>

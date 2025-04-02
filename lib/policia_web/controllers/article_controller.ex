@@ -62,4 +62,16 @@ defmodule PoliciaWeb.ArticleController do
     |> put_flash(:info, "Article deleted successfully.")
     |> redirect(to: ~p"/articles")
   end
+
+  # En lib/policia_web/controllers/article_controller.ex
+  # lib/policia_web/controllers/article_controller.ex
+  def all_articles(conn, _params) do
+    conn
+    |> put_root_layout({PoliciaWeb.Layouts, :root})
+    # Usa el nuevo layout
+    |> put_layout({PoliciaWeb.Layouts, :sidebar_free})
+    |> assign(:page_title, "Todas las Noticias")
+    |> assign(:subtitle, "Mantente informado sobre las últimas novedades")
+    |> render(:all_articles)
+  end
 end

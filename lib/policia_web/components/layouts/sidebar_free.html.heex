@@ -1,4 +1,3 @@
-<!-- Estructura del layout.html.heex optimizado -->
 <header>
   <.nav_menu
     menus={[
@@ -47,130 +46,22 @@
         ]
       }
     ]}
-    current_path=""
+    current_path="/"
     site_name="Policía de Río Negro"
   />
 </header>
-
-<!-- Contenido principal mejorado -->
-<.content_layout title="Policía de Río Negro" subtitle="Protegiendo a nuestra comunidad">
+<!-- lib/policia_web/components/layouts/sidebar_free.html.heex -->
+<.basic_content_layout title={@page_title} subtitle={@subtitle}>
   <:hero>
-    <!-- Banner de alerta para información importante -->
-    <.alert_banner
-      type="info"
-      message="Nuevo sistema de turnos online para trámites. Acceda fácilmente a nuestros servicios digitales."
-      action_text="Reservar turno"
-      action_url="#"
-    />
-    
-<!-- Slider mejorado con imágenes destacadas -->
-    <.slider
-      images={[
-        "/images/demo/slide1.png",
-        "/images/demo/slide2.png",
-        "/images/demo/slide3.png"
-      ]}
-      captions={[
-        %{
-          title: "Compromiso con la seguridad",
-          description: "Trabajamos las 24 horas para proteger a la comunidad rionegrina"
-        },
-        %{
-          title: "Acercamiento comunitario",
-          description: "Fortaleciendo lazos con la sociedad a través de programas educativos"
-        },
-        %{
-          title: "A su servicio",
-          description: "Modernizamos nuestras instalaciones para brindar mejor atención"
-        }
-      ]}
-      height="h-96 md:h-[500px]"
-    />
+    <%= if assigns[:hero] do %>
+      {render_slot(@hero)}
+    <% end %>
   </:hero>
-  
-<!-- Flash Group para mensajes del sistema -->
+
   <.flash_group flash={@flash} />
-  
-<!-- Contenido dinámico de la página -->
+
   {@inner_content}
-
-  <:sidebar>
-    <!-- Primera tarjeta de barra lateral - Trámites frecuentes -->
-    <.sidebar title="Trámites frecuentes">
-      <.sidebar_links items={[
-        %{
-          icon: "doc",
-          title: "Certificado de Antecedentes",
-          description: "Solicite su certificado de forma online",
-          url: "#"
-        },
-        %{
-          icon: "doc",
-          title: "Licencia de Armas",
-          description: "Renovación y nuevas solicitudes",
-          url: "#"
-        },
-        %{
-          icon: "calendar",
-          title: "Reserva de Turnos",
-          description: "Sistema de turnos para atención presencial",
-          url: "#"
-        },
-        %{
-          icon: "alert",
-          title: "Denuncias Online",
-          description: "Realice su denuncia desde cualquier dispositivo",
-          url: "#"
-        }
-      ]} />
-    </.sidebar>
-    
-<!-- Segunda tarjeta de barra lateral - Enlaces rápidos -->
-    <div class="mt-6">
-      <.sidebar title="Enlaces rápidos">
-        <.sidebar_links items={[
-          %{
-            icon: "info",
-            title: "Preguntas Frecuentes",
-            url: "#"
-          },
-          %{
-            icon: "calendar",
-            title: "Agenda de capacitaciones",
-            url: "#"
-          },
-          %{
-            icon: "doc",
-            title: "Formularios para descarga",
-            url: "#"
-          }
-        ]} />
-      </.sidebar>
-    </div>
-    
-<!-- Tercera tarjeta - Estadísticas -->
-    <div class="mt-6">
-      <.sidebar title="Estadísticas">
-        <div class="text-center space-y-4">
-          <div class="p-3 bg-blue-50 rounded-lg">
-            <div class="text-2xl font-bold text-blue-700">95%</div>
-            <div class="text-sm text-gray-600">Satisfacción ciudadana</div>
-          </div>
-          <div class="p-3 bg-blue-50 rounded-lg">
-            <div class="text-2xl font-bold text-blue-700">24/7</div>
-            <div class="text-sm text-gray-600">Atención permanente</div>
-          </div>
-          <div class="p-3 bg-blue-50 rounded-lg">
-            <div class="text-2xl font-bold text-blue-700">45</div>
-            <div class="text-sm text-gray-600">Estaciones policiales</div>
-          </div>
-        </div>
-      </.sidebar>
-    </div>
-  </:sidebar>
-</.content_layout>
-
-<!-- Footer con toda la información de contacto y enlaces -->
+</.basic_content_layout>
 <.site_footer
   sitename="Gobierno de Río Negro"
   slogan="Trabajando por nuestra provincia"

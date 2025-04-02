@@ -6,6 +6,7 @@ defmodule PoliciaWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {PoliciaWeb.Layouts, :root}
+    plug :put_layout, html: {PoliciaWeb.Layouts, :app}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -19,7 +20,10 @@ defmodule PoliciaWeb.Router do
 
     get "/", PageController, :home
 
+    # Coloca la ruta personalizada ANTES del recurso
+    get "/articles/all", ArticleController, :all_articles
     resources "/articles", ArticleController
+
     resources "/tags", TagController
   end
 
