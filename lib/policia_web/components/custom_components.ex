@@ -548,7 +548,7 @@ defmodule PoliciaWeb.CustomComponents do
     doc: "Eslogan o descripción corta de la organización"
 
   attr :logo_src, :string,
-    default: nil,
+    default: "",
     doc: "URL del logo, si es nil se usará un ícono SVG por defecto"
 
   attr :address, :string,
@@ -642,7 +642,7 @@ defmodule PoliciaWeb.CustomComponents do
           <div class="flex items-center mb-6 md:mb-0">
             <!-- Logo (SVG por defecto o personalizado) -->
             <div class="bg-white p-2 rounded-lg mr-3">
-              <%= if @logo_src do %>
+              <%= if @logo_src && String.length(@logo_src) > 0 do %>
                 <img src={@logo_src} alt={@sitename} class="h-10 w-10" />
               <% else %>
                 <svg
@@ -1413,4 +1413,129 @@ defmodule PoliciaWeb.CustomComponents do
     </div>
     """
   end
+
+  # def site_header(assigns) do
+  #   ~H"""
+  #   <header>
+  #     <.nav_menu
+  #       menus={[
+  #         %{title: "Inscripciones", link: "#", submenus: nil},
+  #         %{
+  #           title: "Secciones de Interés",
+  #           link: "#",
+  #           submenus: [
+  #             %{title: "Estructura organizacional", link: "#", submenus: nil},
+  #             %{title: "Notas", link: "#", submenus: nil},
+  #             %{title: "Búsqueda de utilidades policiales", link: "#", submenus: nil},
+  #             %{
+  #               title: "Trámites",
+  #               link: "#",
+  #               submenus: [
+  #                 %{title: "Cédula de identidad para estranjeros", link: "#"},
+  #                 %{title: "Cédulas de identidad", link: "#"},
+  #                 %{title: "Certificado de antecedentes", link: "#"},
+  #                 %{title: "Certificado de antecedentes para extranjeros", link: "#"},
+  #                 %{title: "Armas", link: "#"}
+  #               ]
+  #             },
+  #             %{title: "Legislación", link: "#", submenus: nil},
+  #             %{
+  #               title: "Consejos Útiles",
+  #               link: "#",
+  #               submenus: [
+  #                 %{title: "Precauciones balneareas", link: "#"},
+  #                 %{title: "Señor viajero", link: "#"},
+  #                 %{title: "Sobre armas", link: "#"}
+  #               ]
+  #             },
+  #             %{title: "Servicios", link: "#", submenus: nil},
+  #             %{title: "Trámites previsionales", link: "#", submenus: nil}
+  #           ]
+  #         },
+  #         %{title: "Turnos", link: "#", submenus: nil},
+  #         %{title: "Webmail", link: "#", submenus: nil},
+  #         %{title: "Educación", link: "#", submenus: nil},
+  #         %{
+  #           title: "Sistemas",
+  #           link: "#",
+  #           submenus: [
+  #             %{title: "Extranet", link: "#", submenus: nil},
+  #             %{title: "Autoconsulta", link: "#", submenus: nil}
+  #           ]
+  #         }
+  #       ]}
+  #       current_path=""
+  #       site_name="Policía de Río Negro"
+  #     />
+  #   </header>
+  #   """
+  # end
+
+  # def site_footer(assigns) do
+  #   ~H"""
+  #   <.site_footer
+  #     sitename="Gobierno de Río Negro"
+  #     slogan="Trabajando por nuestra provincia"
+  #     logo_src=""
+  #     address="Av. 25 de Mayo 645, Viedma, Río Negro, Argentina"
+  #     phone="+54 (0920) 423-4567"
+  #     emails={["contacto@rionegro.gov.ar", "info@rionegro.gov.ar"]}
+  #     copyright_year="2025"
+  #     social_links={[
+  #       %{name: "Twitter", url: "#", icon: "twitter"},
+  #       %{name: "Facebook", url: "#", icon: "facebook"},
+  #       %{name: "Instagram", url: "#", icon: "instagram"},
+  #       %{name: "YouTube", url: "#", icon: "youtube"}
+  #     ]}
+  #     menu_columns={[
+  #       %{
+  #         title: "Ministerios",
+  #         links: [
+  #           %{text: "Seguridad y Justicia", url: "#"},
+  #           %{text: "Agricultura", url: "#"},
+  #           %{text: "Desarrollo Social", url: "#"},
+  #           %{text: "Economía", url: "#"},
+  #           %{text: "Autoridades Provinciales", url: "#"}
+  #         ]
+  #       },
+  #       %{
+  #         title: "Información y Servicios",
+  #         links: [
+  #           %{text: "Compras y Licitaciones", url: "#"},
+  #           %{text: "Transferencias a Municipios", url: "#"},
+  #           %{text: "Consulta de Expedientes", url: "#"},
+  #           %{text: "Deuda Pública", url: "#"},
+  #           %{text: "Presupuesto Fiscal", url: "#"}
+  #         ]
+  #       },
+  #       %{
+  #         title: "Sitios Oficiales",
+  #         links: [
+  #           %{text: "Agencia de Recaudación", url: "#"},
+  #           %{text: "Aguas Rionegrinas", url: "#"},
+  #           %{text: "Casa de Río Negro", url: "#"},
+  #           %{text: "Defensa Civil", url: "#"},
+  #           %{text: "Educación", url: "#"}
+  #         ]
+  #       },
+  #       %{
+  #         title: "Enlaces Rápidos",
+  #         links: [
+  #           %{text: "Preguntas Frecuentes", url: "#", icon: "info"},
+  #           %{text: "Contacto", url: "#", icon: "phone"},
+  #           %{text: "Portal del Empleado", url: "#", icon: "user"},
+  #           %{text: "Noticias", url: "#", icon: "news"},
+  #           %{text: "Calendario de Actividades", url: "#", icon: "calendar"}
+  #         ]
+  #       }
+  #     ]}
+  #     legal_links={[
+  #       %{text: "Términos y Condiciones", url: "#"},
+  #       %{text: "Política de Privacidad", url: "#"},
+  #       %{text: "Mapa del Sitio", url: "#"}
+  #     ]}
+  #     class=""
+  #   />
+  #   """
+  # end
 end

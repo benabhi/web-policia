@@ -11,9 +11,8 @@ defmodule PoliciaWeb.ArticleController do
 
   def new(conn, _params) do
     changeset = Articles.change_article(%Article{})
-    # Lista de todos los tags disponibles
-    tags = Policia.Tags.list_tags()
-    render(conn, :new, changeset: changeset, tags: tags)
+
+    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"article" => article_params}) do
@@ -24,8 +23,7 @@ defmodule PoliciaWeb.ArticleController do
         |> redirect(to: ~p"/articles/#{article}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        tags = Policia.Tags.list_tags()
-        render(conn, :new, changeset: changeset, tags: tags)
+        render(conn, :new, changeset: changeset)
     end
   end
 
@@ -67,8 +65,6 @@ defmodule PoliciaWeb.ArticleController do
   # lib/policia_web/controllers/article_controller.ex
   def all_articles(conn, _params) do
     conn
-    |> put_root_layout({PoliciaWeb.Layouts, :root})
-    # Usa el nuevo layout
     |> put_layout({PoliciaWeb.Layouts, :sidebar_free})
     |> assign(:page_title, "Todas las Noticias")
     |> assign(:subtitle, "Mantente informado sobre las últimas novedades")

@@ -101,9 +101,4 @@ defmodule Policia.Articles do
   def change_article(%Article{} = article, attrs \\ %{}) do
     Article.changeset(article, attrs)
   end
-
-  def list_articles_by_tag(tag_id) do
-    from(a in Article, join: t in assoc(a, :tags), where: t.id == ^tag_id, select: a)
-    |> Repo.all()
-  end
 end
