@@ -8,9 +8,13 @@
       {assigns[:page_title] || "Inicio"}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <!-- Agregados -->
     <script src="https://unpkg.com/alpinejs" defer>
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js">
     </script>
   </head>
   <body class="bg-white antialiased h-full">

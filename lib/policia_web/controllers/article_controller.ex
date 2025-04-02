@@ -6,7 +6,11 @@ defmodule PoliciaWeb.ArticleController do
 
   def index(conn, _params) do
     articles = Articles.list_articles_with_category()
-    render(conn, :index, articles: articles)
+
+    conn
+    |> assign(:page_title, "Articulos")
+    |> assign(:subtitle, "Listado de artículos")
+    |> render(:index, articles: articles, layout: {PoliciaWeb.Layouts, :sidebar_free})
   end
 
   def new(conn, _params) do
@@ -19,7 +23,7 @@ defmodule PoliciaWeb.ArticleController do
     |> render(:new,
       changeset: changeset,
       categories: categories,
-      latout: {PoliciaWeb.Layouts, :sidebar_free}
+      layout: {PoliciaWeb.Layouts, :sidebar_free}
     )
   end
 

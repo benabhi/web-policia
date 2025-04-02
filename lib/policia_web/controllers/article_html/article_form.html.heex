@@ -3,7 +3,12 @@
     Oops, algo salió mal! Por favor revisa los errores a continuación.
   </.error>
   <.input field={f[:title]} type="text" label="Título" />
+
   <.input field={f[:content]} type="textarea" label="Contenido" rows="10" />
+  <!--
+  <div id="editor" class="min-h-80"></div>
+  <.input field={f[:content]} id="hidden-content" type="hidden" label="Contenido" rows="10" />
+  -->
   <.input field={f[:image_url]} type="text" label="URL de imagen" />
   <.input field={f[:author]} type="text" label="Autor" />
 
@@ -19,3 +24,26 @@
     <.button>Guardar Artículo</.button>
   </:actions>
 </.simple_form>
+
+<!--<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  var quill = new Quill("#editor", {
+    theme: "snow",
+    modules: {
+      toolbar: [["bold", "italic", "underline"]]
+    }
+  });
+
+  document.querySelector(".ql-editor").style.fontSize = "18px"
+
+  var contenidoExistente = document.querySelector("#hidden-content").value;
+  if (contenidoExistente) {
+    quill.root.innerHTML = contenidoExistente; // Cargar contenido en Quill
+  }
+
+  // Guardar el contenido en el input oculto antes de enviar el formulario
+  document.querySelector("form").onsubmit = function () {
+    document.querySelector("#hidden-content").value = quill.root.innerHTML;
+  };
+  });
+</script>-->
