@@ -407,7 +407,7 @@ defmodule PoliciaWeb.CustomComponents do
   attr :time, :string, required: true, doc: "Hora de publicación (formato: '02:49 AM')"
   attr :author, :string, required: true, doc: "Nombre del autor"
   attr :title, :string, required: true, doc: "Título del artículo"
-  attr :tags, :list, default: [], doc: "Lista de etiquetas {text, link}"
+  attr :category, :string, default: nil, doc: "Categoría del artículo"
   attr :comment_count, :integer, default: 0, doc: "Número de comentarios"
   slot :inner_block, required: true, doc: "Contenido del artículo"
 
@@ -443,21 +443,12 @@ defmodule PoliciaWeb.CustomComponents do
         {@title}
       </h1>
       
-    <!-- Etiquetas con diseño mejorado acorde a la paleta -->
-      <div class="mb-6">
-        <ul class="flex flex-wrap gap-2">
-          <%= for tag <- @tags do %>
-            <li>
-              <a
-                href={tag.link}
-                class="text-blue-700 hover:text-blue-900 text-sm px-3 py-1 rounded-full bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors duration-200"
-              >
-                {tag.text}
-              </a>
-            </li>
-          <% end %>
-        </ul>
-      </div>
+    <!-- Categoría en lugar de etiquetas -->
+      <%= if @category do %>
+        <div class="mb-6">
+          <.badge text={@category} color="blue" size="md" />
+        </div>
+      <% end %>
       
     <!-- Contenido con mejor legibilidad -->
       <div class="text-gray-700 leading-relaxed space-y-4">
@@ -1235,13 +1226,12 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Nuevo componente para tarjetas de artículos en formato resumido (para listados)
   attr :title, :string, required: true, doc: "Título del artículo"
   attr :date, :string, required: true, doc: "Fecha de publicación"
   attr :image, :string, default: nil, doc: "Imagen destacada (opcional)"
   attr :excerpt, :string, default: "", doc: "Extracto del artículo"
   attr :url, :string, required: true, doc: "URL del artículo completo"
-  attr :tags, :list, default: [], doc: "Etiquetas del artículo"
+  attr :category, :string, default: nil, doc: "Categoría del artículo"
 
   def article_card(assigns) do
     ~H"""
@@ -1253,11 +1243,9 @@ defmodule PoliciaWeb.CustomComponents do
             alt={@title}
             class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
           />
-          <%= if length(@tags) > 0 do %>
+          <%= if @category do %>
             <div class="absolute top-2 right-2">
-              <span class="bg-blue-800 text-white text-xs font-semibold px-2 py-1 rounded">
-                {hd(@tags).text}
-              </span>
+              <.badge text={@category} color="blue" size="sm" />
             </div>
           <% end %>
         </div>
@@ -1297,7 +1285,6 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Componente para grid de artículos
   attr :articles, :list, default: [], doc: "Lista de artículos a mostrar"
 
   attr :columns, :string,
@@ -1314,7 +1301,7 @@ defmodule PoliciaWeb.CustomComponents do
           image={article.image}
           excerpt={article.excerpt}
           url={article.url}
-          tags={article.tags}
+          category={article.category}
         />
       <% end %>
     </div>
@@ -1414,128 +1401,57 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # def site_header(assigns) do
-  #   ~H"""
-  #   <header>
-  #     <.nav_menu
-  #       menus={[
-  #         %{title: "Inscripciones", link: "#", submenus: nil},
-  #         %{
-  #           title: "Secciones de Interés",
-  #           link: "#",
-  #           submenus: [
-  #             %{title: "Estructura organizacional", link: "#", submenus: nil},
-  #             %{title: "Notas", link: "#", submenus: nil},
-  #             %{title: "Búsqueda de utilidades policiales", link: "#", submenus: nil},
-  #             %{
-  #               title: "Trámites",
-  #               link: "#",
-  #               submenus: [
-  #                 %{title: "Cédula de identidad para estranjeros", link: "#"},
-  #                 %{title: "Cédulas de identidad", link: "#"},
-  #                 %{title: "Certificado de antecedentes", link: "#"},
-  #                 %{title: "Certificado de antecedentes para extranjeros", link: "#"},
-  #                 %{title: "Armas", link: "#"}
-  #               ]
-  #             },
-  #             %{title: "Legislación", link: "#", submenus: nil},
-  #             %{
-  #               title: "Consejos Útiles",
-  #               link: "#",
-  #               submenus: [
-  #                 %{title: "Precauciones balneareas", link: "#"},
-  #                 %{title: "Señor viajero", link: "#"},
-  #                 %{title: "Sobre armas", link: "#"}
-  #               ]
-  #             },
-  #             %{title: "Servicios", link: "#", submenus: nil},
-  #             %{title: "Trámites previsionales", link: "#", submenus: nil}
-  #           ]
-  #         },
-  #         %{title: "Turnos", link: "#", submenus: nil},
-  #         %{title: "Webmail", link: "#", submenus: nil},
-  #         %{title: "Educación", link: "#", submenus: nil},
-  #         %{
-  #           title: "Sistemas",
-  #           link: "#",
-  #           submenus: [
-  #             %{title: "Extranet", link: "#", submenus: nil},
-  #             %{title: "Autoconsulta", link: "#", submenus: nil}
-  #           ]
-  #         }
-  #       ]}
-  #       current_path=""
-  #       site_name="Policía de Río Negro"
-  #     />
-  #   </header>
-  #   """
-  # end
+  attr :text, :string, required: true, doc: "Texto a mostrar en la etiqueta"
 
-  # def site_footer(assigns) do
-  #   ~H"""
-  #   <.site_footer
-  #     sitename="Gobierno de Río Negro"
-  #     slogan="Trabajando por nuestra provincia"
-  #     logo_src=""
-  #     address="Av. 25 de Mayo 645, Viedma, Río Negro, Argentina"
-  #     phone="+54 (0920) 423-4567"
-  #     emails={["contacto@rionegro.gov.ar", "info@rionegro.gov.ar"]}
-  #     copyright_year="2025"
-  #     social_links={[
-  #       %{name: "Twitter", url: "#", icon: "twitter"},
-  #       %{name: "Facebook", url: "#", icon: "facebook"},
-  #       %{name: "Instagram", url: "#", icon: "instagram"},
-  #       %{name: "YouTube", url: "#", icon: "youtube"}
-  #     ]}
-  #     menu_columns={[
-  #       %{
-  #         title: "Ministerios",
-  #         links: [
-  #           %{text: "Seguridad y Justicia", url: "#"},
-  #           %{text: "Agricultura", url: "#"},
-  #           %{text: "Desarrollo Social", url: "#"},
-  #           %{text: "Economía", url: "#"},
-  #           %{text: "Autoridades Provinciales", url: "#"}
-  #         ]
-  #       },
-  #       %{
-  #         title: "Información y Servicios",
-  #         links: [
-  #           %{text: "Compras y Licitaciones", url: "#"},
-  #           %{text: "Transferencias a Municipios", url: "#"},
-  #           %{text: "Consulta de Expedientes", url: "#"},
-  #           %{text: "Deuda Pública", url: "#"},
-  #           %{text: "Presupuesto Fiscal", url: "#"}
-  #         ]
-  #       },
-  #       %{
-  #         title: "Sitios Oficiales",
-  #         links: [
-  #           %{text: "Agencia de Recaudación", url: "#"},
-  #           %{text: "Aguas Rionegrinas", url: "#"},
-  #           %{text: "Casa de Río Negro", url: "#"},
-  #           %{text: "Defensa Civil", url: "#"},
-  #           %{text: "Educación", url: "#"}
-  #         ]
-  #       },
-  #       %{
-  #         title: "Enlaces Rápidos",
-  #         links: [
-  #           %{text: "Preguntas Frecuentes", url: "#", icon: "info"},
-  #           %{text: "Contacto", url: "#", icon: "phone"},
-  #           %{text: "Portal del Empleado", url: "#", icon: "user"},
-  #           %{text: "Noticias", url: "#", icon: "news"},
-  #           %{text: "Calendario de Actividades", url: "#", icon: "calendar"}
-  #         ]
-  #       }
-  #     ]}
-  #     legal_links={[
-  #       %{text: "Términos y Condiciones", url: "#"},
-  #       %{text: "Política de Privacidad", url: "#"},
-  #       %{text: "Mapa del Sitio", url: "#"}
-  #     ]}
-  #     class=""
-  #   />
-  #   """
-  # end
+  attr :color, :string,
+    default: "blue",
+    doc: "Color base de la etiqueta (blue, green, red, yellow, etc.)"
+
+  attr :size, :string, default: "md", doc: "Tamaño de la etiqueta (sm, md, lg)"
+  attr :href, :string, default: nil, doc: "URL opcional para hacer la etiqueta clickeable"
+
+  def badge(assigns) do
+    # Mapeo de colores para el gradiente y texto
+    colors = %{
+      "blue" => "from-blue-700 to-blue-900 text-white",
+      "green" => "from-green-600 to-green-800 text-white",
+      "red" => "from-red-600 to-red-800 text-white",
+      "yellow" => "from-yellow-500 to-yellow-700 text-white",
+      "purple" => "from-purple-600 to-purple-800 text-white",
+      "indigo" => "from-indigo-600 to-indigo-800 text-white",
+      "gray" => "from-gray-600 to-gray-800 text-white"
+    }
+
+    # Mapeo de tamaños
+    sizes = %{
+      "sm" => "text-xs px-2 py-0.5",
+      "md" => "text-sm px-3 py-1",
+      "lg" => "text-base px-4 py-1.5"
+    }
+
+    # Obtener las clases según el color y tamaño
+    color_classes = Map.get(colors, assigns.color, colors["blue"])
+    size_classes = Map.get(sizes, assigns.size, sizes["md"])
+
+    assigns =
+      assign(assigns,
+        color_classes: color_classes,
+        size_classes: size_classes
+      )
+
+    ~H"""
+    <%= if @href do %>
+      <a
+        href={@href}
+        class={"inline-block font-medium rounded bg-gradient-to-br shadow-sm hover:shadow transition-all duration-200 #{@color_classes} #{@size_classes}"}
+      >
+        {@text}
+      </a>
+    <% else %>
+      <span class={"inline-block font-medium rounded bg-gradient-to-br shadow-sm #{@color_classes} #{@size_classes}"}>
+        {@text}
+      </span>
+    <% end %>
+    """
+  end
 end

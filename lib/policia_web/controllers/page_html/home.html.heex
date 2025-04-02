@@ -25,35 +25,38 @@
     </div>
     
 <!-- Grid de artículos/noticias -->
-    <.article_grid articles={[
-      %{
-        title: "Nuevo sistema de monitoreo para la seguridad vial",
-        date: "3 Abril 2025",
-        image: "/images/demo/featured1.png",
-        excerpt:
-          "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-        url: "#",
-        tags: [%{text: "Seguridad Vial", link: "#"}]
-      },
-      %{
-        title: "Capacitación en primeros auxilios para el personal policial",
-        date: "1 Abril 2025",
-        image: "/images/demo/featured2.png",
-        excerpt:
-          "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
-        url: "#",
-        tags: [%{text: "Capacitación", link: "#"}]
-      },
-      %{
-        title: "Inauguración de nueva comisaría en El Bolsón",
-        date: "28 Marzo 2025",
-        image: "/images/demo/featured3.png",
-        excerpt:
-          "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
-        url: "#",
-        tags: [%{text: "Infraestructura", link: "#"}]
-      }
-    ]} />
+    <.article_grid articles={
+      [
+        %{
+          title: "Nuevo sistema de monitoreo para la seguridad vial",
+          date: "3 Abril 2025",
+          image: "/images/demo/featured1.png",
+          excerpt:
+            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
+          url: "#",
+          category: "Seguridad Vial"
+        },
+        %{
+          title: "Capacitación en primeros auxilios para el personal policial",
+          date: "1 Abril 2025",
+          image: "/images/demo/featured2.png",
+          excerpt:
+            "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
+          url: "#",
+          # Capacitación
+          category: "Capacitación"
+        },
+        %{
+          title: "Inauguración de nueva comisaría en El Bolsón",
+          date: "28 Marzo 2025",
+          image: "/images/demo/featured3.png",
+          excerpt:
+            "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
+          url: "#",
+          category: "Infraestructura"
+        }
+      ]
+    } />
   </div>
   
 <!-- Sección de servicios destacados -->
@@ -159,6 +162,13 @@
     </div>
     
 <!-- Artículo destacado con componente article -->
+<!--
+#tags={[
+  #  %{text: "Seguridad", link: "#"},
+      #  %{text: "Operativos", link: "#"},
+      #  %{text: "Turismo", link: "#"}
+      #]}
+-->
     <.article
       image_src="/images/demo/featured-weekly.png"
       image_alt="Operativo de seguridad"
@@ -166,11 +176,7 @@
       time="10:30 AM"
       author="Departamento de Prensa"
       title="Operativo de seguridad especial para Semana Santa"
-      tags={[
-        %{text: "Seguridad", link: "#"},
-        %{text: "Operativos", link: "#"},
-        %{text: "Turismo", link: "#"}
-      ]}
+      category="Seguridad"
       comment_count={12}
     >
       <p>
