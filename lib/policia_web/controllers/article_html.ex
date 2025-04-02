@@ -8,6 +8,7 @@ defmodule PoliciaWeb.ArticleHTML do
   """
   attr :changeset, Ecto.Changeset, required: true
   attr :action, :string, required: true
+  attr :categories, :list, required: true
 
   def article_form(assigns)
 end

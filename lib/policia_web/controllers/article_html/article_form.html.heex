@@ -1,13 +1,21 @@
 <.simple_form :let={f} for={@changeset} action={@action}>
   <.error :if={@changeset.action}>
-    Oops, something went wrong! Please check the errors below.
+    Oops, algo salió mal! Por favor revisa los errores a continuación.
   </.error>
-  <.input field={f[:title]} type="text" label="Title" />
-  <.input field={f[:content]} type="text" label="Content" />
-  <.input field={f[:image_url]} type="text" label="Image url" />
-  <.input field={f[:author]} type="text" label="Author" />
+  <.input field={f[:title]} type="text" label="Título" />
+  <.input field={f[:content]} type="textarea" label="Contenido" rows="10" />
+  <.input field={f[:image_url]} type="text" label="URL de imagen" />
+  <.input field={f[:author]} type="text" label="Autor" />
+
+  <.input
+    field={f[:category_id]}
+    type="select"
+    label="Categoría"
+    options={@categories}
+    prompt="Seleccione una categoría..."
+  />
+
   <:actions>
-    <.button>Save Article</.button>
+    <.button>Guardar Artículo</.button>
   </:actions>
 </.simple_form>
-  

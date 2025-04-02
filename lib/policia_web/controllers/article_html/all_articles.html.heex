@@ -1,6 +1,3 @@
-<!-- lib/policia_web/controllers/article_html/all_articles.html.heex -->
-
-<!-- Contenido principal sin título redundante -->
 <div>
   <!-- Filtros de búsqueda y categorías -->
   <div class="bg-white rounded-lg shadow-md p-4 border border-blue-100 mb-8">
@@ -11,16 +8,15 @@
           Filtrar por categoría
         </label>
         <select
-          id="category"
+          id="category-filter"
           name="category"
           class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          onchange="if(this.value) window.location.href='/articles/category/' + this.value;"
         >
           <option value="">Todas las categorías</option>
-          <option value="seguridad">Seguridad Vial</option>
-          <option value="capacitacion">Capacitación</option>
-          <option value="operativos">Operativos</option>
-          <option value="infraestructura">Infraestructura</option>
-          <option value="comunidad">Comunidad</option>
+          <%= for category <- @categories do %>
+            <option value={category.slug}>{category.name}</option>
+          <% end %>
         </select>
       </div>
       
@@ -75,291 +71,19 @@
 
       <.article_grid
         columns="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-        articles={[
-          %{
-            title: "Nuevo sistema de monitoreo para la seguridad vial",
-            date: "3 Abril 2025",
-            image: "/images/demo/featured1.png",
-            excerpt:
-              "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Capacitación en primeros auxilios para el personal policial",
-            date: "1 Abril 2025",
-            image: "/images/demo/featured2.png",
-            excerpt:
-              "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Inauguración de nueva comisaría en El Bolsón",
-            date: "28 Marzo 2025",
-            image: "/images/demo/featured3.png",
-            excerpt:
-              "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Plan de prevención contra delitos informáticos",
-            date: "25 Marzo 2025",
-            image: "/images/demo/news4.png",
-            excerpt:
-              "Se lanza una campaña para concientizar a la población sobre los riesgos en internet y cómo prevenir fraudes electrónicos.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Reconocimiento a oficiales destacados del trimestre",
-            date: "22 Marzo 2025",
-            image: "/images/demo/news5.png",
-            excerpt:
-              "El Jefe de Policía entregó distinciones a 15 efectivos por su labor excepcional durante el primer trimestre del año.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Operativo conjunto con fuerzas federales en zonas fronterizas",
-            date: "18 Marzo 2025",
-            image: "/images/demo/news6.png",
-            excerpt:
-              "La Policía provincial participó de un operativo de control de fronteras junto a Gendarmería y Prefectura Naval.",
-            url: "#",
-            category: "asd"
-          }
-        ]}
+        articles={
+          Enum.map(@articles, fn article ->
+            %{
+              title: article.title,
+              date: Calendar.strftime(article.inserted_at, "%d %B %Y"),
+              image: article.image_url,
+              excerpt: String.slice(article.content, 0, 150) <> "...",
+              url: ~p"/articles/#{article}",
+              category: (article.category && article.category.name) || "Sin categoría"
+            }
+          end)
+        }
       />
-    </div>
-    
-<!-- Sección de noticias destacadas anteriores -->
-    <div class="mb-8">
-      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-        <h2 class="text-2xl font-bold text-blue-950">Noticias Destacadas</h2>
-      </div>
-
-      <.article_grid
-        columns="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-        articles={[
-          %{
-            title: "Incorporación de nuevas patrullas con tecnología de punta",
-            date: "15 Marzo 2025",
-            image: "/images/demo/news7.png",
-            excerpt:
-              "La flota policial suma 20 nuevos vehículos equipados con sistemas de comunicación y vigilancia de última generación.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Programa de acercamiento comunitario en barrios vulnerables",
-            date: "10 Marzo 2025",
-            image: "/images/demo/news8.png",
-            excerpt:
-              "Oficiales especializados realizan talleres preventivos y actividades recreativas para fortalecer vínculos con la comunidad.",
-            url: "#",
-            category: "asd"
-          },
-          %{
-            title: "Jornada de capacitación sobre violencia de género",
-            date: "5 Marzo 2025",
-            image: "/images/demo/news9.png",
-            excerpt:
-              "Personal policial recibió formación especializada para el abordaje de casos de violencia familiar y de género.",
-            url: "#",
-            category: "asd"
-          }
-        ]}
-      />
-    </div>
-    
-<!-- Archivo de noticias anteriores -->
-    <div>
-      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-        <h2 class="text-2xl font-bold text-blue-950">Archivo de Noticias</h2>
-      </div>
-      
-<!-- Listado en formato tabla para noticias más antiguas -->
-      <div class="bg-white rounded-lg shadow-md border border-blue-100 overflow-hidden overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-blue-50">
-            <tr>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider"
-              >
-                Fecha
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider"
-              >
-                Título
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider hidden md:table-cell"
-              >
-                Categoría
-              </th>
-              <th scope="col" class="relative px-6 py-3">
-                <span class="sr-only">Ver</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr class="hover:bg-blue-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                28 Feb 2025
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-blue-900">
-                Cierre de cursos de capacitación para personal administrativo
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                  Capacitación
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-blue-600 hover:text-blue-900">Ver detalle</a>
-              </td>
-            </tr>
-            <tr class="hover:bg-blue-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                22 Feb 2025
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-blue-900">
-                Reunión de coordinación con municipios para seguridad turística
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                  Institucional
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-blue-600 hover:text-blue-900">Ver detalle</a>
-              </td>
-            </tr>
-            <tr class="hover:bg-blue-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                15 Feb 2025
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-blue-900">
-                Campaña de prevención de accidentes en zonas escolares
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                  Prevención
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-blue-600 hover:text-blue-900">Ver detalle</a>
-              </td>
-            </tr>
-            <tr class="hover:bg-blue-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                8 Feb 2025
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-blue-900">
-                Adquisición de equipos especiales para brigada contra incendios
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                  Equipamiento
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-blue-600 hover:text-blue-900">Ver detalle</a>
-              </td>
-            </tr>
-            <tr class="hover:bg-blue-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                1 Feb 2025
-              </td>
-              <td class="px-6 py-4 text-sm font-medium text-blue-900">
-                Resultados operativos del mes de enero: balance positivo
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                  Estadísticas
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-blue-600 hover:text-blue-900">Ver detalle</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-<!-- Paginación -->
-      <div class="mt-6 flex justify-center">
-        <nav class="inline-flex rounded-md shadow">
-          <a
-            href="#"
-            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-50"
-          >
-            <span class="sr-only">Anterior</span>
-            <svg
-              class="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-          <a
-            href="#"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-blue-50"
-          >
-            1
-          </a>
-          <a
-            href="#"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-700 text-sm font-medium text-white"
-          >
-            2
-          </a>
-          <a
-            href="#"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-blue-50"
-          >
-            3
-          </a>
-          <a
-            href="#"
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-blue-50"
-          >
-            4
-          </a>
-          <a
-            href="#"
-            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-50"
-          >
-            <span class="sr-only">Siguiente</span>
-            <svg
-              class="h-5 w-5"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </a>
-        </nav>
-      </div>
     </div>
   </div>
 </div>

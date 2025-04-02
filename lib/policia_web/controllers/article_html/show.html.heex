@@ -1,18 +1,30 @@
 <.header>
-  Article {@article.id}
-  <:subtitle>This is a article record from your database.</:subtitle>
+  Artículo {@article.id}
+  <:subtitle>Este es un registro de artículo de tu base de datos.</:subtitle>
   <:actions>
     <.link href={~p"/articles/#{@article}/edit"}>
-      <.button>Edit article</.button>
+      <.button>Editar artículo</.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Title">{@article.title}</:item>
-  <:item title="Content">{@article.content}</:item>
-  <:item title="Image url">{@article.image_url}</:item>
-  <:item title="Author">{@article.author}</:item>
+  <:item title="Título">{@article.title}</:item>
+  <:item title="Contenido">{@article.content}</:item>
+  <:item title="URL de imagen">{@article.image_url}</:item>
+  <:item title="Autor">{@article.author}</:item>
+  <:item title="Categoría">
+    <%= if @article.category do %>
+      <!--<.link
+        href={~p"/articles/category/#{@article.category.slug}"}
+        class="text-blue-600 hover:underline"
+      >
+        {@article.category.name}
+      </.link>-->
+    <% else %>
+      <span class="text-gray-500">Sin categoría</span>
+    <% end %>
+  </:item>
 </.list>
 
-<.back navigate={~p"/articles"}>Back to articles</.back>
+<.back navigate={~p"/articles"}>Volver a artículos</.back>

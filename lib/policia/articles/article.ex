@@ -8,13 +8,15 @@ defmodule Policia.Articles.Article do
     field :content, :string
     field :image_url, :string
 
+    belongs_to :category, Policia.Articles.Category
+
     timestamps(type: :utc_datetime)
   end
 
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :content, :image_url, :author])
+    |> cast(attrs, [:title, :content, :image_url, :author, :category_id])
     |> validate_required([:title, :content, :image_url, :author])
   end
 end

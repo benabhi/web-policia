@@ -7,6 +7,7 @@ defmodule Policia.Articles do
   alias Policia.Repo
 
   alias Policia.Articles.Article
+  alias Policia.Articles.Category
 
   @doc """
   Returns the list of articles.
@@ -100,5 +101,53 @@ defmodule Policia.Articles do
   """
   def change_article(%Article{} = article, attrs \\ %{}) do
     Article.changeset(article, attrs)
+  end
+
+  def list_categories do
+    Repo.all(Category)
+  end
+
+  def get_category!(id), do: Repo.get!(Category, id)
+
+  def get_category_by_slug!(slug), do: Repo.get_by!(Category, slug: slug)
+
+  def create_category(attrs \\ %{}) do
+    %Category{}
+    |> Category.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_category(%Category{} = category, attrs) do
+    category
+    |> Category.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_category(%Category{} = category) do
+    Repo.delete(category)
+  end
+
+  def change_category(%Category{} = category, attrs \\ %{}) do
+    Category.changeset(category, attrs)
+  end
+
+  # Funciones mejoradas para Articles
+  def list_articles_with_category do
+    Article
+    |> Repo.all()
+    |> Repo.preload(:category)
+  end
+
+  def get_article_with_category!(id) do
+    Article
+    |> Repo.get!(id)
+    |> Repo.preload(:category)
+  end
+
+  def list_articles_by_category(category_id) do
+    Article
+    |> where([a], a.category_id == ^category_id)
+    |> Repo.all()
+    |> Repo.preload(:category)
   end
 end

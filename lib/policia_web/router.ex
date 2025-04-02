@@ -23,6 +23,7 @@ defmodule PoliciaWeb.Router do
     # Coloca la ruta personalizada ANTES del recurso
     get "/articles/all", ArticleController, :all_articles
     resources "/articles", ArticleController
+    resources "/categories", CategoryController
   end
 
   # Other scopes may use custom stacks.
