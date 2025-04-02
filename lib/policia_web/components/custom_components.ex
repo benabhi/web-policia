@@ -56,12 +56,14 @@ defmodule PoliciaWeb.CustomComponents do
         <div class="container mx-auto px-4 py-3 flex items-center justify-between relative z-10">
           <!-- Logo o nombre del sitio -->
           <div class="flex items-center">
-            <%= if @logo_src do %>
-              <img src={@logo_src} alt={@site_name} class="h-8 w-auto mr-2" />
-            <% end %>
-            <span class="text-white font-semibold text-lg">
-              {@site_name}
-            </span>
+            <a href="/" class="flex items-center text-white">
+              <%= if @logo_src do %>
+                <img src={@logo_src} alt={@site_name} class="h-8 w-auto mr-2" />
+              <% end %>
+              <span class="text-white font-semibold text-lg">
+                {@site_name}
+              </span>
+            </a>
           </div>
           
     <!-- Botón hamburguesa -->
@@ -247,13 +249,14 @@ defmodule PoliciaWeb.CustomComponents do
         <div class="flex justify-between items-center py-2">
           <!-- Logo o nombre del sitio para desktop -->
           <div class="flex items-center">
-            <%= if @logo_src do %>
-              <img src={@logo_src} alt={@site_name} class="h-10 w-auto mr-2" />
-            <% end %>
-            <span class="text-white font-semibold text-xl">{@site_name}</span>
+            <a href="/" class="flex items-center text-white">
+              <%= if @logo_src do %>
+                <img src={@logo_src} alt={@site_name} class="h-10 w-auto mr-2" />
+              <% end %>
+              <span class="text-white font-semibold text-xl">{@site_name}</span>
+            </a>
           </div>
-          
-    <!-- Menú principal desktop -->
+          <!-- Menú principal desktop -->
           <nav class="flex-grow max-w-4xl mx-auto" aria-label="Menú principal">
             <ul class="flex justify-center space-x-6 py-3" role="menubar">
               <%= for menu <- @menus do %>
