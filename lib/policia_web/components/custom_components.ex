@@ -18,6 +18,8 @@ defmodule PoliciaWeb.CustomComponents do
     default: "Gobierno de Río Negro",
     doc: "Nombre del sitio para mostrar junto al logo"
 
+  attr :current_user, :any, default: nil, doc: "Usuario actualmente autenticado"
+
   def nav_menu(assigns) do
     # Usa el valor de configuración si no se proporciona site_name
     assigns =
@@ -27,7 +29,7 @@ defmodule PoliciaWeb.CustomComponents do
         "main-menu-" <> Integer.to_string(Enum.random(1000..9999))
       end)
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
-      |> assign_new(:current_user, fn -> Map.get(assigns, :current_user, nil) end)
+      |> assign_new(:current_user, fn -> assigns[:current_user] end)
 
     # Nota: Para que este componente funcione correctamente,
     # asegúrate de que tu archivo CSS global (app.css) incluya:
