@@ -11,7 +11,9 @@ config :policia,
   ecto_repos: [Policia.Repo],
   generators: [timestamp_type: :utc_datetime]
 
-config :policia, :webpage, slider: true
+config :policia, :webpage,
+  slider: true,
+  theme: "blue"
 
 # TODO: Dividir luego bien las configuraciones
 config :policia, :institution,

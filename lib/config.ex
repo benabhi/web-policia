@@ -55,5 +55,9 @@ defmodule Policia.Config do
     webpage()[:slider] || true
   end
 
+  def webpage_theme do
+    webpage()[:theme] || "blue"
+  end
+
   # Puedes añadir más métodos para otros valores de configuración
 end

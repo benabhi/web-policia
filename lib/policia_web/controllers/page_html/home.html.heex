@@ -110,9 +110,7 @@
             "Obtenga sus documentos oficiales de manera rápida y segura a través de nuestro sistema digitalizado.",
           url: "#",
           icon: "doc",
-          action_text: "Solicitar documento",
-          color_from: "blue-700",
-          color_to: "blue-900"
+          action_text: "Solicitar documento"
         },
         %{
           title: "Reserva de Turnos",
@@ -120,9 +118,7 @@
             "Planifique su visita a nuestras dependencias con anticipación y evite esperas innecesarias.",
           url: "#",
           icon: "clock",
-          action_text: "Reservar un turno",
-          color_from: "blue-700",
-          color_to: "blue-900"
+          action_text: "Reservar un turno"
         }
       ]}
     />
@@ -159,7 +155,7 @@
 
   <:sidebar>
     <!-- Primera tarjeta de barra lateral - Trámites frecuentes -->
-    <.sidebar title="Trámites frecuentes">
+    <.sidebar_box title="Trámites frecuentes">
       <.sidebar_links items={[
         %{
           icon: "doc",
@@ -186,11 +182,11 @@
           url: "#"
         }
       ]} />
-    </.sidebar>
+    </.sidebar_box>
     
 <!-- Segunda tarjeta de barra lateral - Enlaces rápidos -->
     <div class="mt-6">
-      <.sidebar title="Enlaces rápidos">
+      <.sidebar_box title="Enlaces rápidos">
         <.sidebar_links items={[
           %{
             icon: "info",
@@ -208,12 +204,12 @@
             url: "#"
           }
         ]} />
-      </.sidebar>
+      </.sidebar_box>
     </div>
     
 <!-- Tercera tarjeta - Estadísticas -->
     <div class="mt-6">
-      <.sidebar title="Estadísticas">
+      <.sidebar_box title="Estadísticas">
         <div class="text-center space-y-4">
           <div class="p-3 bg-blue-50 rounded-lg">
             <div class="text-2xl font-bold text-blue-700">95%</div>
@@ -228,7 +224,7 @@
             <div class="text-sm text-gray-600">Estaciones policiales</div>
           </div>
         </div>
-      </.sidebar>
+      </.sidebar_box>
     </div>
   </:sidebar>
 </.content_layout>
