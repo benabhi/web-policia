@@ -18,6 +18,12 @@ defmodule PoliciaWeb.CustomComponents do
     doc: "Nombre del sitio para mostrar junto al logo"
 
   def nav_menu(assigns) do
+    # Usa el valor de configuración si no se proporciona site_name
+    assigns =
+      assign_new(assigns, :site_name, fn ->
+        Policia.Config.institution_name()
+      end)
+
     assigns =
       assign_new(assigns, :menu_id, fn ->
         "main-menu-" <> Integer.to_string(Enum.random(1000..9999))
@@ -533,9 +539,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  attr :sitename, :string,
-    default: "Gobierno de Río Negro",
-    doc: "Nombre del sitio que aparecerá en el footer"
+  attr :sitename, :string, doc: "Nombre del sitio que aparecerá en el footer"
 
   attr :slogan, :string,
     default: "Trabajando por nuestra provincia",
@@ -545,30 +549,17 @@ defmodule PoliciaWeb.CustomComponents do
     default: "",
     doc: "URL del logo, si es nil se usará un ícono SVG por defecto"
 
-  attr :address, :string,
-    default: "Av. 25 de Mayo 645, Viedma, Río Negro, Argentina",
-    doc: "Dirección física de la organización"
+  attr :address, :string, doc: "Dirección física de la organización"
 
-  attr :phone, :string,
-    default: "+54 (0920) 423-4567",
-    doc: "Número de teléfono principal"
+  attr :phone, :string, doc: "Número de teléfono principal"
 
-  attr :emails, :list,
-    default: ["contacto@rionegro.gov.ar", "info@rionegro.gov.ar"],
-    doc: "Lista de direcciones de correo electrónico"
+  attr :emails, :list, doc: "Lista de direcciones de correo electrónico"
 
   attr :copyright_year, :string,
     default: "2025",
     doc: "Año para mostrar en el aviso de copyright"
 
-  attr :social_links, :list,
-    default: [
-      %{name: "Twitter", url: "#", icon: "twitter"},
-      %{name: "Facebook", url: "#", icon: "facebook"},
-      %{name: "Instagram", url: "#", icon: "instagram"},
-      %{name: "YouTube", url: "#", icon: "youtube"}
-    ],
-    doc: "Lista de enlaces de redes sociales con nombre, URL e ícono"
+  attr :social_links, :list, doc: "Lista de enlaces de redes sociales con nombre, URL e ícono"
 
   attr :menu_columns, :list,
     default: [
@@ -628,6 +619,16 @@ defmodule PoliciaWeb.CustomComponents do
     doc: "Clases CSS adicionales para el contenedor principal"
 
   def site_footer(assigns) do
+    # Valores por defecto tomados del config
+    assigns =
+      assigns
+      |> assign_new(:sitename, fn -> Policia.Config.institution_name() end)
+      |> assign_new(:slogan, fn -> Policia.Config.institution_slogan() end)
+      |> assign_new(:emails, fn -> Policia.Config.institution_emails() end)
+      |> assign_new(:social_links, fn -> Policia.Config.institution_social_links() end)
+      |> assign_new(:phone, fn -> Policia.Config.institution_phone() end)
+      |> assign_new(:address, fn -> Policia.Config.institution_address() end)
+
     ~H"""
     <footer class={"bg-blue-950 text-white py-8 px-4 sm:px-6 border-t-4 border-blue-700 #{@class}"}>
       <div class="container mx-auto">
@@ -664,6 +665,7 @@ defmodule PoliciaWeb.CustomComponents do
               <%= for social <- @social_links do %>
                 <a
                   href={social.url}
+                  target="_blank"
                   aria-label={social.name}
                   class="bg-blue-900 hover:bg-blue-800 p-2 rounded-full transition-colors duration-200"
                 >
@@ -1306,6 +1308,292 @@ defmodule PoliciaWeb.CustomComponents do
         />
       <% end %>
     </div>
+    """
+  end
+
+  attr :title, :string, required: true, doc: "Título de la noticia"
+  attr :date, :string, required: true, doc: "Fecha de publicación"
+  attr :image, :string, default: nil, doc: "URL de la imagen"
+  attr :excerpt, :string, default: "", doc: "Extracto del contenido"
+  attr :url, :string, required: true, doc: "URL para leer la noticia completa"
+  attr :category, :string, default: nil, doc: "Categoría de la noticia"
+  attr :is_featured, :boolean, default: false, doc: "Si es una noticia destacada (más grande)"
+
+  def news_card(assigns) do
+    ~H"""
+    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300
+      border border-blue-100 flex flex-col h-full">
+      <%= if @image do %>
+        <div class="relative overflow-hidden h-48">
+          <img
+            src={@image}
+            alt={@title}
+            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+          <%= if @category do %>
+            <div class="absolute top-2 right-2">
+              <span class="bg-blue-800 text-white text-xs font-semibold px-2 py-1 rounded">
+                {@category}
+              </span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="p-4 flex-grow">
+        <div class="text-sm text-blue-700 mb-2">{@date}</div>
+        <h3 class="font-bold mb-2 text-lg hover:text-blue-700">
+          <a href={@url} class="hover:underline text-blue-950">{@title}</a>
+        </h3>
+        <p class="text-gray-600 text-sm line-clamp-3 mb-4">{@excerpt}</p>
+      </div>
+
+      <div class="px-4 pb-4 mt-auto">
+        <a
+          href={@url}
+          class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
+        >
+          Leer más
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+    """
+  end
+
+  attr :title, :string, default: "Últimas Noticias", doc: "Título de la sección"
+  attr :news, :list, required: true, doc: "Lista de noticias a mostrar"
+  attr :view_all_url, :string, default: "#", doc: "URL para ver todas las noticias"
+  attr :view_all_text, :string, default: "Ver todas", doc: "Texto del enlace para ver todas"
+
+  attr :grid_columns, :string,
+    default: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+    doc: "Configuración de columnas del grid"
+
+  attr :max_news, :integer, default: 3, doc: "Número máximo de noticias a mostrar"
+
+  def latest_news(assigns) do
+    # Limitar las noticias al máximo definido
+    assigns = assign(assigns, :news, Enum.slice(assigns.news, 0, assigns.max_news))
+
+    ~H"""
+    <section class="mb-8">
+      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+        <h2 class="text-2xl font-bold text-blue-950">{@title}</h2>
+        <a
+          href={@view_all_url}
+          class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center"
+        >
+          {@view_all_text}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class={"grid gap-6 #{@grid_columns}"}>
+        <%= for news_item <- @news do %>
+          <.news_card
+            title={news_item.title}
+            date={news_item.date}
+            image={news_item.image}
+            excerpt={news_item.excerpt}
+            url={news_item.url}
+            category={news_item.category}
+          />
+        <% end %>
+      </div>
+    </section>
+    """
+  end
+
+  attr :title, :string, required: true, doc: "Título del servicio"
+  attr :description, :string, required: true, doc: "Descripción del servicio"
+  attr :url, :string, required: true, doc: "URL del servicio"
+  attr :icon, :string, default: "doc", doc: "Tipo de ícono (doc, clock, alert, etc.)"
+  attr :action_text, :string, default: "Ver servicio", doc: "Texto del botón de acción"
+  attr :color_from, :string, default: "blue-800", doc: "Color inicial del gradiente"
+  attr :color_to, :string, default: "blue-950", doc: "Color final del gradiente"
+
+  def service_card(assigns) do
+    ~H"""
+    <div class={"bg-gradient-to-br from-#{@color_from} to-#{@color_to} text-white rounded-lg overflow-hidden shadow-lg group hover:shadow-xl transition-all duration-300"}>
+      <div class="p-6">
+        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
+          <%= case @icon do %>
+            <% "doc" -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            <% "clock" -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            <% "alert" -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            <% "card" -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                />
+              </svg>
+            <% "shield" -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                />
+              </svg>
+            <% _ -> %>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                />
+              </svg>
+          <% end %>
+        </div>
+        <h3 class="text-xl font-bold mb-2">{@title}</h3>
+        <p class="mb-4 text-blue-100">
+          {@description}
+        </p>
+        <a
+          href={@url}
+          class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
+        >
+          {@action_text}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+    """
+  end
+
+  attr :title, :string, default: "Servicios Destacados", doc: "Título de la sección"
+  attr :services, :list, required: true, doc: "Lista de servicios a mostrar"
+  attr :max_services, :integer, default: 2, doc: "Número máximo de servicios a mostrar"
+
+  attr :grid_columns, :string,
+    default: "grid-cols-1 md:grid-cols-2",
+    doc: "Configuración de columnas del grid"
+
+  def featured_services(assigns) do
+    # Limitar los servicios al máximo definido
+    assigns = assign(assigns, :services, Enum.slice(assigns.services, 0, assigns.max_services))
+
+    ~H"""
+    <section class="mb-8">
+      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+        <h2 class="text-2xl font-bold text-blue-950">{@title}</h2>
+      </div>
+
+      <div class={"grid gap-6 #{@grid_columns}"}>
+        <%= for service <- @services do %>
+          <.service_card
+            title={service.title}
+            description={service.description}
+            url={service.url}
+            icon={service.icon}
+            action_text={service.action_text}
+            color_from={service[:color_from] || "blue-800"}
+            color_to={service[:color_to] || "blue-950"}
+          />
+        <% end %>
+      </div>
+    </section>
     """
   end
 

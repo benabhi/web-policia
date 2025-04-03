@@ -31,35 +31,15 @@
       height="h-96 md:h-[500px]"
     />
   </:hero>
-  
-<!-- Contenido principal -->
+
   <div class="space-y-8">
-    <!-- Sección de noticias destacadas -->
-    <div class="mb-8">
-      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-        <h2 class="text-2xl font-bold text-blue-950">Últimas Noticias</h2>
-        <a
-          href="#"
-          class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center"
-        >
-          Ver todas
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 ml-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </a>
-      </div>
-      
-<!-- Grid de artículos/noticias -->
-      <.article_grid articles={[
+    <!-- Sección de últimas noticias con el nuevo componente -->
+    <.latest_news
+      title="Últimas Noticias"
+      view_all_url="/articles/all"
+      view_all_text="Ver todas"
+      max_news={6}
+      news={[
         %{
           title: "Nuevo sistema de monitoreo para la seguridad vial",
           date: "3 Abril 2025",
@@ -86,11 +66,93 @@
             "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
           url: "#",
           category: "Infraestructura"
+        },
+        %{
+          title: "Nuevo sistema de monitoreo para la seguridad vial",
+          date: "3 Abril 2025",
+          image: "/images/demo/featured1.png",
+          excerpt:
+            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
+          url: "#",
+          category: "Seguridad Vial"
+        },
+        %{
+          title: "Nuevo sistema de monitoreo para la seguridad vial",
+          date: "3 Abril 2025",
+          image: "/images/demo/featured1.png",
+          excerpt:
+            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
+          url: "#",
+          category: "Seguridad Vial"
+        },
+        %{
+          title: "Nuevo sistema de monitoreo para la seguridad vial",
+          date: "3 Abril 2025",
+          image: "/images/demo/featured1.png",
+          excerpt:
+            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
+          url: "#",
+          category: "Seguridad Vial"
         }
-      ]} />
-    </div>
+      ]}
+    />
     
-<!-- Resto del contenido... -->
+<!-- Sección de servicios destacados -->
+    <.featured_services
+      title="Servicios Destacados"
+      max_services={2}
+      services={[
+        %{
+          title: "Constancias y Certificados",
+          description:
+            "Obtenga sus documentos oficiales de manera rápida y segura a través de nuestro sistema digitalizado.",
+          url: "#",
+          icon: "doc",
+          action_text: "Solicitar documento",
+          color_from: "blue-700",
+          color_to: "blue-900"
+        },
+        %{
+          title: "Reserva de Turnos",
+          description:
+            "Planifique su visita a nuestras dependencias con anticipación y evite esperas innecesarias.",
+          url: "#",
+          icon: "clock",
+          action_text: "Reservar un turno",
+          color_from: "blue-700",
+          color_to: "blue-900"
+        }
+      ]}
+    />
+    
+<!-- Destacados de la Semana -->
+    <div>
+      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
+        <h2 class="text-2xl font-bold text-blue-950">Destacados de la Semana</h2>
+      </div>
+      
+<!-- Artículo destacado con componente article -->
+      <.article
+        image_src="/images/demo/featured-weekly.png"
+        image_alt="Operativo de seguridad"
+        date="1 Abril 2025"
+        time="10:30 AM"
+        author="Departamento de Prensa"
+        title="Operativo de seguridad especial para Semana Santa"
+        category="Seguridad"
+        comment_count={12}
+      >
+        <p>
+          La Policía de Río Negro implementará un operativo especial de seguridad en toda la provincia durante el fin de semana largo de Semana Santa. Se reforzará la presencia policial en las rutas provinciales, zonas turísticas y centros comerciales.
+        </p>
+        <p>
+          "Nuestro objetivo es garantizar que todos los ciudadanos y turistas puedan disfrutar de estas fechas con tranquilidad y seguridad", explicó el comisario Juan Martínez, coordinador del operativo. "Hemos dispuesto controles en los principales accesos y reforzado la vigilancia en zonas de alta concentración de personas".
+        </p>
+        <p>
+          El operativo contará con más de 500 efectivos distribuidos estratégicamente en toda la provincia, unidades móviles y puestos de control en las rutas. Además, se implementará un sistema de patrullaje preventivo en las zonas turísticas y centros urbanos.
+        </p>
+      </.article>
+    </div>
   </div>
 
   <:sidebar>

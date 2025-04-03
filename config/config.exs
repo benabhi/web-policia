@@ -11,6 +11,30 @@ config :policia,
   ecto_repos: [Policia.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :policia, :institution,
+  name: "Policía de Río Negro",
+  short_name: "Policía RN",
+  slogan: "Protegiendo a nuestra comunidad",
+  domain: "policia.rionegro.gov.ar",
+  address: "Roca 243, Viedma, Río Negro, Argentina",
+  phone: "+54 (2920) 423045",
+  emails: ["contacto@policia.rionegro.gov.ar", "info@policia.rionegro.gov.ar"],
+  social_links: [
+    %{name: "Twitter", url: "https://x.com/policiarionegro", icon: "twitter"},
+    %{
+      name: "Facebook",
+      url:
+        "https://www.facebook.com/p/Jefatura-de-Polic%C3%ADa-de-R%C3%ADo-Negro-100064633034065/?locale=es_LA&_rdr",
+      icon: "facebook"
+    },
+    %{name: "Instagram", url: "https://www.instagram.com/policiarionegro/", icon: "instagram"},
+    %{
+      name: "YouTube",
+      url: "https://www.youtube.com/user/policiarionegro/videos",
+      icon: "youtube"
+    }
+  ]
+
 # Configures the endpoint
 config :policia, PoliciaWeb.Endpoint,
   url: [host: "localhost"],
