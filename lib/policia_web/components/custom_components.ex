@@ -20,7 +20,6 @@ defmodule PoliciaWeb.CustomComponents do
 
   def nav_menu(assigns) do
     # Usa el valor de configuración si no se proporciona site_name
-
     assigns =
       assigns
       |> assign_new(:site_name, fn -> Config.institution_name() end)
@@ -28,6 +27,7 @@ defmodule PoliciaWeb.CustomComponents do
         "main-menu-" <> Integer.to_string(Enum.random(1000..9999))
       end)
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+      |> assign_new(:current_user, fn -> Map.get(assigns, :current_user, nil) end)
 
     # Nota: Para que este componente funcione correctamente,
     # asegúrate de que tu archivo CSS global (app.css) incluya:
@@ -36,7 +36,7 @@ defmodule PoliciaWeb.CustomComponents do
     ~H"""
     <div class={"bg-#{@color_theme}-950 w-full"}>
       <!-- Alpine.js maneja el comportamiento del menú sin scripts ni estilos adicionales -->
-      <!-- Versión móvil con menú lateral deslizante usando Alpine.js -->
+           <!-- Versión móvil con menú lateral deslizante usando Alpine.js -->
       <div
         class="md:hidden"
         x-data="{ menuOpen: false }"
@@ -245,6 +245,121 @@ defmodule PoliciaWeb.CustomComponents do
                   <% end %>
                 </li>
               <% end %>
+              
+    <!-- Sección de autenticación móvil -->
+              <li class={"mt-4 border-t border-#{@color_theme}-900 pt-4 pb-2 px-4"}>
+                <h3 class={"text-#{@color_theme}-300 text-sm font-semibold uppercase tracking-wider mb-2"}>
+                  Mi cuenta
+                </h3>
+                <%= if @current_user do %>
+                  <div class={"flex items-center mb-3 py-1 px-2 bg-#{@color_theme}-900/40 rounded-lg"}>
+                    <div class={"w-8 h-8 bg-#{@color_theme}-800 rounded-full flex items-center justify-center mr-2"}>
+                      <span class="text-white font-medium text-sm">
+                        {String.first(@current_user.email)}
+                      </span>
+                    </div>
+                    <span class="text-white text-sm truncate">{@current_user.email}</span>
+                  </div>
+                  <div class="space-y-2">
+                    <a
+                      href="/users/settings"
+                      class={"flex items-center py-2 px-2 text-#{@color_theme}-200 hover:bg-#{@color_theme}-800 hover:text-white rounded transition-colors duration-200"}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      Configuración
+                    </a>
+                    <form action="/users/log_out" method="post" class="w-full">
+                      <input
+                        type="hidden"
+                        name="_csrf_token"
+                        value={Phoenix.Controller.get_csrf_token()}
+                      />
+                      <button
+                        type="submit"
+                        class={"flex w-full items-center py-2 px-2 text-#{@color_theme}-200 hover:bg-#{@color_theme}-800 hover:text-white rounded transition-colors duration-200"}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        Cerrar sesión
+                      </button>
+                    </form>
+                  </div>
+                <% else %>
+                  <div class="grid grid-cols-1 gap-2">
+                    <a
+                      href="/users/log_in"
+                      class={"flex items-center justify-center py-2 text-white bg-#{@color_theme}-700 hover:bg-#{@color_theme}-600 rounded transition-colors duration-200"}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Iniciar sesión
+                    </a>
+                    <a
+                      href="/users/register"
+                      class={"flex items-center justify-center py-2 text-#{@color_theme}-700 bg-white hover:bg-#{@color_theme}-50 rounded transition-colors duration-200"}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-5 w-5 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                        />
+                      </svg>
+                      Registrarse
+                    </a>
+                  </div>
+                <% end %>
+              </li>
             </ul>
           </nav>
         </div>
@@ -262,7 +377,8 @@ defmodule PoliciaWeb.CustomComponents do
               <span class="text-white font-semibold text-xl">{@site_name}</span>
             </a>
           </div>
-          <!-- Menú principal desktop -->
+          
+    <!-- Menú principal desktop -->
           <nav class="flex-grow max-w-4xl mx-auto" aria-label="Menú principal">
             <ul class="flex justify-center space-x-6 py-3" role="menubar">
               <%= for menu <- @menus do %>
@@ -396,6 +512,123 @@ defmodule PoliciaWeb.CustomComponents do
               <% end %>
             </ul>
           </nav>
+          
+    <!-- Botones de autenticación desktop -->
+          <div class="flex items-center space-x-2">
+            <%= if @current_user do %>
+              <div class="relative" x-data="{ open: false }">
+                <button
+                  @click="open = !open"
+                  class={"flex items-center space-x-2 bg-#{@color_theme}-800 hover:bg-#{@color_theme}-700 text-white px-3 py-1.5 rounded-lg transition-colors duration-200"}
+                >
+                  <div class={"w-6 h-6 rounded-full bg-#{@color_theme}-600 flex items-center justify-center"}>
+                    <span class="text-white text-xs font-medium">
+                      {String.first(@current_user.email)}
+                    </span>
+                  </div>
+                  <span class="text-sm hidden lg:inline max-w-[120px] truncate">
+                    {@current_user.email}
+                  </span>
+                  <svg
+                    class="w-4 h-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                <div
+                  x-show="open"
+                  @click.outside="open = false"
+                  x-transition:enter="transition ease-out duration-100"
+                  x-transition:enter-start="transform opacity-0 scale-95"
+                  x-transition:enter-end="transform opacity-100 scale-100"
+                  x-transition:leave="transition ease-in duration-75"
+                  x-transition:leave-start="transform opacity-100 scale-100"
+                  x-transition:leave-end="transform opacity-0 scale-95"
+                  class="absolute right-0 w-48 py-2 mt-1 bg-white rounded-md shadow-xl z-50 border border-gray-200"
+                  x-cloak
+                >
+                  <a
+                    href="/users/settings"
+                    class={"flex items-center px-4 py-2 text-gray-700 hover:bg-#{@color_theme}-50"}
+                  >
+                    <svg
+                      class={"w-5 h-5 mr-2 text-#{@color_theme}-700"}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    Configuración
+                  </a>
+                  <form action="/users/log_out" method="post" class="w-full">
+                    <input
+                      type="hidden"
+                      name="_csrf_token"
+                      value={Phoenix.Controller.get_csrf_token()}
+                    />
+                    <button
+                      type="submit"
+                      class={"flex w-full items-center px-4 py-2 text-gray-700 hover:bg-#{@color_theme}-50"}
+                    >
+                      <svg
+                        class={"w-5 h-5 mr-2 text-#{@color_theme}-700"}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                        />
+                      </svg>
+                      Cerrar sesión
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% else %>
+              <div class="flex items-center space-x-3">
+                <a
+                  href="/users/log_in"
+                  class={"text-white hover:text-#{@color_theme}-200 text-sm font-medium transition-colors duration-200"}
+                >
+                  Iniciar sesión
+                </a>
+                <a
+                  href="/users/register"
+                  class={"bg-white text-#{@color_theme}-700 hover:bg-opacity-90 text-sm font-medium px-4 py-2 rounded-md shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 border border-transparent hover:border-white/20"}
+                >
+                  Registrarse
+                </a>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
