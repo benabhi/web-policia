@@ -3,6 +3,7 @@ defmodule PoliciaWeb.CustomComponents do
   alias Policia.Config
   alias Policia.Utils
 
+  # Componente para menu superior y lateral dinamico
   attr :menus, :list,
     default: [],
     doc: "Lista de menús principales con enlaces y submenús opcionales."
@@ -646,6 +647,7 @@ defmodule PoliciaWeb.CustomComponents do
     if current_path == link, do: "bg-#{Config.webpage_theme()}-700 text-white", else: ""
   end
 
+  # Componente para articulo unico
   attr :image_src, :string, required: true, doc: "Ruta de la imagen destacada"
   attr :image_alt, :string, default: "Imagen destacada", doc: "Texto alternativo para la imagen"
   attr :date, :string, required: true, doc: "Fecha de publicación (formato: '01 Abril 2025')"
@@ -783,6 +785,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para el pie de pagina (footer)
   attr :sitename, :string, doc: "Nombre del sitio que aparecerá en el footer"
 
   attr :slogan, :string,
@@ -1142,6 +1145,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para el slider
   attr :images, :list,
     default: [],
     doc: "Lista de URLs de imágenes para el slider"
@@ -1282,6 +1286,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para layout dinamico (una o dos columnas)
   attr :title, :string, default: nil, doc: "Título principal de la sección de contenido"
   attr :subtitle, :string, default: nil, doc: "Subtítulo opcional de la sección"
   attr :has_sidebar, :boolean, default: true, doc: "Si debe mostrar la barra lateral"
@@ -1335,7 +1340,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Nuevo componente para la barra lateral
+  # Componente para tarjetas de la barra lateral
   attr :title, :string, default: "Enlaces de interés", doc: "Título de la barra lateral"
   slot :inner_block, required: true, doc: "Contenido de la barra lateral"
 
@@ -1464,6 +1469,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para las tarjetas de articulos
   attr :title, :string, required: true, doc: "Título del artículo"
   attr :date, :string, required: true, doc: "Fecha de publicación"
   attr :image, :string, default: nil, doc: "Imagen destacada (opcional)"
@@ -1528,6 +1534,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para grilla de articulos
   attr :articles, :list, default: [], doc: "Lista de artículos a mostrar"
 
   attr :columns, :string,
@@ -1551,6 +1558,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para las tarjetas de noticias
   attr :title, :string, required: true, doc: "Título de la noticia"
   attr :date, :string, required: true, doc: "Fecha de publicación"
   attr :image, :string, default: nil, doc: "URL de la imagen"
@@ -1618,6 +1626,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para la sección de ultimas noticias
   attr :title, :string, default: "Últimas Noticias", doc: "Título de la sección"
   attr :news, :list, required: true, doc: "Lista de noticias a mostrar"
   attr :view_all_url, :string, default: "#", doc: "URL para ver todas las noticias"
@@ -1676,6 +1685,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para tarjetas de servicios
   attr :title, :string, required: true, doc: "Título del servicio"
   attr :description, :string, required: true, doc: "Descripción del servicio"
   attr :url, :string, required: true, doc: "URL del servicio"
@@ -1811,6 +1821,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para servicios destacados
   attr :title, :string, default: "Servicios Destacados", doc: "Título de la sección"
   attr :services, :list, required: true, doc: "Lista de servicios a mostrar"
   attr :max_services, :integer, default: 2, doc: "Número máximo de servicios a mostrar"
@@ -1943,6 +1954,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para crear etiquetas de badge
   attr :text, :string, required: true, doc: "Texto a mostrar en la etiqueta"
 
   attr :color, :string, doc: "Color base de la etiqueta (blue, green, red, yellow, etc.)"
@@ -1997,10 +2009,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # lib/policia_web/components/custom_components.ex
-  # Añade esto dentro del módulo PoliciaWeb.CustomComponents
-
-  # Botón principal estilizado
+  # Componmente de botón principal estilizado
   attr :type, :string, default: "button", doc: "Tipo de botón (button, submit, reset)"
   attr :class, :string, default: "", doc: "Clases CSS adicionales"
 
@@ -2020,13 +2029,10 @@ defmodule PoliciaWeb.CustomComponents do
   slot :inner_block, required: true, doc: "Contenido del botón"
 
   def app_button(assigns) do
-    # Primero, asigna color_theme independientemente
     assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
 
-    # Luego, define la variable basada en color_theme que ahora está disponible
     theme = assigns.color_theme
 
-    # Ahora asigna el resto de propiedades usando la variable theme
     assigns =
       assigns
       |> assign_new(:button_color, fn ->
@@ -2059,7 +2065,7 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Botón secundario (outline)
+  # Componente de botón secundario (outline)
   attr :type, :string, default: "button", doc: "Tipo de botón (button, submit, reset)"
   attr :class, :string, default: "", doc: "Clases CSS adicionales"
 
@@ -2084,13 +2090,10 @@ defmodule PoliciaWeb.CustomComponents do
   slot :inner_block, required: true, doc: "Contenido del botón"
 
   def app_button_secondary(assigns) do
-    # Primero, asigna color_theme independientemente
     assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
 
-    # Luego, define las variables basadas en color_theme que ahora está disponible
     theme = assigns.color_theme
 
-    # Ahora asigna el resto de propiedades usando la variable theme
     assigns =
       assigns
       |> assign_new(:text_color, fn ->
@@ -2254,6 +2257,225 @@ defmodule PoliciaWeb.CustomComponents do
           />
         </svg>
     <% end %>
+    """
+  end
+
+  # Añadir al módulo PoliciaWeb.CustomComponents
+
+  attr :name, :string, required: true, doc: "Nombre del ícono"
+  attr :class, :string, default: "h-5 w-5", doc: "Clases CSS para controlar tamaño y estilo"
+  attr :stroke_width, :string, default: "2", doc: "Grosor del trazo para íconos outline"
+  attr :rest, :global, doc: "Atributos adicionales para el elemento svg"
+
+  # ! TODO: Agregar view-box
+
+  def svg_icon(assigns) do
+    ~H"""
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class={@class}
+      fill={if String.ends_with?(@name, "-solid"), do: "currentColor", else: "none"}
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      stroke-width={@stroke_width}
+      aria-hidden="true"
+      {@rest}
+    >
+      <%= case @name do %>
+        <% "check" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        <% "check-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd"
+          />
+        <% "back" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        <% "back-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"
+          />
+        <% "save" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+          />
+        <% "save-solid" -> %>
+          <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+        <% "close" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <% "close-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        <% "edit" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+          />
+        <% "edit-solid" -> %>
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        <% "add" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        <% "add-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        <% "info" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        <% "info-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1H9z"
+            clip-rule="evenodd"
+          />
+        <% "doc" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          />
+        <% "doc-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+            clip-rule="evenodd"
+          />
+        <% "clock" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        <% "alert" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
+        <% "calendar" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        <% "calendar-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+            clip-rule="evenodd"
+          />
+        <% "phone" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+          />
+        <% "user" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+          />
+        <% "user-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+            clip-rule="evenodd"
+          />
+        <% "news" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+          />
+        <% "news-solid" -> %>
+          <path
+            fill-rule="evenodd"
+            d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z"
+            clip-rule="evenodd"
+          />
+        <% "location" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <% "email" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        <% "arrow-right" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        <% "shield" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+          />
+        <% "twitter" -> %>
+          <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+        <% "facebook" -> %>
+          <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+        <% "instagram" -> %>
+          <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+        <% "youtube" -> %>
+          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+        <% "chevron-down" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15l-6-6h12z" />
+        <% "chevron-right" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        <% "chevron-left" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        <% "chevron-up" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+        <% "menu" -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <% "home" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        <% "logout" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
+        <% "settings" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <% "comment" -> %>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+          />
+        <% _ -> %>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      <% end %>
+    </svg>
     """
   end
 end

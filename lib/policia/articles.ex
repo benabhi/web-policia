@@ -131,7 +131,6 @@ defmodule Policia.Articles do
     Category.changeset(category, attrs)
   end
 
-  # Funciones mejoradas para Articles
   def list_articles_with_category do
     Article
     |> Repo.all()
