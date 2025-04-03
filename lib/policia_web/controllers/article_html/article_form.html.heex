@@ -1,15 +1,54 @@
-<.simple_form :let={f} for={@changeset} action={@action}>
+<.simple_form :let={f} for={@changeset} action={@action} multipart={true}>
   <.error :if={@changeset.action}>
     Oops, algo salió mal! Por favor revisa los errores a continuación.
   </.error>
   <.input field={f[:title]} type="text" label="Título" />
-
   <.input field={f[:content]} type="textarea" label="Contenido" rows="10" />
-  <!--
-  <div id="editor" class="min-h-80"></div>
-  <.input field={f[:content]} id="hidden-content" type="hidden" label="Contenido" rows="10" />
-  -->
-  <.input field={f[:image_url]} type="text" label="URL de imagen" />
+
+  <div class="mb-6">
+    <label class="block text-sm font-semibold leading-6 text-zinc-800 mb-2">
+      Imagen del artículo
+    </label>
+
+    <%= if @changeset.data.image_url && String.length(@changeset.data.image_url || "") > 0 do %>
+      <div class="mb-4">
+        <p class="text-sm text-gray-500 mb-2">Imagen actual:</p>
+        <img
+          src={@changeset.data.image_url}
+          class="w-64 h-auto rounded-md border border-gray-300"
+        />
+      </div>
+    <% end %>
+
+    <div class="rounded-lg border border-zinc-300 px-3 py-2">
+      <.input field={f[:image]} type="file" label="" accept=".jpg,.jpeg,.png,.gif" />
+    </div>
+    <p class="mt-1 text-sm text-gray-500">
+      Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 5MB.
+    </p>
+
+    <%= if @changeset.data.image_url && String.length(@changeset.data.image_url || "") > 0 do %>
+      <div class="mt-2">
+        <label class="flex items-center gap-2 text-sm text-gray-600">
+          <input
+            type="checkbox"
+            name="keep_existing_image"
+            value="true"
+            checked
+            class="rounded border-zinc-300 text-zinc-900 focus:ring-0"
+          /> Mantener la imagen actual si no se selecciona una nueva
+        </label>
+      </div>
+    <% end %>
+  </div>
+  
+<!-- Almacenamos la URL de la imagen como un campo oculto regular -->
+  <input
+    type="hidden"
+    name="article[image_url]"
+    value={f[:image_url].value}
+    id="article_image_url"
+  />
   <.input field={f[:author]} type="text" label="Autor" />
 
   <.input
@@ -24,26 +63,3 @@
     <.button>Guardar Artículo</.button>
   </:actions>
 </.simple_form>
-
-<!--<script>
-  document.addEventListener("DOMContentLoaded", function () {
-  var quill = new Quill("#editor", {
-    theme: "snow",
-    modules: {
-      toolbar: [["bold", "italic", "underline"]]
-    }
-  });
-
-  document.querySelector(".ql-editor").style.fontSize = "18px"
-
-  var contenidoExistente = document.querySelector("#hidden-content").value;
-  if (contenidoExistente) {
-    quill.root.innerHTML = contenidoExistente; // Cargar contenido en Quill
-  }
-
-  // Guardar el contenido en el input oculto antes de enviar el formulario
-  document.querySelector("form").onsubmit = function () {
-    document.querySelector("#hidden-content").value = quill.root.innerHTML;
-  };
-  });
-</script>-->

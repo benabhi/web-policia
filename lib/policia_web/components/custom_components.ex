@@ -1036,42 +1036,6 @@ defmodule PoliciaWeb.CustomComponents do
 
   attr :title, :string, default: nil, doc: "Título principal de la sección de contenido"
   attr :subtitle, :string, default: nil, doc: "Subtítulo opcional de la sección"
-  attr :wrapper_class, :string, default: "", doc: "Clases adicionales para el contenedor externo"
-  slot :hero, doc: "Contenido destacado (slider, banner, etc.)"
-  slot :inner_block, required: true, doc: "Contenido principal"
-
-  def basic_content_layout(assigns) do
-    ~H"""
-    <div class={"bg-blue-50 py-8 md:py-12 #{@wrapper_class}"}>
-      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <%= if @title do %>
-          <div class="mb-8 text-center">
-            <h1 class="text-3xl sm:text-4xl font-bold text-blue-950 mb-2">{@title}</h1>
-            <%= if @subtitle do %>
-              <p class="text-lg text-blue-700">{@subtitle}</p>
-            <% end %>
-            <div class="w-20 h-1 bg-blue-600 mx-auto mt-4"></div>
-          </div>
-        <% end %>
-        
-    <!-- Área para contenido destacado (slider) -->
-        <%= if render_slot(@hero) do %>
-          <div class="mb-8">
-            {render_slot(@hero)}
-          </div>
-        <% end %>
-        
-    <!-- Contenido principal sin barra lateral -->
-        <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-blue-100">
-          {render_slot(@inner_block)}
-        </div>
-      </div>
-    </div>
-    """
-  end
-
-  attr :title, :string, default: nil, doc: "Título principal de la sección de contenido"
-  attr :subtitle, :string, default: nil, doc: "Subtítulo opcional de la sección"
   attr :has_sidebar, :boolean, default: true, doc: "Si debe mostrar la barra lateral"
   attr :wrapper_class, :string, default: "", doc: "Clases adicionales para el contenedor externo"
   slot :hero, doc: "Contenido destacado (slider, banner, etc.)"

@@ -1,8 +1,12 @@
-<.header>
-  New Article
-  <:subtitle>Use this form to manage article records in your database.</:subtitle>
-</.header>
+<.content_layout title={@page_title} subtitle={@subtitle} has_sidebar={false}>
+  <.header>
+    Nuevo Artículo
+    <:subtitle>
+      Use este formulario para gestionar los registros de artículos en tu base de datos.
+    </:subtitle>
+  </.header>
 
-<.article_form changeset={@changeset} categories={@categories} action={~p"/articles"} />
+  <.article_form changeset={@changeset} categories={@categories} action={~p"/articles"} />
 
-<.back navigate={~p"/articles"}>Back to articles</.back>
+  <.back navigate={~p"/articles"}>Back to articles</.back>
+</.content_layout>

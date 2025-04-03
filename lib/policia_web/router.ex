@@ -11,6 +11,9 @@ defmodule PoliciaWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  # No necesitamos agregar Plug.Parsers aquí porque ya está definido en endpoint.ex
+  # Phoenix configura esto automáticamente
+
   pipeline :api do
     plug :accepts, ["json"]
   end
