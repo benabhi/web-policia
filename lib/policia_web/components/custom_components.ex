@@ -36,7 +36,7 @@ defmodule PoliciaWeb.CustomComponents do
     ~H"""
     <div class={"bg-#{@color_theme}-950 w-full"}>
       <!-- Alpine.js maneja el comportamiento del menú sin scripts ni estilos adicionales -->
-           <!-- Versión móvil con menú lateral deslizante usando Alpine.js -->
+             <!-- Versión móvil con menú lateral deslizante usando Alpine.js -->
       <div
         class="md:hidden"
         x-data="{ menuOpen: false }"
@@ -369,7 +369,7 @@ defmodule PoliciaWeb.CustomComponents do
       <div class="hidden md:block container mx-auto px-4">
         <div class="flex justify-between items-center py-2">
           <!-- Logo o nombre del sitio para desktop -->
-          <div class="flex items-center">
+          <div class="flex items-center flex-shrink-0 mr-4">
             <a href="/" class="flex items-center text-white">
               <%= if @logo_src do %>
                 <img src={@logo_src} alt={@site_name} class="h-10 w-auto mr-2" />
@@ -378,12 +378,12 @@ defmodule PoliciaWeb.CustomComponents do
             </a>
           </div>
           
-    <!-- Menú principal desktop -->
-          <nav class="flex-grow max-w-4xl mx-auto" aria-label="Menú principal">
-            <ul class="flex justify-center space-x-6 py-3" role="menubar">
+    <!-- Menú principal desktop - MODIFICADO PARA SER MÁS COMPACTO -->
+          <nav class="flex-grow flex justify-center" aria-label="Menú principal">
+            <ul class="flex justify-center space-x-1 py-3" role="menubar">
               <%= for menu <- @menus do %>
                 <li
-                  class="relative group px-2"
+                  class="relative group"
                   role="none"
                   x-data="{ open: false, timeoutId: null }"
                   x-init="$nextTick(() => { open = false })"
@@ -393,7 +393,7 @@ defmodule PoliciaWeb.CustomComponents do
                   <%= if menu.submenus do %>
                     <button
                       type="button"
-                      class={"text-white hover:text-#{@color_theme}-200 flex items-center focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-300 focus:ring-opacity-50 rounded-md px-3 py-2 transition-colors duration-200"}
+                      class={"text-white hover:text-#{@color_theme}-200 flex items-center focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-300 focus:ring-opacity-50 rounded-md px-2 py-1.5 text-sm transition-colors duration-200"}
                       aria-haspopup="true"
                       x-bind:aria-expanded="open.toString()"
                       @click="open = !open"
@@ -402,7 +402,7 @@ defmodule PoliciaWeb.CustomComponents do
                     >
                       <span>{menu.title}</span>
                       <svg
-                        class={"ml-2 w-4 h-4 fill-current text-white group-hover:text-#{@color_theme}-200 transition-colors duration-300"}
+                        class={"ml-1 w-3 h-3 fill-current text-white group-hover:text-#{@color_theme}-200 transition-colors duration-300"}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         aria-hidden="true"
@@ -502,7 +502,7 @@ defmodule PoliciaWeb.CustomComponents do
                   <% else %>
                     <a
                       href={menu.link}
-                      class={"text-white hover:text-#{@color_theme}-200 focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-300 focus:ring-opacity-50 rounded-md block px-3 py-2 transition-colors duration-200 " <> active_class(@current_path, menu.link)}
+                      class={"text-white hover:text-#{@color_theme}-200 focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-300 focus:ring-opacity-50 rounded-md block px-2 py-1.5 text-sm transition-colors duration-200 " <> active_class(@current_path, menu.link)}
                       role="menuitem"
                     >
                       {menu.title}
@@ -514,7 +514,7 @@ defmodule PoliciaWeb.CustomComponents do
           </nav>
           
     <!-- Botones de autenticación desktop -->
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-2 flex-shrink-0 ml-4">
             <%= if @current_user do %>
               <div class="relative" x-data="{ open: false }">
                 <button
@@ -526,7 +526,7 @@ defmodule PoliciaWeb.CustomComponents do
                       {String.first(@current_user.email)}
                     </span>
                   </div>
-                  <span class="text-sm hidden lg:inline max-w-[120px] truncate">
+                  <span class="text-sm hidden xl:inline max-w-[120px] truncate">
                     {@current_user.email}
                   </span>
                   <svg
@@ -622,7 +622,7 @@ defmodule PoliciaWeb.CustomComponents do
                 </a>
                 <a
                   href="/users/register"
-                  class={"bg-white text-#{@color_theme}-700 hover:bg-opacity-90 text-sm font-medium px-4 py-2 rounded-md shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 border border-transparent hover:border-white/20"}
+                  class={"bg-white text-#{@color_theme}-700 hover:bg-opacity-90 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-200 border border-transparent hover:border-white/20"}
                 >
                   Registrarse
                 </a>
@@ -867,9 +867,10 @@ defmodule PoliciaWeb.CustomComponents do
       |> assign_new(:social_links, fn -> Config.institution_social_links() end)
       |> assign_new(:phone, fn -> Config.institution_phone() end)
       |> assign_new(:address, fn -> Config.institution_address() end)
+      |> assign(:color_theme, Config.webpage_theme())
 
     ~H"""
-    <footer class={"bg-blue-950 text-white py-8 px-4 sm:px-6 border-t-4 border-blue-700 #{@class}"}>
+    <footer class={"bg-#{@color_theme}-950 text-white py-8 px-4 sm:px-6 border-t-4 border-#{@color_theme}-700 #{@class}"}>
       <div class="container mx-auto">
         <!-- Logo y texto de descripción -->
         <div class="flex flex-col items-center md:flex-row md:justify-between mb-8">
@@ -881,7 +882,7 @@ defmodule PoliciaWeb.CustomComponents do
               <% else %>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10 text-blue-950"
+                  class={"h-10 w-10 text-#{@color_theme}-950"}
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
@@ -891,13 +892,13 @@ defmodule PoliciaWeb.CustomComponents do
             </div>
             <div>
               <h2 class="text-xl font-bold">{@sitename}</h2>
-              <p class="text-blue-300 text-sm">{@slogan}</p>
+              <p class={"text-#{@color_theme}-300 text-sm"}>{@slogan}</p>
             </div>
           </div>
           
     <!-- Redes sociales -->
           <div>
-            <h3 class="text-sm font-semibold mb-2 uppercase tracking-wider text-blue-300">
+            <h3 class={"text-sm font-semibold mb-2 uppercase tracking-wider text-#{@color_theme}-300"}>
               Síguenos
             </h3>
             <div class="flex space-x-4">
@@ -906,7 +907,7 @@ defmodule PoliciaWeb.CustomComponents do
                   href={social.url}
                   target="_blank"
                   aria-label={social.name}
-                  class="bg-blue-900 hover:bg-blue-800 p-2 rounded-full transition-colors duration-200"
+                  class={"bg-#{@color_theme}-900 hover:bg-#{@color_theme}-800 p-2 rounded-full transition-colors duration-200"}
                 >
                   <%= case social.icon do %>
                     <% "twitter" -> %>
@@ -962,10 +963,10 @@ defmodule PoliciaWeb.CustomComponents do
         </div>
         
     <!-- Grid de enlaces -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-blue-900 pb-8 mb-6">
+        <div class={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-#{@color_theme}-900 pb-8 mb-6"}>
           <%= for column <- @menu_columns do %>
             <div>
-              <h3 class="text-lg font-bold mb-4 border-b border-blue-800 pb-2 text-blue-200">
+              <h3 class={"text-lg font-bold mb-4 border-b border-#{@color_theme}-800 pb-2 text-#{@color_theme}-200"}>
                 {column.title}
               </h3>
               <ul class="space-y-2">
@@ -979,7 +980,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% link[:icon] == "info" -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -992,7 +993,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% link[:icon] == "phone" -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -1001,7 +1002,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% link[:icon] == "user" -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -1014,7 +1015,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% link[:icon] == "news" -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -1027,7 +1028,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% link[:icon] == "calendar" -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -1040,7 +1041,7 @@ defmodule PoliciaWeb.CustomComponents do
                         <% true -> %>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            class="h-4 w-4 mr-2 text-blue-400"
+                            class={"h-4 w-4 mr-2 text-#{@color_theme}-400"}
                             viewBox="0 0 20 20"
                             fill="currentColor"
                           >
@@ -1065,7 +1066,7 @@ defmodule PoliciaWeb.CustomComponents do
           <div class="flex items-start">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-3 text-blue-400 mt-1 flex-shrink-0"
+              class={"h-5 w-5 mr-3 text-#{@color_theme}-400 mt-1 flex-shrink-0"}
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -1076,7 +1077,7 @@ defmodule PoliciaWeb.CustomComponents do
               />
             </svg>
             <div>
-              <h4 class="text-blue-200 font-semibold mb-1">Dirección</h4>
+              <h4 class={"text-#{@color_theme}-200 font-semibold mb-1"}>Dirección</h4>
               <p class="text-sm text-gray-300">{@address}</p>
             </div>
           </div>
@@ -1084,14 +1085,14 @@ defmodule PoliciaWeb.CustomComponents do
           <div class="flex items-start">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-3 text-blue-400 mt-1 flex-shrink-0"
+              class={"h-5 w-5 mr-3 text-#{@color_theme}-400 mt-1 flex-shrink-0"}
               viewBox="0 0 20 20"
               fill="currentColor"
             >
               <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
             </svg>
             <div>
-              <h4 class="text-blue-200 font-semibold mb-1">Teléfono</h4>
+              <h4 class={"text-#{@color_theme}-200 font-semibold mb-1"}>Teléfono</h4>
               <p class="text-sm text-gray-300">{@phone}</p>
             </div>
           </div>
@@ -1099,7 +1100,7 @@ defmodule PoliciaWeb.CustomComponents do
           <div class="flex items-start">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-3 text-blue-400 mt-1 flex-shrink-0"
+              class={"h-5 w-5 mr-3 text-#{@color_theme}-400 mt-1 flex-shrink-0"}
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -1107,7 +1108,7 @@ defmodule PoliciaWeb.CustomComponents do
               <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
             </svg>
             <div>
-              <h4 class="text-blue-200 font-semibold mb-1">Email</h4>
+              <h4 class={"text-#{@color_theme}-200 font-semibold mb-1"}>Email</h4>
               <%= for email <- @emails do %>
                 <p class="text-sm text-gray-300">{email}</p>
               <% end %>
@@ -1116,7 +1117,7 @@ defmodule PoliciaWeb.CustomComponents do
         </div>
         
     <!-- Derechos y política de privacidad -->
-        <div class="border-t border-blue-900 pt-6 flex flex-col sm:flex-row justify-between items-center">
+        <div class={"border-t border-#{@color_theme}-900 pt-6 flex flex-col sm:flex-row justify-between items-center"}>
           <p class="text-sm text-gray-400 mb-4 sm:mb-0">
             © {@copyright_year} {@sitename}. Todos los derechos reservados.
           </p>
@@ -1162,7 +1163,8 @@ defmodule PoliciaWeb.CustomComponents do
 
   def slider(assigns) do
     assigns =
-      assign(assigns,
+      assigns
+      |> assign(
         x_data: %{
           current: 0,
           totalSlides: length(assigns.images),
@@ -1171,6 +1173,7 @@ defmodule PoliciaWeb.CustomComponents do
           paused: false
         }
       )
+      |> assign(:color_theme, Config.webpage_theme())
 
     ~H"""
     <div
@@ -1194,7 +1197,7 @@ defmodule PoliciaWeb.CustomComponents do
       "
       @mouseenter="paused = true"
       @mouseleave="paused = false"
-      class={"relative w-full overflow-hidden #{@height} #{if @rounded, do: "rounded-lg", else: ""} shadow-xl mb-8 border-2 border-blue-200 bg-blue-950"}
+      class={"relative w-full overflow-hidden #{@height} #{if @rounded, do: "rounded-lg", else: ""} shadow-xl mb-8 border-2 border-#{@color_theme}-200 bg-#{@color_theme}-950"}
     >
       <!-- Slider principal -->
       <div
@@ -1205,7 +1208,8 @@ defmodule PoliciaWeb.CustomComponents do
           <div class="flex-shrink-0 w-full h-full relative">
             <img src={image} alt={"Slide #{index + 1}"} class="w-full h-full object-cover" />
             <!-- Gradiente superpuesto -->
-            <div class="absolute inset-0 bg-gradient-to-t from-blue-950/70 to-transparent"></div>
+            <div class={"absolute inset-0 bg-gradient-to-t from-#{@color_theme}-950/70 to-transparent"}>
+            </div>
             
     <!-- Leyenda de la imagen si existe -->
             <%= if Enum.at(@captions, index) do %>
@@ -1227,7 +1231,7 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Controles de navegación -->
       <button
         @click="current = (current - 1 + totalSlides) % totalSlides"
-        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-blue-800/70 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
+        class={"absolute left-4 top-1/2 transform -translate-y-1/2 bg-#{@color_theme}-800/70 hover:bg-#{@color_theme}-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"}
         aria-label="Imagen anterior"
       >
         <svg
@@ -1242,7 +1246,7 @@ defmodule PoliciaWeb.CustomComponents do
       </button>
       <button
         @click="current = (current + 1) % totalSlides"
-        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-blue-800/70 hover:bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"
+        class={"absolute right-4 top-1/2 transform -translate-y-1/2 bg-#{@color_theme}-800/70 hover:bg-#{@color_theme}-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-500 focus:ring-opacity-50 transition-all duration-200"}
         aria-label="Imagen siguiente"
       >
         <svg
@@ -1282,15 +1286,22 @@ defmodule PoliciaWeb.CustomComponents do
   slot :inner_block, required: true, doc: "Contenido principal"
 
   def content_layout(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :color_theme,
+        Config.webpage_theme()
+      )
+
     ~H"""
     <div>
       <%= if @title do %>
         <div class="mb-8 text-center">
-          <h1 class="text-3xl sm:text-4xl font-bold text-blue-950 mb-2">{@title}</h1>
+          <h1 class={"text-3xl sm:text-4xl font-bold text-#{@color_theme}-950 mb-2"}>{@title}</h1>
           <%= if @subtitle do %>
-            <p class="text-lg text-blue-700">{@subtitle}</p>
+            <p class={"text-lg text-#{@color_theme}-700"}>{@subtitle}</p>
           <% end %>
-          <div class="w-20 h-1 bg-blue-600 mx-auto mt-4"></div>
+          <div class={"w-20 h-1 bg-#{@color_theme}-600 mx-auto mt-4"}></div>
         </div>
       <% end %>
       
@@ -1304,7 +1315,7 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Layout principal con contenido y barra lateral (si existe) -->
       <div class={"grid gap-8 " <> if(@has_sidebar && render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-3", else: "")}>
         <div class={if(@has_sidebar && render_slot(@sidebar), do: "lg:col-span-2", else: "")}>
-          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-blue-100">
+          <div class={"bg-white rounded-lg shadow-md p-4 sm:p-6 border border-#{@color_theme}-100"}>
             {render_slot(@inner_block)}
           </div>
         </div>
@@ -1324,9 +1335,16 @@ defmodule PoliciaWeb.CustomComponents do
   slot :inner_block, required: true, doc: "Contenido de la barra lateral"
 
   def sidebar_box(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :color_theme,
+        Config.webpage_theme()
+      )
+
     ~H"""
-    <div class="bg-white rounded-lg shadow-md border border-blue-100 overflow-hidden">
-      <div class="bg-blue-900 text-white p-4">
+    <div class={"bg-white rounded-lg shadow-md border border-#{@color_theme}-100 overflow-hidden"}>
+      <div class={"bg-#{@color_theme}-900 text-white p-4"}>
         <h2 class="font-semibold text-lg">{@title}</h2>
       </div>
       <div class="p-4">
@@ -1340,16 +1358,23 @@ defmodule PoliciaWeb.CustomComponents do
   attr :items, :list, default: [], doc: "Lista de ítems con :icon, :title y :url"
 
   def sidebar_links(assigns) do
+    assigns =
+      assigns
+      |> assign(
+        :color_theme,
+        Config.webpage_theme()
+      )
+
     ~H"""
     <ul class="space-y-2">
       <%= for item <- @items do %>
         <li>
           <a
             href={item.url}
-            class="flex items-center p-3 rounded-md transition-colors duration-200 hover:bg-blue-50 border border-transparent hover:border-blue-200 group"
+            class={"flex items-center p-3 rounded-md transition-colors duration-200 hover:bg-#{@color_theme}-50 border border-transparent hover:border-#{@color_theme}-200 group"}
           >
             <%= if item[:icon] do %>
-              <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-100 text-blue-800 group-hover:bg-blue-200 mr-3">
+              <div class={"w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full bg-#{@color_theme}-100 text-#{@color_theme}-800 group-hover:bg-#{@color_theme}-200 mr-3"}>
                 <%= case item.icon do %>
                   <% "info" -> %>
                     <svg
@@ -1420,7 +1445,9 @@ defmodule PoliciaWeb.CustomComponents do
               </div>
             <% end %>
             <div>
-              <span class="font-medium text-blue-900 group-hover:text-blue-700">{item.title}</span>
+              <span class={"font-medium text-#{@color_theme}-900 group-hover:text-#{@color_theme}-700"}>
+                {item.title}
+              </span>
               <%= if item[:description] do %>
                 <p class="text-sm text-gray-500">{item.description}</p>
               <% end %>
@@ -1440,6 +1467,10 @@ defmodule PoliciaWeb.CustomComponents do
   attr :category, :string, default: nil, doc: "Categoría del artículo"
 
   def article_card(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+
     ~H"""
     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-blue-100 flex flex-col h-full">
       <%= if @image do %>
@@ -1458,8 +1489,8 @@ defmodule PoliciaWeb.CustomComponents do
       <% end %>
 
       <div class="p-4 flex-grow">
-        <div class="text-sm text-blue-700 mb-2">{@date}</div>
-        <h3 class="font-bold text-lg text-blue-950 mb-2 hover:text-blue-700">
+        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@date}</div>
+        <h3 class={"font-bold text-lg text-#{@color_theme}-950 mb-2 hover:text-#{@color_theme}-700"}>
           <a href={@url} class="hover:underline">{@title}</a>
         </h3>
         <p class="text-gray-600 text-sm line-clamp-3 mb-4">{@excerpt}</p>
@@ -1468,7 +1499,7 @@ defmodule PoliciaWeb.CustomComponents do
       <div class="px-4 pb-4 mt-auto">
         <a
           href={@url}
-          class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
+          class={"inline-flex items-center text-sm font-semibold text-#{@color_theme}-700 hover:text-#{@color_theme}-900"}
         >
           Leer más
           <svg
@@ -1523,9 +1554,13 @@ defmodule PoliciaWeb.CustomComponents do
   attr :is_featured, :boolean, default: false, doc: "Si es una noticia destacada (más grande)"
 
   def news_card(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+
     ~H"""
-    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300
-      border border-blue-100 flex flex-col h-full">
+    <div class={"bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300
+      border border-#{@color_theme}-100 flex flex-col h-full"}>
       <%= if @image do %>
         <div class="relative overflow-hidden h-48">
           <img
@@ -1535,7 +1570,7 @@ defmodule PoliciaWeb.CustomComponents do
           />
           <%= if @category do %>
             <div class="absolute top-2 right-2">
-              <span class="bg-blue-800 text-white text-xs font-semibold px-2 py-1 rounded">
+              <span class={"bg-#{@color_theme}-800 text-white text-xs font-semibold px-2 py-1 rounded"}>
                 {@category}
               </span>
             </div>
@@ -1544,9 +1579,9 @@ defmodule PoliciaWeb.CustomComponents do
       <% end %>
 
       <div class="p-4 flex-grow">
-        <div class="text-sm text-blue-700 mb-2">{@date}</div>
-        <h3 class="font-bold mb-2 text-lg hover:text-blue-700">
-          <a href={@url} class="hover:underline text-blue-950">{@title}</a>
+        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@date}</div>
+        <h3 class={"font-bold mb-2 text-lg hover:text-#{@color_theme}-700"}>
+          <a href={@url} class={"hover:underline text-#{@color_theme}-950"}>{@title}</a>
         </h3>
         <p class="text-gray-600 text-sm line-clamp-3 mb-4">{@excerpt}</p>
       </div>
@@ -1554,7 +1589,7 @@ defmodule PoliciaWeb.CustomComponents do
       <div class="px-4 pb-4 mt-auto">
         <a
           href={@url}
-          class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
+          class={"inline-flex items-center text-sm font-semibold text-#{@color_theme}-700 hover:text-#{@color_theme}-900"}
         >
           Leer más
           <svg
@@ -1590,15 +1625,18 @@ defmodule PoliciaWeb.CustomComponents do
 
   def latest_news(assigns) do
     # Limitar las noticias al máximo definido
-    assigns = assign(assigns, :news, Enum.slice(assigns.news, 0, assigns.max_news))
+    assigns =
+      assigns
+      |> assign(:news, Enum.slice(assigns.news, 0, assigns.max_news))
+      |> assign(:color_theme, Config.webpage_theme())
 
     ~H"""
     <section class="mb-8">
-      <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
-        <h2 class="text-2xl font-bold text-blue-950">{@title}</h2>
+      <div class={"flex justify-between items-center border-b-2 border-#{@color_theme}-200 pb-3 mb-6"}>
+        <h2 class={"text-2xl font-bold text-#{@color_theme}-950"}>{@title}</h2>
         <a
           href={@view_all_url}
-          class="text-blue-700 hover:text-blue-900 text-sm font-medium flex items-center"
+          class={"text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium flex items-center"}
         >
           {@view_all_text}
           <svg
@@ -1637,8 +1675,6 @@ defmodule PoliciaWeb.CustomComponents do
   attr :url, :string, required: true, doc: "URL del servicio"
   attr :icon, :string, default: "doc", doc: "Tipo de ícono (doc, clock, alert, etc.)"
   attr :action_text, :string, default: "Ver servicio", doc: "Texto del botón de acción"
-  # attr :color_from, :string, default: "blue-800", doc: "Color inicial del gradiente"
-  # attr :color_to, :string, default: "blue-950", doc: "Color final del gradiente"
 
   def service_card(assigns) do
     assigns =
@@ -1743,12 +1779,12 @@ defmodule PoliciaWeb.CustomComponents do
           <% end %>
         </div>
         <h3 class="text-xl font-bold mb-2">{@title}</h3>
-        <p class="mb-4 text-blue-100">
+        <p class={"mb-4 text-#{@color_theme}-100"}>
           {@description}
         </p>
         <a
           href={@url}
-          class="inline-flex items-center text-sm font-semibold text-white hover:text-blue-200 transition-colors"
+          class={"inline-flex items-center text-sm font-semibold text-white hover:text-#{@color_theme}-200 transition-colors"}
         >
           {@action_text}
           <svg
@@ -1787,7 +1823,7 @@ defmodule PoliciaWeb.CustomComponents do
     ~H"""
     <section class="mb-8">
       <div class={"flex justify-between items-center border-b-2 border-#{@color_theme}-200 pb-3 mb-6"}>
-        <h2 class="text-2xl font-bold text-blue-950">{@title}</h2>
+        <h2 class={"text-2xl font-bold text-#{@color_theme}-950"}>{@title}</h2>
       </div>
 
       <div class={"grid gap-6 #{@grid_columns}"}>
@@ -1820,7 +1856,10 @@ defmodule PoliciaWeb.CustomComponents do
       "error" => "bg-red-100 text-red-800 border-red-200"
     }
 
-    assigns = assign(assigns, color_classes: Map.get(colors, assigns.type, colors["info"]))
+    assigns =
+      assigns
+      |> assign(color_classes: Map.get(colors, assigns.type, colors["info"]))
+      |> assign(assigns, color_theme: Config.webpage_theme())
 
     ~H"""
     <div
