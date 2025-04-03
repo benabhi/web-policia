@@ -10,6 +10,10 @@ defmodule Policia.Config do
     Application.get_env(:policia, :institution, [])
   end
 
+  def webpage do
+    Application.get_env(:policia, :webpage, [])
+  end
+
   @doc """
   Devuelve el nombre completo de la institución.
   """
@@ -45,6 +49,10 @@ defmodule Policia.Config do
 
   def institution_address do
     institution()[:address] || ""
+  end
+
+  def webpage_slider do
+    webpage()[:slider] || true
   end
 
   # Puedes añadir más métodos para otros valores de configuración

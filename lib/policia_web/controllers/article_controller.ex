@@ -35,7 +35,11 @@ defmodule PoliciaWeb.ArticleController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         categories = get_category_options()
-        render(conn, :new, changeset: changeset, categories: categories)
+
+        conn
+        |> assign(:page_title, "Crear un artículo")
+        |> assign(:subtitle, "Creación de un nuevo artículo")
+        |> render(:new, changeset: changeset, categories: categories)
     end
   end
 

@@ -8,28 +8,30 @@
       action_url="#"
     />
 
-    <.slider
-      images={[
-        "/images/demo/slide1.png",
-        "/images/demo/slide2.png",
-        "/images/demo/slide3.png"
-      ]}
-      captions={[
-        %{
-          title: "Compromiso con la seguridad",
-          description: "Trabajamos las 24 horas para proteger a la comunidad rionegrina"
-        },
-        %{
-          title: "Acercamiento comunitario",
-          description: "Fortaleciendo lazos con la sociedad a través de programas educativos"
-        },
-        %{
-          title: "A su servicio",
-          description: "Modernizamos nuestras instalaciones para brindar mejor atención"
-        }
-      ]}
-      height="h-96 md:h-[500px]"
-    />
+    <%= if Policia.Config.webpage_slider() do %>
+      <.slider
+        images={[
+          "/images/demo/slide1.png",
+          "/images/demo/slide2.png",
+          "/images/demo/slide3.png"
+        ]}
+        captions={[
+          %{
+            title: "Compromiso con la seguridad",
+            description: "Trabajamos las 24 horas para proteger a la comunidad rionegrina"
+          },
+          %{
+            title: "Acercamiento comunitario",
+            description: "Fortaleciendo lazos con la sociedad a través de programas educativos"
+          },
+          %{
+            title: "A su servicio",
+            description: "Modernizamos nuestras instalaciones para brindar mejor atención"
+          }
+        ]}
+        height="h-96 md:h-[500px]"
+      />
+    <% end %>
   </:hero>
 
   <div class="space-y-8">

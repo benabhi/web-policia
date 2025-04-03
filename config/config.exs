@@ -11,6 +11,9 @@ config :policia,
   ecto_repos: [Policia.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :policia, :webpage, slider: true
+
+# TODO: Dividir luego bien las configuraciones
 config :policia, :institution,
   name: "Policía de Río Negro",
   short_name: "Policía RN",
