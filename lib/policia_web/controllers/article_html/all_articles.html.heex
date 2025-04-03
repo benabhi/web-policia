@@ -76,7 +76,7 @@
             Enum.map(@articles, fn article ->
               %{
                 title: article.title,
-                date: Calendar.strftime(article.inserted_at, "%d %B %Y"),
+                date: article.inserted_at,
                 image: article.image_url,
                 excerpt: String.slice(article.content, 0, 150) <> "...",
                 url: ~p"/articles/#{article}",

@@ -1,6 +1,7 @@
 defmodule PoliciaWeb.CustomComponents do
   use Phoenix.Component
   alias Policia.Config
+  alias Policia.Utils
 
   attr :menus, :list,
     default: [],
@@ -659,6 +660,8 @@ defmodule PoliciaWeb.CustomComponents do
     assigns =
       assigns
       |> assign(:color_theme, Config.webpage_theme())
+
+    # |> assign(:formatted_date, Utils.format_date(assigns.date))
 
     ~H"""
     <article class={"bg-white text-gray-800 px-4 py-6 md:px-8 md:py-8 lg:px-12 lg:py-10 rounded-lg shadow-md border-t-4 border-#{@color_theme}-600"}>
@@ -1472,6 +1475,7 @@ defmodule PoliciaWeb.CustomComponents do
     assigns =
       assigns
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+      |> assign(:formatted_date, Utils.format_date(assigns.date))
 
     ~H"""
     <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-blue-100 flex flex-col h-full">
@@ -1491,7 +1495,7 @@ defmodule PoliciaWeb.CustomComponents do
       <% end %>
 
       <div class="p-4 flex-grow">
-        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@date}</div>
+        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@formatted_date}</div>
         <h3 class={"font-bold text-lg text-#{@color_theme}-950 mb-2 hover:text-#{@color_theme}-700"}>
           <a href={@url} class="hover:underline">{@title}</a>
         </h3>
@@ -1989,6 +1993,266 @@ defmodule PoliciaWeb.CustomComponents do
       <span class={"inline-block font-medium rounded bg-gradient-to-br shadow-sm #{@color_classes} #{@size_classes}"}>
         {@text}
       </span>
+    <% end %>
+    """
+  end
+
+  # lib/policia_web/components/custom_components.ex
+  # Añade esto dentro del módulo PoliciaWeb.CustomComponents
+
+  # Botón principal estilizado
+  attr :type, :string, default: "button", doc: "Tipo de botón (button, submit, reset)"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  attr :color, :string,
+    default: nil,
+    doc: "Color del botón (si no se especifica, usa el tema de la web)"
+
+  attr :icon, :string, default: nil, doc: "Nombre del ícono (opcional)"
+
+  attr :icon_position, :string,
+    default: "left",
+    values: ["left", "right"],
+    doc: "Posición del ícono"
+
+  attr :disabled, :boolean, default: false, doc: "Si el botón está deshabilitado"
+  attr :rest, :global, doc: "Atributos adicionales para el elemento button"
+  slot :inner_block, required: true, doc: "Contenido del botón"
+
+  def app_button(assigns) do
+    # Primero, asigna color_theme independientemente
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
+    # Luego, define la variable basada en color_theme que ahora está disponible
+    theme = assigns.color_theme
+
+    # Ahora asigna el resto de propiedades usando la variable theme
+    assigns =
+      assigns
+      |> assign_new(:button_color, fn ->
+        case assigns.color do
+          nil -> "#{theme}-700 hover:bg-#{theme}-800"
+          "primary" -> "#{theme}-700 hover:bg-#{theme}-800"
+          "secondary" -> "gray-600 hover:bg-gray-700"
+          "success" -> "green-600 hover:bg-green-700"
+          "danger" -> "red-600 hover:bg-red-700"
+          "warning" -> "yellow-600 hover:bg-yellow-700"
+          custom -> custom
+        end
+      end)
+
+    ~H"""
+    <button
+      type={@type}
+      class={"flex items-center justify-center py-2.5 px-6 bg-#{@button_color} text-white font-medium rounded-md shadow-md hover:shadow-lg transition-colors duration-200 #{if @disabled, do: "opacity-50 cursor-not-allowed", else: ""} #{@class}"}
+      disabled={@disabled}
+      {@rest}
+    >
+      <%= if @icon && @icon_position == "left" do %>
+        <.button_icon name={@icon} class="mr-1.5" />
+      <% end %>
+      {render_slot(@inner_block)}
+      <%= if @icon && @icon_position == "right" do %>
+        <.button_icon name={@icon} class="ml-1.5" />
+      <% end %>
+    </button>
+    """
+  end
+
+  # Botón secundario (outline)
+  attr :type, :string, default: "button", doc: "Tipo de botón (button, submit, reset)"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  attr :color, :string,
+    default: nil,
+    doc: "Color del botón (si no se especifica, usa el tema de la web)"
+
+  attr :icon, :string, default: nil, doc: "Nombre del ícono (opcional)"
+
+  attr :icon_position, :string,
+    default: "left",
+    values: ["left", "right"],
+    doc: "Posición del ícono"
+
+  attr :disabled, :boolean, default: false, doc: "Si el botón está deshabilitado"
+  attr :rest, :global, doc: "Atributos adicionales para el elemento button o a"
+
+  attr :navigate, :string,
+    default: nil,
+    doc: "URL para navegación (convierte el botón en un enlace)"
+
+  slot :inner_block, required: true, doc: "Contenido del botón"
+
+  def app_button_secondary(assigns) do
+    # Primero, asigna color_theme independientemente
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
+    # Luego, define las variables basadas en color_theme que ahora está disponible
+    theme = assigns.color_theme
+
+    # Ahora asigna el resto de propiedades usando la variable theme
+    assigns =
+      assigns
+      |> assign_new(:text_color, fn ->
+        case assigns.color do
+          nil -> "#{theme}-700"
+          "primary" -> "#{theme}-700"
+          "secondary" -> "gray-700"
+          "success" -> "green-700"
+          "danger" -> "red-700"
+          "warning" -> "yellow-700"
+          custom -> custom
+        end
+      end)
+      |> assign_new(:border_color, fn ->
+        case assigns.color do
+          nil -> "#{theme}-300"
+          "primary" -> "#{theme}-300"
+          "secondary" -> "gray-300"
+          "success" -> "green-300"
+          "danger" -> "red-300"
+          "warning" -> "yellow-300"
+          custom -> custom
+        end
+      end)
+      |> assign_new(:hover_bg, fn ->
+        case assigns.color do
+          nil -> "#{theme}-50"
+          "primary" -> "#{theme}-50"
+          "secondary" -> "gray-50"
+          "success" -> "green-50"
+          "danger" -> "red-50"
+          "warning" -> "yellow-50"
+          custom -> custom
+        end
+      end)
+
+    ~H"""
+    <%= if @navigate && !@disabled do %>
+      <.link
+        navigate={@navigate}
+        class={"flex items-center justify-center py-2.5 px-6 border border-#{@border_color} rounded-md text-#{@text_color} bg-white hover:bg-#{@hover_bg} transition-colors duration-200 font-medium shadow-sm #{@class}"}
+        {@rest}
+      >
+        <%= if @icon && @icon_position == "left" do %>
+          <.button_icon name={@icon} class="mr-1.5" />
+        <% end %>
+        {render_slot(@inner_block)}
+        <%= if @icon && @icon_position == "right" do %>
+          <.button_icon name={@icon} class="ml-1.5" />
+        <% end %>
+      </.link>
+    <% else %>
+      <button
+        type={@type}
+        class={"flex items-center justify-center py-2.5 px-6 border border-#{@border_color} rounded-md text-#{@text_color} bg-white hover:bg-#{@hover_bg} transition-colors duration-200 font-medium shadow-sm #{if @disabled, do: "opacity-50 cursor-not-allowed", else: ""} #{@class}"}
+        disabled={@disabled}
+        {@rest}
+      >
+        <%= if @icon && @icon_position == "left" do %>
+          <.button_icon name={@icon} class="mr-1.5" />
+        <% end %>
+        {render_slot(@inner_block)}
+        <%= if @icon && @icon_position == "right" do %>
+          <.button_icon name={@icon} class="ml-1.5" />
+        <% end %>
+      </button>
+    <% end %>
+    """
+  end
+
+  # Componente auxiliar para los íconos de botones
+  attr :name, :string, required: true, doc: "Nombre del ícono"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  def button_icon(assigns) do
+    ~H"""
+    <%= case @name do %>
+      <% "check" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <% "back" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <% "save" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+        </svg>
+      <% "close" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <% "edit" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg>
+      <% "add" -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <% _ -> %>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class={"h-5 w-5 #{@class}"}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M14 5l7 7m0 0l-7 7m7-7H3"
+          />
+        </svg>
     <% end %>
     """
   end
