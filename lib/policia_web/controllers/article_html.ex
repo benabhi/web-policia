@@ -1,6 +1,8 @@
 defmodule PoliciaWeb.ArticleHTML do
   use PoliciaWeb, :html
 
+  import Policia.Utils, only: [format_date: 1, format_time: 1]
+
   embed_templates "article_html/*"
 
   @doc """
@@ -11,14 +13,6 @@ defmodule PoliciaWeb.ArticleHTML do
   attr :categories, :list, required: true
 
   def article_form(assigns)
-
-  def format_date(%DateTime{} = date) do
-    Policia.Utils.format_date(date)
-  end
-
-  def format_time(%DateTime{} = date) do
-    Calendar.strftime(date, "%H:%M")
-  end
 
   def format_content(content) when is_binary(content) do
     content

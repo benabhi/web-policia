@@ -1,5 +1,6 @@
 defmodule PoliciaWeb.PageController do
   use PoliciaWeb, :controller
+  import Policia.Utils, only: [format_date: 1]
 
   alias Policia.Articles
   alias Policia.Repo
@@ -30,10 +31,5 @@ defmodule PoliciaWeb.PageController do
       end)
 
     render(conn, :home, latest_articles: latest_articles)
-  end
-
-  # Función auxiliar para formatear la fecha
-  defp format_date(%DateTime{} = date) do
-    Policia.Utils.format_date(date)
   end
 end

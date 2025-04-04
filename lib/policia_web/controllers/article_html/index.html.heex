@@ -1,74 +1,19 @@
 <.content_layout title={@page_title} subtitle={@subtitle} has_sidebar={true}>
   <div>
     <!-- Filtros de búsqueda y categorías -->
-    <div class="bg-white rounded-lg shadow-md p-4 border border-blue-100 mb-8">
-      <form action={~p"/articles"} method="get" class="space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <!-- Filtro por categoría -->
-          <div class="flex-grow max-w-xs">
-            <label for="category" class="block text-sm font-medium text-blue-700 mb-1">
-              Filtrar por categoría
-            </label>
-            <select
-              id="category"
-              name="category"
-              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              onchange="if(this.form) this.form.submit();"
-            >
-              <option value="">Todas las categorías</option>
-              <%= for category <- @categories do %>
-                <option value={category.slug} selected={@current_category == category.slug}>
-                  {category.name}
-                </option>
-              <% end %>
-            </select>
-          </div>
-          
-<!-- Buscador -->
-          <div class="flex-grow max-w-md">
-            <label for="search" class="block text-sm font-medium text-blue-700 mb-1">
-              Buscar artículos
-            </label>
-            <div class="relative">
-              <input
-                type="text"
-                id="search"
-                name="search"
-                value={@search_term}
-                placeholder="Buscar por título o contenido..."
-                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
-              />
-              <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 text-gray-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-<!-- Botón de búsqueda -->
-          <div class="flex self-end mb-0.5">
-            <button
-              type="submit"
-              class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
-            >
-              Buscar
-            </button>
-          </div>
-        </div>
-        
-<!-- Preservar página actual -->
-        <input type="hidden" name="page" value={@page} />
-      </form>
+    <div class="bg-white rounded-lg shadow-md p-4 border border-gray-200 mb-8">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-200">
+        Búsqueda de artículos
+      </h3>
+      <.search_form
+        action={~p"/articles"}
+        search_term={@search_term}
+        category_options={@categories}
+        current_category={@current_category}
+        professional={true}
+        include_category_filter={true}
+        compact={false}
+      />
     </div>
     
 <!-- Barra de acciones administrativas -->

@@ -651,6 +651,7 @@ defmodule PoliciaWeb.CustomComponents do
   end
 
   # Componente para articulo unico
+  # Renombrar el componente de article a single_article
   attr :image_src, :string, required: true, doc: "Ruta de la imagen destacada"
   attr :image_alt, :string, default: "Imagen destacada", doc: "Texto alternativo para la imagen"
   attr :date, :string, required: true, doc: "Fecha de publicación (formato: '01 Abril 2025')"
@@ -658,23 +659,49 @@ defmodule PoliciaWeb.CustomComponents do
   attr :author, :string, required: true, doc: "Nombre del autor"
   attr :title, :string, required: true, doc: "Título del artículo"
   attr :category, :string, default: nil, doc: "Categoría del artículo"
+  attr :category_url, :string, default: nil, doc: "URL de la categoría para hacerla clickeable"
   attr :comment_count, :integer, default: 0, doc: "Número de comentarios"
+  attr :actions, :list, default: [], doc: "Lista de acciones (editar, eliminar, etc.)"
+
+  attr :show_footer, :boolean,
+    default: true,
+    doc: "Mostrar o no el pie de página con opciones de compartir"
+
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
   slot :inner_block, required: true, doc: "Contenido del artículo"
 
-  def article(assigns) do
+  def single_article(assigns) do
     assigns =
       assigns
       |> assign(:color_theme, Config.webpage_theme())
 
-    # |> assign(:formatted_date, Utils.format_date(assigns.date))
-
     ~H"""
-    <article class={"bg-white text-gray-800 px-4 py-6 md:px-8 md:py-8 lg:px-12 lg:py-10 rounded-lg shadow-md border-t-4 border-#{@color_theme}-600"}>
+    <article class={"bg-white text-gray-800 px-4 py-6 md:px-8 md:py-8 lg:px-12 lg:py-10 rounded-lg shadow-md border-t-4 border-#{@color_theme}-600 #{@class}"}>
       <!-- Imagen destacada con overlay de borde azul sutil -->
       <div class="mb-6 relative rounded-lg overflow-hidden shadow-md">
         <img src={@image_src} alt={@image_alt} class="w-full h-auto" />
         <div class={"absolute inset-0 border-2 border-#{@color_theme}-200 opacity-50 pointer-events-none rounded-lg"}>
         </div>
+        
+    <!-- Acciones administrativas si existen -->
+        <%= if Enum.any?(@actions) do %>
+          <div class="absolute top-2 right-2 flex space-x-1 p-2">
+            <%= for action <- @actions do %>
+              <.link
+                href={action.url}
+                method={Map.get(action, :method)}
+                data-confirm={Map.get(action, :confirm)}
+                class={"bg-#{action.color || @color_theme}-600 text-white p-2 rounded-md hover:bg-#{action.color || @color_theme}-700 transition-all flex items-center justify-center shadow-md"}
+              >
+                <%= if action.icon do %>
+                  <.button_icon name={action.icon} />
+                <% else %>
+                  <span>{action.text}</span>
+                <% end %>
+              </.link>
+            <% end %>
+          </div>
+        <% end %>
       </div>
       
     <!-- Fecha, hora y autor con estilos mejorados -->
@@ -704,7 +731,13 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Categoría en lugar de etiquetas -->
       <%= if @category do %>
         <div class="mb-6">
-          <.badge text={@category} color={assigns.color_theme} size="md" />
+          <%= if @category_url do %>
+            <.link href={@category_url}>
+              <.badge text={@category} color={assigns.color_theme} size="md" />
+            </.link>
+          <% else %>
+            <.badge text={@category} color={assigns.color_theme} size="md" />
+          <% end %>
         </div>
       <% end %>
       
@@ -713,78 +746,104 @@ defmodule PoliciaWeb.CustomComponents do
         {render_slot(@inner_block)}
       </div>
       
-    <!-- Pie de página mejorado -->
-      <div class="mt-8 pt-4 border-t border-gray-200">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-          <!-- Botones de compartir -->
-          <div class="flex flex-wrap gap-3">
-            <a
-              href="#"
-              class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+    <!-- Pie de página mejorado (opcional) -->
+      <%= if @show_footer do %>
+        <div class="mt-8 pt-4 border-t border-gray-200">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <!-- Botones de compartir -->
+            <div class="flex flex-wrap gap-3">
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
               >
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-              </svg>
-              Twitter
-            </a>
-            <a
-              href="#"
-              class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                </svg>
+                Twitter
+              </a>
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
               >
-                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-              </svg>
-              Facebook
-            </a>
-            <a
-              href="#"
-              class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="currentColor"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                </svg>
+                Facebook
+              </a>
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
               >
-                <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
-              </svg>
-              Instagram
-            </a>
-          </div>
-          <!-- Comentarios con icono -->
-          <div class="flex items-center">
-            <a
-              href="#comentarios"
-              class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 transition-colors duration-200"}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 mr-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+                </svg>
+                Instagram
+              </a>
+            </div>
+            <!-- Comentarios con icono -->
+            <div class="flex items-center">
+              <a
+                href="#comentarios"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 transition-colors duration-200"}
               >
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-              <span class="text-sm font-medium">{@comment_count} comentarios</span>
-            </a>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                <span class="text-sm font-medium">{@comment_count} comentarios</span>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      <% end %>
     </article>
+    """
+  end
+
+  # Mantener el componente original por compatibilidad (deprecated)
+  # pero usar internamente single_article
+  def article(assigns) do
+    assigns =
+      assigns
+      |> assign(:color_theme, Config.webpage_theme())
+
+    ~H"""
+    <.single_article
+      image_src={@image_src}
+      image_alt={@image_alt}
+      date={@date}
+      time={@time}
+      author={@author}
+      title={@title}
+      category={@category}
+      comment_count={@comment_count}
+      show_footer={true}
+    >
+      {render_slot(@inner_block)}
+    </.single_article>
     """
   end
 
@@ -2055,8 +2114,6 @@ defmodule PoliciaWeb.CustomComponents do
     }
 
     # Obtener las clases según el color y tamaño
-    # color_classes = Map.get(colors, assigns.color, colors["blue"])
-    # TODO: Con este cambio ya no hace falta que tenga un segundo parametro el badge
     color_classes = Map.get(colors, Config.webpage_theme(), colors["blue"])
     size_classes = Map.get(sizes, assigns.size, sizes["md"])
 
@@ -2111,11 +2168,12 @@ defmodule PoliciaWeb.CustomComponents do
 
     theme = assigns.color_theme
 
-    # Mapeo de tamaños
+    # Mapeo de tamaños - ASEGURAR QUE SEAN EXACTAMENTE IGUALES A app_button_secondary
     size_classes = %{
-      "sm" => "py-1.5 px-4 text-sm",
-      "md" => "py-2.5 px-6 text-base",
-      "lg" => "py-3 px-8 text-lg"
+      # Agregamos h-9 para forzar altura específica
+      "sm" => "py-1.5 px-4 text-sm h-9",
+      "md" => "py-2.5 px-6 text-base h-11",
+      "lg" => "py-3 px-8 text-lg h-14"
     }
 
     assigns =
@@ -2186,11 +2244,12 @@ defmodule PoliciaWeb.CustomComponents do
 
     theme = assigns.color_theme
 
-    # Mapeo de tamaños
+    # Mapeo de tamaños - DEBEN SER EXACTAMENTE IGUALES A app_button
     size_classes = %{
-      "sm" => "py-1.5 px-4 text-sm",
-      "md" => "py-2.5 px-6 text-base",
-      "lg" => "py-3 px-8 text-lg"
+      # Misma altura forzada
+      "sm" => "py-1.5 px-4 text-sm h-9",
+      "md" => "py-2.5 px-6 text-base h-11",
+      "lg" => "py-3 px-8 text-lg h-14"
     }
 
     assigns =
@@ -2491,6 +2550,199 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  attr :action, :string, required: true, doc: "URL para enviar la búsqueda"
+  attr :search_term, :string, default: "", doc: "Término de búsqueda actual"
+  attr :category_options, :list, default: [], doc: "Lista de opciones de categoría"
+  attr :current_category, :string, default: "", doc: "Categoría seleccionada actualmente"
+
+  attr :include_category_filter, :boolean,
+    default: true,
+    doc: "Si se debe incluir el filtro de categorías"
+
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  attr :placeholder, :string,
+    default: "Buscar por título o contenido...",
+    doc: "Texto de placeholder para el campo de búsqueda"
+
+  attr :button_text, :string, default: "Buscar", doc: "Texto del botón de búsqueda"
+  attr :compact, :boolean, default: false, doc: "Versión compacta del formulario (para sidebar)"
+
+  attr :professional, :boolean,
+    default: true,
+    doc: "Versión más discreta y profesional para el formulario completo"
+
+  def search_form(assigns) do
+    assigns = assign(assigns, :color_theme, Config.webpage_theme())
+
+    ~H"""
+    <form action={@action} method="get" class={"space-y-4 #{@class}"}>
+      <%= if !@compact && @include_category_filter do %>
+        <%= if @professional do %>
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <!-- Filtro por categoría (versión profesional) -->
+            <div class="flex-grow max-w-xs">
+              <label for="category" class="block text-sm font-medium text-gray-700 mb-1">
+                Filtrar por categoría
+              </label>
+              <select
+                id="category"
+                name="category"
+                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                onchange="if(this.form) this.form.submit();"
+              >
+                <option value="">Todas las categorías</option>
+                <%= for category <- @category_options do %>
+                  <option value={category.slug} selected={@current_category == category.slug}>
+                    {category.name}
+                  </option>
+                <% end %>
+              </select>
+            </div>
+            
+    <!-- Buscador (versión profesional) -->
+            <div class="flex-grow max-w-md">
+              <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
+                Buscar artículos
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="search"
+                  name="search"
+                  value={@search_term}
+                  placeholder={@placeholder}
+                  class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+    <!-- Botón de búsqueda (versión profesional) -->
+            <div class="flex self-end mb-0.5">
+              <button
+                type="submit"
+                class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
+              >
+                {@button_text}
+              </button>
+            </div>
+          </div>
+        <% else %>
+          <!-- Versión original con fondo azul -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <!-- Filtro por categoría -->
+            <div class="flex-grow max-w-xs">
+              <label for="category" class={"block text-sm font-medium text-#{@color_theme}-700 mb-1"}>
+                Filtrar por categoría
+              </label>
+              <select
+                id="category"
+                name="category"
+                class={"w-full border-gray-300 rounded-md shadow-sm focus:border-#{@color_theme}-500 focus:ring-#{@color_theme}-500"}
+                onchange="if(this.form) this.form.submit();"
+              >
+                <option value="">Todas las categorías</option>
+                <%= for category <- @category_options do %>
+                  <option value={category.slug} selected={@current_category == category.slug}>
+                    {category.name}
+                  </option>
+                <% end %>
+              </select>
+            </div>
+            
+    <!-- Buscador -->
+            <div class="flex-grow max-w-md">
+              <label for="search" class={"block text-sm font-medium text-#{@color_theme}-700 mb-1"}>
+                Buscar artículos
+              </label>
+              <div class="relative">
+                <input
+                  type="text"
+                  id="search"
+                  name="search"
+                  value={@search_term}
+                  placeholder={@placeholder}
+                  class={"w-full border-gray-300 rounded-md shadow-sm focus:border-#{@color_theme}-500 focus:ring-#{@color_theme}-500 pr-10"}
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+    <!-- Botón de búsqueda -->
+            <div class="flex self-end mb-0.5">
+              <button
+                type="submit"
+                class={"bg-#{@color_theme}-700 hover:bg-#{@color_theme}-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"}
+              >
+                {@button_text}
+              </button>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <!-- Versión compacta para sidebar -->
+        <div class="relative">
+          <input
+            type="text"
+            name="search"
+            value={@search_term}
+            placeholder={@placeholder}
+            class={"w-full border-gray-300 rounded-md shadow-sm focus:border-#{@color_theme}-500 focus:ring-#{@color_theme}-500 pr-10"}
+          />
+          <button type="submit" class="absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class={"h-5 w-5 text-gray-400 hover:text-#{@color_theme}-500"}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <%= if @include_category_filter && @current_category != "" do %>
+          <input type="hidden" name="category" value={@current_category} />
+        <% end %>
+      <% end %>
+      
+    <!-- Preservar página actual -->
+      <input type="hidden" name="page" value="1" />
+    </form>
+    """
+  end
+
   # Función auxiliar para determinar qué páginas mostrar en la paginación
   defp pages_to_show(current_page, total_pages) do
     cond do
@@ -2513,5 +2765,46 @@ defmodule PoliciaWeb.CustomComponents do
     end
   end
 
-  # ... resto del código existente ...
+  attr :items, :list, required: true, doc: "Lista de ítems del breadcrumb"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :separator_svg, :boolean, default: true, doc: "Usar SVG como separador en lugar de texto"
+
+  def breadcrumb(assigns) do
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
+    ~H"""
+    <nav class={"flex text-sm text-gray-500 #{@class}"} aria-label="Breadcrumb">
+      <ol class="inline-flex items-center space-x-1">
+        <%= for {item, index} <- Enum.with_index(@items) do %>
+          <li class="flex items-center">
+            <%= if index > 0 do %>
+              <%= if @separator_svg do %>
+                <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  >
+                  </path>
+                </svg>
+              <% else %>
+                <span class="mx-1">/</span>
+              <% end %>
+            <% end %>
+
+            <%= if item[:href] do %>
+              <.link navigate={item.href} class={"hover:text-#{@color_theme}-700 truncate"}>
+                {item.text}
+              </.link>
+            <% else %>
+              <span class={"text-gray-700 truncate max-w-[150px] md:max-w-[300px] #{if index == length(@items) - 1, do: "font-medium", else: ""}"}>
+                {item.text}
+              </span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </nav>
+    """
+  end
 end

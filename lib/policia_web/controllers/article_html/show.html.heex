@@ -2,46 +2,17 @@
   <!-- Encabezado y botones de administración -->
   <div class="flex justify-between items-center mb-6">
     <div>
-      <nav class="flex text-sm text-gray-500" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1">
-          <li>
-            <.link navigate={~p"/articles"} class="hover:text-blue-700">Artículos</.link>
-          </li>
-          <li class="flex items-center">
-            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"
-              >
-              </path>
-            </svg>
-            <%= if @article.category do %>
-              <.link
-                navigate={~p"/articles?category=#{@article.category.slug}"}
-                class="hover:text-blue-700"
-              >
-                {@article.category.name}
-              </.link>
-            <% else %>
-              <span>Sin categoría</span>
-            <% end %>
-          </li>
-          <li class="flex items-center">
-            <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fill-rule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clip-rule="evenodd"
-              >
-              </path>
-            </svg>
-            <span class="text-gray-700 truncate max-w-[150px] md:max-w-[300px]">
-              {@article.title}
-            </span>
-          </li>
-        </ol>
-      </nav>
+      <.breadcrumb items={[
+        %{text: "Artículos", href: ~p"/articles"},
+        if(@article.category,
+          do: %{
+            text: @article.category.name,
+            href: ~p"/articles?category=#{@article.category.slug}"
+          },
+          else: %{text: "Sin categoría"}
+        ),
+        %{text: @article.title}
+      ]} />
     </div>
 
     <div class="flex space-x-2">
@@ -69,99 +40,42 @@
     </div>
   </div>
   
-<!-- Contenido principal del artículo -->
-  <article class="bg-white px-4 py-6 md:px-8 md:py-8 lg:px-12 lg:py-10 rounded-lg shadow-md border-t-4 border-blue-600">
-    <!-- Imagen destacada -->
-    <div class="mb-6 relative rounded-lg overflow-hidden shadow-md">
-      <img
-        src={@article.image_url || "/images/demo/featured-weekly.png"}
-        alt={@article.title}
-        class="w-full h-auto"
-      />
-      <div class="absolute inset-0 border-2 border-blue-200 opacity-50 pointer-events-none rounded-lg">
-      </div>
-    </div>
-    
-<!-- Metadatos del artículo -->
-    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-500 text-sm mb-4">
-      <p class="mb-2 sm:mb-0">
-        <span class="text-blue-800">Publicado el:</span>
-        <span class="font-medium">{format_date(@article.inserted_at)}</span>
-        <span class="text-blue-800 ml-1">a las</span>
-        <span class="font-medium">{format_time(@article.inserted_at)}</span>
-      </p>
-      <p>
-        <span class="text-blue-800">Por:</span>
-        <span class="font-medium text-blue-700">
-          <%= if @article.user do %>
-            {@article.user.first_name} {@article.user.last_name}
-          <% else %>
-            Autor desconocido
-          <% end %>
-        </span>
-      </p>
-    </div>
-    
-<!-- Título -->
-    <h1 class="text-2xl sm:text-3xl font-bold mb-4 text-blue-950">
-      {@article.title}
-    </h1>
-    
-<!-- Categoría -->
-    <%= if @article.category do %>
-      <div class="mb-6">
-        <span class="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
-          {@article.category.name}
-        </span>
-      </div>
-    <% end %>
-    
-<!-- Contenido formateado -->
-    <div class="text-gray-700 leading-relaxed space-y-4">
-      {raw(format_content(@article.content))}
-    </div>
-    
-<!-- Pie de artículo -->
-    <div class="mt-8 pt-4 border-t border-gray-200">
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <!-- Compartir -->
-        <div class="flex flex-wrap gap-3">
-          <a
-            href={"https://twitter.com/intent/tweet?url=" <> URI.encode(url(~p"/articles/#{@article}")) <> "&text=" <> URI.encode(@article.title)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center text-blue-700 hover:text-blue-900 text-sm font-medium transition-colors duration-200"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-1"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-            </svg>
-            Twitter
-          </a>
-          <a
-            href={"https://www.facebook.com/sharer/sharer.php?u=" <> URI.encode(url(~p"/articles/#{@article}"))}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center text-blue-700 hover:text-blue-900 text-sm font-medium transition-colors duration-200"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 mr-1"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
-            </svg>
-            Facebook
-          </a>
-        </div>
-      </div>
-    </div>
-  </article>
+<!-- Contenido principal del artículo usando single_article -->
+  <.single_article
+    image_src={@article.image_url || "/images/demo/featured-weekly.png"}
+    image_alt={@article.title}
+    date={format_date(@article.inserted_at)}
+    time={format_time(@article.inserted_at)}
+    author={
+      if @article.user do
+        "#{@article.user.first_name} #{@article.user.last_name}"
+      else
+        "Autor desconocido"
+      end
+    }
+    title={@article.title}
+    category={if @article.category, do: @article.category.name, else: nil}
+    category_url={
+      if @article.category, do: ~p"/articles?category=#{@article.category.slug}", else: nil
+    }
+    actions={[
+      %{
+        url: ~p"/articles/#{@article}/edit",
+        icon: "edit",
+        color: "blue"
+      },
+      %{
+        url: ~p"/articles/#{@article}",
+        method: :delete,
+        confirm: "¿Estás seguro que deseas eliminar este artículo?",
+        icon: "close",
+        color: "red"
+      }
+    ]}
+    show_footer={true}
+  >
+    {raw(format_content(@article.content))}
+  </.single_article>
   
 <!-- Artículos relacionados si los hay -->
   <%= if @related_articles && Enum.any?(@related_articles) do %>
@@ -172,59 +86,14 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <%= for related <- @related_articles do %>
-          <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-100 flex flex-col h-full group hover:shadow-lg transition-all duration-300">
-            <div class="relative h-40 overflow-hidden">
-              <img
-                src={related.image_url || "/images/demo/featured1.png"}
-                alt={related.title}
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <%= if related.category do %>
-                <div class="absolute top-2 right-2">
-                  <span class="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                    {related.category.name}
-                  </span>
-                </div>
-              <% end %>
-            </div>
-
-            <div class="p-4 flex-grow">
-              <div class="text-sm text-blue-700 mb-2">
-                {format_date(related.inserted_at)}
-              </div>
-              <h3 class="font-bold text-lg text-blue-950 mb-2 group-hover:text-blue-700">
-                <.link href={~p"/articles/#{related}"} class="hover:underline">
-                  {related.title}
-                </.link>
-              </h3>
-              <p class="text-gray-600 text-sm line-clamp-2 mb-4">
-                {String.slice(related.content, 0, 100) <> "..."}
-              </p>
-            </div>
-
-            <div class="px-4 pb-4 mt-auto">
-              <.link
-                href={~p"/articles/#{related}"}
-                class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
-              >
-                Leer más
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 ml-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
-              </.link>
-            </div>
-          </div>
+          <.article_card
+            title={related.title}
+            date={format_date(related.inserted_at)}
+            image={related.image_url || "/images/demo/featured1.png"}
+            excerpt={String.slice(related.content, 0, 100) <> "..."}
+            url={~p"/articles/#{related}"}
+            category={if related.category, do: related.category.name, else: nil}
+          />
         <% end %>
       </div>
     </div>
@@ -255,30 +124,14 @@
   <:sidebar>
     <!-- Búsqueda -->
     <.sidebar_box title="Buscar artículos">
-      <form action={~p"/articles"} method="get" class="space-y-4">
-        <div class="relative">
-          <input
-            type="text"
-            name="search"
-            placeholder="Buscar por título o contenido..."
-            class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
-          />
-          <button type="submit" class="absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 text-gray-400 hover:text-blue-500"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-      </form>
+      <.search_form
+        action={~p"/articles"}
+        search_term=""
+        category_options={@categories}
+        current_category={if @article.category, do: @article.category.slug, else: ""}
+        compact={true}
+        include_category_filter={false}
+      />
     </.sidebar_box>
     
 <!-- Categorías -->

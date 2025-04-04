@@ -20,6 +20,32 @@ defmodule Policia.Utils do
   end
 
   @doc """
+  Formatea una hora en formato 24 horas.
+
+  ## Ejemplos
+
+      iex> format_time(~U[2025-04-02 15:30:00Z])
+      "15:30"
+
+  """
+  def format_time(%DateTime{} = date) do
+    Calendar.strftime(date, "%H:%M")
+  end
+
+  @doc """
+  Formatea una fecha y hora en un formato legible.
+
+  ## Ejemplos
+
+      iex> format_datetime(~U[2025-04-02 15:30:00Z])
+      "02 abril 2025 15:30"
+
+  """
+  def format_datetime(%DateTime{} = date) do
+    "#{format_date(date)} #{format_time(date)}"
+  end
+
+  @doc """
   Traduce el nombre del mes de inglés a español.
   """
   def translate_month(month) do
