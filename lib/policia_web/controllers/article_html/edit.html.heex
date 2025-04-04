@@ -1,8 +1,34 @@
-<.header>
-  Edit Article {@article.id}
-  <:subtitle>Use this form to manage article records in your database.</:subtitle>
-</.header>
+<.content_layout
+  title="Editar artículo"
+  subtitle="Modifique la información del artículo"
+  has_sidebar={false}
+>
+  <div class="mb-6 flex justify-between items-center">
+    <.header>
+      Editar Artículo
+      <:subtitle>
+        ID: #{@article.id} - Creado el #{format_date(@article.inserted_at)}
+      </:subtitle>
+    </.header>
 
-<.article_form changeset={@changeset} categories={@categories} action={~p"/articles/#{@article}"} />
+    <div class="flex space-x-2">
+      <.link href={~p"/articles/#{@article}"}>
+        <.app_button_secondary icon="doc" size="sm">
+          Ver artículo
+        </.app_button_secondary>
+      </.link>
 
-<.back navigate={~p"/articles"}>Back to articles</.back>
+      <.link href={~p"/articles"}>
+        <.app_button_secondary icon="back" size="sm">
+          Volver a artículos
+        </.app_button_secondary>
+      </.link>
+    </div>
+  </div>
+
+  <.article_form
+    changeset={@changeset}
+    categories={@categories}
+    action={~p"/articles/#{@article}"}
+  />
+</.content_layout>

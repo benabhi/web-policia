@@ -1,12 +1,24 @@
-<.content_layout title={@page_title} subtitle={@subtitle} has_sidebar={false}>
-  <.header>
-    Nuevo Artículo
-    <:subtitle>
-      Use este formulario para gestionar los registros de artículos en tu base de datos.
-    </:subtitle>
-  </.header>
+<.content_layout
+  title="Crear un nuevo artículo"
+  subtitle="Complete el formulario para crear un artículo"
+  has_sidebar={false}
+>
+  <div class="mb-6 flex justify-between items-center">
+    <.header>
+      Nuevo Artículo
+      <:subtitle>
+        Use este formulario para crear un nuevo artículo
+      </:subtitle>
+    </.header>
+
+    <div>
+      <.link href={~p"/articles"}>
+        <.app_button_secondary icon="back" size="sm">
+          Volver a artículos
+        </.app_button_secondary>
+      </.link>
+    </div>
+  </div>
 
   <.article_form changeset={@changeset} categories={@categories} action={~p"/articles"} />
-
-  <.back navigate={~p"/articles"}>Back to articles</.back>
 </.content_layout>

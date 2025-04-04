@@ -14,6 +14,9 @@ module.exports = {
   safelist: [
     {
       pattern: /^(bg|text|border|from|to)-(blue|red|green|purple|indigo|orange|yellow)-\d{3}$/
+    },
+    {
+      pattern: /^(bg|text|border|from|to)-(blue|red|green|purple|indigo|orange|yellow)-\d{3}\/\d{1,3}$/,
     }
   ],
   theme: {

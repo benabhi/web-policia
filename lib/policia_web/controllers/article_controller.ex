@@ -4,13 +4,33 @@ defmodule PoliciaWeb.ArticleController do
   alias Policia.Articles
   alias Policia.Articles.Article
 
-  def index(conn, _params) do
-    articles = Articles.list_articles_with_category()
+  @articles_per_page 6
+
+  def index(conn, params) do
+    page = params_to_integer(params["page"], 1)
+    search = Map.get(params, "search", "")
+    category_slug = Map.get(params, "category", "")
+
+    # Obtener artículos paginados
+    %{entries: articles, page_number: page, total_pages: total_pages} =
+      Articles.list_articles_with_category_paginated(page, @articles_per_page)
+
+    # Obtener categorías para los filtros
+    categories = Articles.list_categories()
 
     conn
-    |> assign(:page_title, "Articulos")
+    |> assign(:page_title, "Artículos")
     |> assign(:subtitle, "Listado de artículos")
-    |> render(:index, articles: articles)
+    |> assign(:articles, articles)
+    # Añadido: asignar categorías
+    |> assign(:categories, categories)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+    # Añadido: asignar término de búsqueda
+    |> assign(:search_term, search)
+    # Añadido: asignar categoría actual
+    |> assign(:current_category, category_slug)
+    |> render(:index)
   end
 
   def new(conn, _params) do
@@ -45,7 +65,22 @@ defmodule PoliciaWeb.ArticleController do
 
   def show(conn, %{"id" => id}) do
     article = Articles.get_article_with_category!(id)
-    render(conn, :show, article: article)
+    categories = Articles.list_categories()
+
+    # Obtener artículos relacionados (misma categoría)
+    related_articles =
+      if article.category_id do
+        Articles.list_articles_by_category(article.category_id, 3, exclude_id: article.id)
+      else
+        []
+      end
+
+    conn
+    |> assign(:article, article)
+    |> assign(:categories, categories)
+    |> assign(:related_articles, related_articles)
+    |> assign(:page_title, article.title)
+    |> render(:show)
   end
 
   def edit(conn, %{"id" => id}) do
@@ -89,25 +124,74 @@ defmodule PoliciaWeb.ArticleController do
     |> redirect(to: ~p"/articles")
   end
 
-  def all_articles(conn, _params) do
-    articles = Articles.list_articles_with_category()
+  def all_articles(conn, params) do
+    page = params_to_integer(params["page"], 1)
+    search = Map.get(params, "search", "")
+    category_slug = Map.get(params, "category", "")
+
+    # Filtrar por categoría si se proporciona un slug
+    {articles, total_pages} =
+      cond do
+        category_slug != "" ->
+          category = Articles.get_category_by_slug!(category_slug)
+
+          %{entries: entries, total_pages: pages} =
+            Articles.list_articles_by_category_paginated(category.id, page, @articles_per_page,
+              search: search
+            )
+
+          {entries, pages}
+
+        search != "" ->
+          %{entries: entries, total_pages: pages} =
+            Articles.search_articles_paginated(search, page, @articles_per_page)
+
+          {entries, pages}
+
+        true ->
+          %{entries: entries, total_pages: pages} =
+            Articles.list_articles_with_category_paginated(page, @articles_per_page)
+
+          {entries, pages}
+      end
+
     categories = Articles.list_categories()
 
     conn
     |> assign(:page_title, "Todas las Noticias")
     |> assign(:subtitle, "Mantente informado sobre las últimas novedades")
-    |> render(:all_articles, articles: articles, categories: categories)
+    |> assign(:articles, articles)
+    |> assign(:categories, categories)
+    |> assign(:current_category, category_slug)
+    |> assign(:search_term, search)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+    |> render(:all_articles)
   end
 
-  def by_category(conn, %{"slug" => slug}) do
+  def by_category(conn, %{"slug" => slug} = params) do
+    page = params_to_integer(params["page"], 1)
+    search = Map.get(params, "search", "")
+
     category = Articles.get_category_by_slug!(slug)
-    articles = Articles.list_articles_by_category(category.id)
+
+    %{entries: articles, total_pages: total_pages} =
+      Articles.list_articles_by_category_paginated(category.id, page, @articles_per_page,
+        search: search
+      )
+
     categories = Articles.list_categories()
 
     conn
     |> assign(:page_title, "Noticias: #{category.name}")
     |> assign(:subtitle, "Artículos en la categoría #{category.name}")
-    |> render(:all_articles, articles: articles, categories: categories)
+    |> assign(:articles, articles)
+    |> assign(:categories, categories)
+    |> assign(:current_category, slug)
+    |> assign(:search_term, search)
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+    |> render(:all_articles)
   end
 
   # Función auxiliar para obtener las opciones de categorías
@@ -189,4 +273,14 @@ defmodule PoliciaWeb.ArticleController do
       end
     end
   end
+
+  # Función auxiliar para convertir parámetros a enteros con valor por defecto
+  defp params_to_integer(param, default) when is_binary(param) do
+    case Integer.parse(param) do
+      {value, _} when value > 0 -> value
+      _ -> default
+    end
+  end
+
+  defp params_to_integer(_, default), do: default
 end

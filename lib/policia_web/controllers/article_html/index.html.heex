@@ -1,34 +1,343 @@
-<.header>
-  Listado de Artículos
-  <:actions>
-    <.link href={~p"/articles/new"}>
-      <.button>Nuevo Artículo</.button>
-    </.link>
-  </:actions>
-</.header>
-
-<.table id="articles" rows={@articles} row_click={&JS.navigate(~p"/articles/#{&1}")}>
-  <:col :let={article} label="Título">{article.title}</:col>
-  <:col :let={article} label="Contenido">{String.slice(article.content, 0, 50)}...</:col>
-  <:col :let={article} label="Categoría">
-    <%= if article.category do %>
-      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-        {article.category.name}
-      </span>
-    <% else %>
-      <span class="text-gray-500">-</span>
-    <% end %>
-  </:col>
-  <:col :let={article} label="Autor">{article.author}</:col>
-  <:action :let={article}>
-    <div class="sr-only">
-      <.link navigate={~p"/articles/#{article}"}>Ver</.link>
+<.content_layout title={@page_title} subtitle={@subtitle} has_sidebar={true}>
+  <div>
+    <!-- Filtros de búsqueda y categorías -->
+    <div class="bg-white rounded-lg shadow-md p-4 border border-blue-100 mb-8">
+      <form action={~p"/articles"} method="get" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <!-- Filtro por categoría -->
+          <div class="flex-grow max-w-xs">
+            <label for="category" class="block text-sm font-medium text-blue-700 mb-1">
+              Filtrar por categoría
+            </label>
+            <select
+              id="category"
+              name="category"
+              class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              onchange="if(this.form) this.form.submit();"
+            >
+              <option value="">Todas las categorías</option>
+              <%= for category <- @categories do %>
+                <option value={category.slug} selected={@current_category == category.slug}>
+                  {category.name}
+                </option>
+              <% end %>
+            </select>
+          </div>
+          
+<!-- Buscador -->
+          <div class="flex-grow max-w-md">
+            <label for="search" class="block text-sm font-medium text-blue-700 mb-1">
+              Buscar artículos
+            </label>
+            <div class="relative">
+              <input
+                type="text"
+                id="search"
+                name="search"
+                value={@search_term}
+                placeholder="Buscar por título o contenido..."
+                class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 pr-10"
+              />
+              <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 text-gray-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+<!-- Botón de búsqueda -->
+          <div class="flex items-end">
+            <button
+              type="submit"
+              class="bg-blue-700 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300"
+            >
+              Buscar
+            </button>
+          </div>
+        </div>
+        
+<!-- Preservar página actual -->
+        <input type="hidden" name="page" value={@page} />
+      </form>
     </div>
-    <.link navigate={~p"/articles/#{article}/edit"}>Editar</.link>
-  </:action>
-  <:action :let={article}>
-    <.link href={~p"/articles/#{article}"} method="delete" data-confirm="¿Estás seguro?">
-      Eliminar
-    </.link>
-  </:action>
-</.table>
+    
+<!-- Barra de acciones administrativas -->
+    <div class="flex justify-between items-center mb-6">
+      <div>
+        <%= if @search_term && @search_term != "" do %>
+          <p class="text-sm text-gray-600">
+            Mostrando resultados para:
+            <span class="font-medium text-blue-800">{@search_term}</span>
+            <.link href={~p"/articles"} class="ml-2 text-blue-600 hover:underline">
+              <span>Limpiar filtros</span>
+            </.link>
+          </p>
+        <% end %>
+
+        <%= if @current_category && @current_category != "" do %>
+          <p class="text-sm text-gray-600">
+            Categoría:
+            <span class="font-medium text-blue-800">
+              {Enum.find(@categories, fn c -> c.slug == @current_category end).name}
+            </span>
+            <.link href={~p"/articles"} class="ml-2 text-blue-600 hover:underline">
+              <span>Ver todas</span>
+            </.link>
+          </p>
+        <% end %>
+      </div>
+
+      <div>
+        <.link href={~p"/articles/new"}>
+          <.app_button icon="add" size="sm">
+            Nuevo artículo
+          </.app_button>
+        </.link>
+      </div>
+    </div>
+    
+<!-- Lista de noticias -->
+    <div class="space-y-8">
+      <!-- Sección de noticias -->
+      <div class="mb-8">
+        <%= if Enum.empty?(@articles) do %>
+          <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-6 text-center">
+            <svg
+              class="mx-auto h-12 w-12 text-blue-400 mb-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 class="text-lg font-semibold mb-2">No se encontraron artículos</h3>
+            <p class="text-blue-700">
+              <%= if @search_term && @search_term != "" do %>
+                No hay resultados para "{@search_term}". Intenta con otros términos.
+              <% else %>
+                No hay artículos disponibles en esta categoría.
+              <% end %>
+            </p>
+            <.link
+              href={~p"/articles"}
+              class="mt-4 inline-block text-blue-700 hover:text-blue-900 font-medium"
+            >
+              Ver todos los artículos
+            </.link>
+          </div>
+        <% else %>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <%= for article <- @articles do %>
+              <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-100 flex flex-col h-full group hover:shadow-lg transition-all duration-300">
+                <!-- Imagen del artículo -->
+                <div class="relative h-48 overflow-hidden">
+                  <img
+                    src={article.image_url || "/images/demo/featured1.png"}
+                    alt={article.title}
+                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  
+<!-- Categoría como badge -->
+                  <%= if article.category do %>
+                    <div class="absolute top-2 right-2">
+                      <span class="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                        {article.category.name}
+                      </span>
+                    </div>
+                  <% end %>
+                  
+<!-- Botones de acción -->
+                  <div class="absolute bottom-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <.link href={~p"/articles/#{article}/edit"}>
+                      <span class="bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                          />
+                        </svg>
+                      </span>
+                    </.link>
+                    <.link
+                      href={~p"/articles/#{article}"}
+                      method="delete"
+                      data-confirm="¿Estás seguro de eliminar este artículo?"
+                    >
+                      <span class="bg-red-600 text-white p-1.5 rounded-full hover:bg-red-700">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </span>
+                    </.link>
+                  </div>
+                </div>
+                
+<!-- Contenido del artículo -->
+                <div class="p-4 flex-grow">
+                  <div class="text-sm text-blue-700 mb-2">
+                    {format_date(article.inserted_at)}
+                  </div>
+                  <h3 class="font-bold text-lg text-blue-950 mb-2 group-hover:text-blue-700">
+                    <.link href={~p"/articles/#{article}"} class="hover:underline">
+                      {article.title}
+                    </.link>
+                  </h3>
+                  <p class="text-gray-600 text-sm line-clamp-3 mb-4">
+                    {String.slice(article.content, 0, 150) <> "..."}
+                  </p>
+                </div>
+                
+<!-- Pie con enlace y autor -->
+                <div class="px-4 pb-4 mt-auto border-t border-gray-100 pt-2 flex justify-between items-center">
+                  <.link
+                    href={~p"/articles/#{article}"}
+                    class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
+                  >
+                    Leer más
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 ml-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </.link>
+                  <span class="text-xs text-gray-500">
+                    Por {article.author}
+                  </span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          
+<!-- Paginación -->
+          <.pagination
+            page={@page}
+            total_pages={@total_pages}
+            route_func={
+              fn page ->
+                path = ~p"/articles"
+
+                uri = URI.parse(path)
+                query_params = URI.decode_query(uri.query || "")
+
+                # Agregar página actual
+                query_params = Map.put(query_params, "page", page)
+
+                # Agregar término de búsqueda si existe
+                query_params =
+                  if @search_term && @search_term != "",
+                    do: Map.put(query_params, "search", @search_term),
+                    else: query_params
+
+                # Agregar categoría si existe
+                query_params =
+                  if @current_category && @current_category != "",
+                    do: Map.put(query_params, "category", @current_category),
+                    else: query_params
+
+                # Construir la URL completa
+                uri = %{uri | query: URI.encode_query(query_params)}
+                URI.to_string(uri)
+              end
+            }
+          />
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <:sidebar>
+    <!-- Categorías -->
+    <.sidebar_box title="Categorías">
+      <ul class="space-y-2">
+        <li>
+          <.link
+            href={~p"/articles"}
+            class={"flex items-center px-3 py-2 text-sm hover:bg-blue-50 rounded-md group " <>
+              if !@current_category || @current_category == "", do: "bg-blue-100 font-semibold", else: ""}
+          >
+            <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
+            <span>Todas las categorías</span>
+          </.link>
+        </li>
+        <%= for category <- @categories do %>
+          <li>
+            <.link
+              href={~p"/articles?category=#{category.slug}"}
+              class={"flex items-center px-3 py-2 text-sm hover:bg-blue-50 rounded-md group " <>
+                if @current_category == category.slug, do: "bg-blue-100 font-semibold", else: ""}
+            >
+              <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
+              <span>{category.name}</span>
+              <span class="ml-auto text-xs text-gray-500 bg-gray-100 rounded-full px-2 py-0.5 group-hover:bg-white">
+                {length(category.articles || [])}
+              </span>
+            </.link>
+          </li>
+        <% end %>
+      </ul>
+    </.sidebar_box>
+    
+<!-- Enlaces administrativos -->
+    <div class="mt-6">
+      <.sidebar_box title="Administración">
+        <.sidebar_links items={[
+          %{
+            icon: "add",
+            title: "Crear artículo",
+            description: "Publicar un nuevo artículo",
+            url: ~p"/articles/new"
+          },
+          %{
+            icon: "edit",
+            title: "Administrar categorías",
+            description: "Añadir o modificar categorías",
+            url: ~p"/categories"
+          }
+        ]} />
+      </.sidebar_box>
+    </div>
+  </:sidebar>
+</.content_layout>
