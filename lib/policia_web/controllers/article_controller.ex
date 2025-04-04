@@ -19,8 +19,8 @@ defmodule PoliciaWeb.ArticleController do
     categories = Articles.list_categories()
 
     conn
-    |> assign(:page_title, "Artículos")
-    |> assign(:subtitle, "Listado de artículos")
+    |> assign(:page_title, "Noticias")
+    |> assign(:subtitle, "Listado de todas las noticias del sitio")
     |> assign(:articles, articles)
     # Añadido: asignar categorías
     |> assign(:categories, categories)

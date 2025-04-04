@@ -27,7 +27,6 @@ defmodule PoliciaWeb.Router do
     get "/", PageController, :home
 
     # Coloca la ruta personalizada ANTES del recurso
-    get "/articles/all", ArticleController, :all_articles
     get "/articles/category/:slug", ArticleController, :by_category
     resources "/articles", ArticleController
     resources "/categories", CategoryController
