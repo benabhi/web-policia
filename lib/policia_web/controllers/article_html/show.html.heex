@@ -1,23 +1,27 @@
 <.content_layout title={@article.title} has_sidebar={true}>
   <!-- Encabezado y botones de administración -->
-  <div class="flex justify-between items-center mb-6">
-    <div>
-      <.breadcrumb items={[
-        %{text: "Artículos", href: ~p"/articles"},
-        if(@article.category,
-          do: %{
-            text: @article.category.name,
-            href: ~p"/articles?category=#{@article.category.slug}"
-          },
-          else: %{text: "Sin categoría"}
-        ),
-        %{text: @article.title}
-      ]} />
+  <!-- Encabezado y botones de administración - Mejorado para responsividad -->
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+    <div class="w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+      <.breadcrumb
+        max_width={true}
+        items={[
+          %{text: "Artículos", href: ~p"/articles"},
+          if(@article.category,
+            do: %{
+              text: @article.category.name,
+              href: ~p"/articles?category=#{@article.category.slug}"
+            },
+            else: %{text: "Sin categoría"}
+          ),
+          %{text: @article.title}
+        ]}
+      />
     </div>
 
-    <div class="flex space-x-2">
-      <.link href={~p"/articles/#{@article}/edit"}>
-        <.app_button_secondary icon="edit" size="sm">
+    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+      <.link href={~p"/articles/#{@article}/edit"} class="w-full sm:w-auto">
+        <.app_button_secondary icon="edit" size="sm" class="w-full sm:w-auto justify-center">
           Editar
         </.app_button_secondary>
       </.link>
@@ -26,14 +30,20 @@
         href={~p"/articles/#{@article}"}
         method="delete"
         data-confirm="¿Estás seguro que deseas eliminar este artículo?"
+        class="w-full sm:w-auto"
       >
-        <.app_button_secondary icon="close" size="sm" color="danger">
+        <.app_button_secondary
+          icon="close"
+          size="sm"
+          color="danger"
+          class="w-full sm:w-auto justify-center"
+        >
           Eliminar
         </.app_button_secondary>
       </.link>
 
-      <.link href={~p"/articles/new"}>
-        <.app_button icon="add" size="sm">
+      <.link href={~p"/articles/new"} class="w-full sm:w-auto">
+        <.app_button icon="add" size="sm" class="w-full sm:w-auto justify-center">
           Nuevo artículo
         </.app_button>
       </.link>
