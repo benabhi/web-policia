@@ -642,14 +642,6 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Helper para determinar si un enlace está activo
-  defp active_class(nil, _link), do: ""
-  defp active_class(_current_path, "#"), do: ""
-
-  defp active_class(current_path, link) do
-    if current_path == link, do: "bg-#{Config.webpage_theme()}-700 text-white", else: ""
-  end
-
   # Componente para articulo unico
   # Renombrar el componente de article a single_article
   attr :image_src, :string, required: true, doc: "Ruta de la imagen destacada"
@@ -2675,28 +2667,6 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
-  # Función auxiliar para determinar qué páginas mostrar en la paginación
-  defp pages_to_show(current_page, total_pages) do
-    cond do
-      # Menos de 8 páginas - mostrar todas
-      total_pages <= 8 ->
-        Enum.to_list(1..total_pages)
-
-      # Página actual al inicio
-      current_page <= 4 ->
-        Enum.to_list(1..5) ++ [:ellipsis, total_pages]
-
-      # Página actual al final
-      current_page >= total_pages - 3 ->
-        [1, :ellipsis] ++ Enum.to_list((total_pages - 4)..total_pages)
-
-      # Página actual en el medio
-      true ->
-        [1, :ellipsis] ++
-          Enum.to_list((current_page - 1)..(current_page + 1)) ++ [:ellipsis, total_pages]
-    end
-  end
-
   attr :items, :list, required: true, doc: "Lista de ítems del breadcrumb"
   attr :class, :string, default: "", doc: "Clases CSS adicionales"
   attr :separator_svg, :boolean, default: true, doc: "Usar SVG como separador en lugar de texto"
@@ -2738,5 +2708,35 @@ defmodule PoliciaWeb.CustomComponents do
       </ol>
     </nav>
     """
+  end
+
+  # Función auxiliar para determinar qué páginas mostrar en la paginación
+  defp pages_to_show(current_page, total_pages) do
+    cond do
+      # Menos de 8 páginas - mostrar todas
+      total_pages <= 8 ->
+        Enum.to_list(1..total_pages)
+
+      # Página actual al inicio
+      current_page <= 4 ->
+        Enum.to_list(1..5) ++ [:ellipsis, total_pages]
+
+      # Página actual al final
+      current_page >= total_pages - 3 ->
+        [1, :ellipsis] ++ Enum.to_list((total_pages - 4)..total_pages)
+
+      # Página actual en el medio
+      true ->
+        [1, :ellipsis] ++
+          Enum.to_list((current_page - 1)..(current_page + 1)) ++ [:ellipsis, total_pages]
+    end
+  end
+
+  # Helper para determinar si un enlace está activo
+  defp active_class(nil, _link), do: ""
+  defp active_class(_current_path, "#"), do: ""
+
+  defp active_class(current_path, link) do
+    if current_path == link, do: "bg-#{Config.webpage_theme()}-700 text-white", else: ""
   end
 end
