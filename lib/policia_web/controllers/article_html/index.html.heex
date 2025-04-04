@@ -106,189 +106,66 @@
       </div>
     </div>
     
-<!-- Lista de noticias -->
-    <div class="space-y-8">
-      <!-- Sección de noticias -->
-      <div class="mb-8">
-        <%= if Enum.empty?(@articles) do %>
-          <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-6 text-center">
-            <svg
-              class="mx-auto h-12 w-12 text-blue-400 mb-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3 class="text-lg font-semibold mb-2">No se encontraron artículos</h3>
-            <p class="text-blue-700">
-              <%= if @search_term && @search_term != "" do %>
-                No hay resultados para "{@search_term}". Intenta con otros términos.
-              <% else %>
-                No hay artículos disponibles en esta categoría.
-              <% end %>
-            </p>
-            <.link
-              href={~p"/articles"}
-              class="mt-4 inline-block text-blue-700 hover:text-blue-900 font-medium"
-            >
-              Ver todos los artículos
-            </.link>
-          </div>
-        <% else %>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <%= for article <- @articles do %>
-              <div class="bg-white rounded-lg shadow-md overflow-hidden border border-blue-100 flex flex-col h-full group hover:shadow-lg transition-all duration-300">
-                <!-- Imagen del artículo -->
-                <div class="relative h-48 overflow-hidden">
-                  <img
-                    src={article.image_url || "/images/demo/featured1.png"}
-                    alt={article.title}
-                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                  
-<!-- Categoría como badge -->
-                  <%= if article.category do %>
-                    <div class="absolute top-2 right-2">
-                      <span class="bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded-full">
-                        {article.category.name}
-                      </span>
-                    </div>
-                  <% end %>
-                  
-<!-- Botones de acción -->
-                  <div class="absolute bottom-0 right-0 flex space-x-1 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <.link href={~p"/articles/#{article}/edit"}>
-                      <span class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-all flex items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                          />
-                        </svg>
-                      </span>
-                    </.link>
-                    <.link
-                      href={~p"/articles/#{article}"}
-                      method="delete"
-                      data-confirm="¿Estás seguro de eliminar este artículo?"
-                    >
-                      <span class="bg-red-600 text-white p-2 rounded-md hover:bg-red-700 transition-all flex items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </span>
-                    </.link>
-                  </div>
-                </div>
-                
-<!-- Contenido del artículo -->
-                <div class="p-4 flex-grow">
-                  <div class="text-sm text-blue-700 mb-2">
-                    {format_date(article.inserted_at)}
-                  </div>
-                  <h3 class="font-bold text-lg text-blue-950 mb-2 group-hover:text-blue-700">
-                    <.link href={~p"/articles/#{article}"} class="hover:underline">
-                      {article.title}
-                    </.link>
-                  </h3>
-                  <p class="text-gray-600 text-sm line-clamp-3 mb-4">
-                    {String.slice(article.content, 0, 150) <> "..."}
-                  </p>
-                </div>
-                
-<!-- Pie con enlace y autor -->
-                <div class="px-4 pb-4 mt-auto border-t border-gray-100 pt-2">
-                  <!-- Autor en una línea separada -->
-                  <div class="text-xs text-gray-500 mb-2">
-                    Por {article.author}
-                  </div>
-                  
-<!-- Enlace "Leer más" siempre en su propia línea con espacio completo -->
-                  <.link
-                    href={~p"/articles/#{article}"}
-                    class="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-900"
-                  >
-                    Leer más
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4 ml-1"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      />
-                    </svg>
-                  </.link>
-                </div>
-              </div>
-            <% end %>
-          </div>
-          
+<!-- Lista de noticias usando el componente reutilizable article_grid -->
+    <.article_grid
+      articles={
+        Enum.map(@articles, fn article ->
+          %{
+            id: article.id,
+            title: article.title,
+            date: format_date(article.inserted_at),
+            image: article.image_url || "/images/demo/featured1.png",
+            excerpt: String.slice(article.content || "", 0, 150) <> "...",
+            url: ~p"/articles/#{article}",
+            category: if(article.category, do: article.category.name, else: nil),
+            author: article.author
+          }
+        end)
+      }
+      with_actions={true}
+      show_border={false}
+      empty_message="No se encontraron artículos"
+      empty_text={
+        if @search_term && @search_term != "" do
+          "No hay resultados para \"#{@search_term}\". Intenta con otros términos."
+        else
+          "No hay artículos disponibles en esta categoría."
+        end
+      }
+    />
+    
 <!-- Paginación -->
-          <.pagination
-            page={@page}
-            total_pages={@total_pages}
-            route_func={
-              fn page ->
-                path = ~p"/articles"
+    <.pagination
+      page={@page}
+      total_pages={@total_pages}
+      route_func={
+        fn page ->
+          path = ~p"/articles"
 
-                uri = URI.parse(path)
-                query_params = URI.decode_query(uri.query || "")
+          uri = URI.parse(path)
+          query_params = URI.decode_query(uri.query || "")
 
-                # Agregar página actual
-                query_params = Map.put(query_params, "page", page)
+          # Agregar página actual
+          query_params = Map.put(query_params, "page", page)
 
-                # Agregar término de búsqueda si existe
-                query_params =
-                  if @search_term && @search_term != "",
-                    do: Map.put(query_params, "search", @search_term),
-                    else: query_params
+          # Agregar término de búsqueda si existe
+          query_params =
+            if @search_term && @search_term != "",
+              do: Map.put(query_params, "search", @search_term),
+              else: query_params
 
-                # Agregar categoría si existe
-                query_params =
-                  if @current_category && @current_category != "",
-                    do: Map.put(query_params, "category", @current_category),
-                    else: query_params
+          # Agregar categoría si existe
+          query_params =
+            if @current_category && @current_category != "",
+              do: Map.put(query_params, "category", @current_category),
+              else: query_params
 
-                # Construir la URL completa
-                uri = %{uri | query: URI.encode_query(query_params)}
-                URI.to_string(uri)
-              end
-            }
-          />
-        <% end %>
-      </div>
-    </div>
+          # Construir la URL completa
+          uri = %{uri | query: URI.encode_query(query_params)}
+          URI.to_string(uri)
+        end
+      }
+    />
   </div>
 
   <:sidebar>

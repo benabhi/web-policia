@@ -1,3 +1,4 @@
+# lib/policia_web/controllers/user_session_controller.ex
 defmodule PoliciaWeb.UserSessionController do
   use PoliciaWeb, :controller
 
@@ -9,21 +10,21 @@ defmodule PoliciaWeb.UserSessionController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    %{"email" => email, "password" => password} = user_params
+    %{"username" => username, "password" => password} = user_params
 
-    if user = Accounts.get_user_by_email_and_password(email, password) do
+    if user = Accounts.get_user_by_username_and_password(username, password) do
       conn
-      |> put_flash(:info, "Welcome back!")
+      |> put_flash(:info, "Bienvenido de nuevo!")
       |> UserAuth.log_in_user(user, user_params)
     else
-      # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
-      render(conn, :new, error_message: "Invalid email or password")
+      # Para prevenir enumeración de usuarios, no revelar si el username existe
+      render(conn, :new, error_message: "Usuario o contraseña inválidos")
     end
   end
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Logged out successfully.")
+    |> put_flash(:info, "Sesión cerrada exitosamente.")
     |> UserAuth.log_out_user()
   end
 end

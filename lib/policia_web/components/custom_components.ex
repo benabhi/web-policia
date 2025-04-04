@@ -1,7 +1,7 @@
 defmodule PoliciaWeb.CustomComponents do
   use Phoenix.Component
   alias Policia.Config
-  alias Policia.Utils
+  # alias Policia.Utils
 
   # Componente para menu superior y lateral dinamico
   attr :menus, :list,
@@ -259,10 +259,12 @@ defmodule PoliciaWeb.CustomComponents do
                   <div class={"flex items-center mb-3 py-1 px-2 bg-#{@color_theme}-900/40 rounded-lg"}>
                     <div class={"w-8 h-8 bg-#{@color_theme}-800 rounded-full flex items-center justify-center mr-2"}>
                       <span class="text-white font-medium text-sm">
-                        {String.first(@current_user.email)}
+                        {String.first(@current_user.username || "")}
                       </span>
                     </div>
-                    <span class="text-white text-sm truncate">{@current_user.email}</span>
+                    <span class="text-white text-sm truncate">
+                      {@current_user.username || @current_user.email}
+                    </span>
                   </div>
                   <div class="space-y-2">
                     <a
@@ -528,11 +530,11 @@ defmodule PoliciaWeb.CustomComponents do
                 >
                   <div class={"w-6 h-6 rounded-full bg-#{@color_theme}-600 flex items-center justify-center"}>
                     <span class="text-white text-xs font-medium">
-                      {String.first(@current_user.email)}
+                      {String.first(@current_user.username || "")}
                     </span>
                   </div>
                   <span class="text-sm hidden xl:inline max-w-[120px] truncate">
-                    {@current_user.email}
+                    {@current_user.username || @current_user.email}
                   </span>
                   <svg
                     class="w-4 h-4"
@@ -1473,43 +1475,73 @@ defmodule PoliciaWeb.CustomComponents do
   attr :title, :string, required: true, doc: "Título del artículo"
   attr :date, :string, required: true, doc: "Fecha de publicación"
   attr :image, :string, default: nil, doc: "Imagen destacada (opcional)"
+  attr :image_alt, :string, default: nil, doc: "Texto alternativo para la imagen"
   attr :excerpt, :string, default: "", doc: "Extracto del artículo"
   attr :url, :string, required: true, doc: "URL del artículo completo"
   attr :category, :string, default: nil, doc: "Categoría del artículo"
+  attr :author, :string, default: nil, doc: "Autor del artículo"
+  attr :actions, :list, default: [], doc: "Lista de acciones (editar, eliminar, etc.)"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
 
   def article_card(assigns) do
     assigns =
       assigns
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
-      |> assign(:formatted_date, Utils.format_date(assigns.date))
+      |> assign_new(:image_alt, fn -> assigns[:title] end)
 
     ~H"""
-    <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-blue-100 flex flex-col h-full">
+    <div class={"bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-#{@color_theme}-100 flex flex-col h-full group #{@class}"}>
       <%= if @image do %>
         <div class="relative h-48 overflow-hidden">
           <img
             src={@image}
-            alt={@title}
-            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            alt={@image_alt}
+            class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <%= if @category do %>
             <div class="absolute top-2 right-2">
               <.badge text={@category} color={@color_theme} size="sm" />
             </div>
           <% end %>
+
+          <%= if Enum.any?(@actions) do %>
+            <div class="absolute bottom-0 right-0 flex space-x-1 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <%= for action <- @actions do %>
+                <.link
+                  href={action.url}
+                  method={Map.get(action, :method)}
+                  data-confirm={Map.get(action, :confirm)}
+                >
+                  <span class={"bg-#{action.color || @color_theme}-600 text-white p-2 rounded-md hover:bg-#{action.color || @color_theme}-700 transition-all flex items-center justify-center"}>
+                    <%= if action.icon do %>
+                      <.button_icon name={action.icon} />
+                    <% else %>
+                      <span>{action.text}</span>
+                    <% end %>
+                  </span>
+                </.link>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
 
       <div class="p-4 flex-grow">
-        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@formatted_date}</div>
-        <h3 class={"font-bold text-lg text-#{@color_theme}-950 mb-2 hover:text-#{@color_theme}-700"}>
-          <a href={@url} class="hover:underline">{@title}</a>
+        <div class={"text-sm text-#{@color_theme}-700 mb-2"}>{@date}</div>
+        <h3 class={"font-bold text-lg text-#{@color_theme}-950 mb-2 group-hover:text-#{@color_theme}-700"}>
+          <.link href={@url} class="hover:underline">{@title}</.link>
         </h3>
         <p class="text-gray-600 text-sm line-clamp-3 mb-4">{@excerpt}</p>
       </div>
 
-      <div class="px-4 pb-4 mt-auto">
-        <a
+      <div class="px-4 pb-4 mt-auto border-t border-gray-100 pt-2">
+        <%= if @author do %>
+          <div class="text-xs text-gray-500 mb-2">
+            Por {@author}
+          </div>
+        <% end %>
+
+        <.link
           href={@url}
           class={"inline-flex items-center text-sm font-semibold text-#{@color_theme}-700 hover:text-#{@color_theme}-900"}
         >
@@ -1528,33 +1560,133 @@ defmodule PoliciaWeb.CustomComponents do
               d="M14 5l7 7m0 0l-7 7m7-7H3"
             />
           </svg>
-        </a>
+        </.link>
       </div>
     </div>
     """
   end
 
   # Componente para grilla de articulos
-  attr :articles, :list, default: [], doc: "Lista de artículos a mostrar"
-
   attr :columns, :string,
     default: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
     doc: "Clases para controlar las columnas"
 
+  attr :articles, :list, required: true, doc: "Lista de artículos a mostrar"
+  attr :title, :string, default: nil, doc: "Título opcional de la sección"
+  attr :subtitle, :string, default: nil, doc: "Subtítulo opcional"
+  attr :view_all_url, :string, default: nil, doc: "URL para ver todos los artículos"
+  attr :view_all_text, :string, default: "Ver todos", doc: "Texto para el enlace 'ver todos'"
+
+  attr :empty_message, :string,
+    default: "No se encontraron artículos",
+    doc: "Mensaje cuando no hay artículos"
+
+  attr :empty_text, :string,
+    default: "No hay artículos disponibles",
+    doc: "Texto descriptivo cuando no hay artículos"
+
+  attr :with_actions, :boolean,
+    default: false,
+    doc: "Si se deben mostrar acciones administrativas"
+
+  attr :show_border, :boolean, default: true, doc: "Si se debe mostrar borde en el encabezado"
+
   def article_grid(assigns) do
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
     ~H"""
-    <div class={"grid gap-6 #{@columns}"}>
-      <%= for article <- @articles do %>
-        <.article_card
-          title={article.title}
-          date={article.date}
-          image={article.image}
-          excerpt={article.excerpt}
-          url={article.url}
-          category={article.category}
-        />
+    <section class="mb-8">
+      <%= if @title do %>
+        <div class={[
+          "flex justify-between items-center pb-3 mb-6",
+          @show_border && "border-b-2 border-#{@color_theme}-200"
+        ]}>
+          <div>
+            <h2 class={"text-2xl font-bold text-#{@color_theme}-950"}>{@title}</h2>
+            <%= if @subtitle do %>
+              <p class={"text-sm text-#{@color_theme}-700 mt-1"}>{@subtitle}</p>
+            <% end %>
+          </div>
+          <%= if @view_all_url do %>
+            <.link
+              href={@view_all_url}
+              class={"text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium flex items-center"}
+            >
+              {@view_all_text}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 ml-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </.link>
+          <% end %>
+        </div>
       <% end %>
-    </div>
+
+      <%= if Enum.empty?(@articles) do %>
+        <div class={"bg-#{@color_theme}-50 border border-#{@color_theme}-200 text-#{@color_theme}-800 rounded-md p-6 text-center"}>
+          <svg
+            class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <h3 class="text-lg font-semibold mb-2">{@empty_message}</h3>
+          <p class={"text-#{@color_theme}-700"}>
+            {@empty_text}
+          </p>
+        </div>
+      <% else %>
+        <div class={"grid gap-6 #{@columns}"}>
+          <%= for article <- @articles do %>
+            <.article_card
+              title={article.title}
+              date={article.date}
+              image={article.image}
+              image_alt={article.title}
+              excerpt={article.excerpt}
+              url={article.url}
+              category={article.category}
+              author={article[:author]}
+              actions={
+                if @with_actions do
+                  [
+                    %{
+                      url: "/articles/#{article.id}/edit",
+                      icon: "edit",
+                      color: @color_theme
+                    },
+                    %{
+                      url: "/articles/#{article.id}",
+                      method: :delete,
+                      confirm: "¿Estás seguro de eliminar este artículo?",
+                      icon: "close",
+                      color: "red"
+                    }
+                  ]
+                else
+                  []
+                end
+              }
+            />
+          <% end %>
+        </div>
+      <% end %>
+    </section>
     """
   end
 
@@ -1623,65 +1755,6 @@ defmodule PoliciaWeb.CustomComponents do
         </a>
       </div>
     </div>
-    """
-  end
-
-  # Componente para la sección de ultimas noticias
-  attr :title, :string, default: "Últimas Noticias", doc: "Título de la sección"
-  attr :news, :list, required: true, doc: "Lista de noticias a mostrar"
-  attr :view_all_url, :string, default: "#", doc: "URL para ver todas las noticias"
-  attr :view_all_text, :string, default: "Ver todas", doc: "Texto del enlace para ver todas"
-
-  attr :grid_columns, :string,
-    default: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
-    doc: "Configuración de columnas del grid"
-
-  attr :max_news, :integer, default: 3, doc: "Número máximo de noticias a mostrar"
-
-  def latest_news(assigns) do
-    # Limitar las noticias al máximo definido
-    assigns =
-      assigns
-      |> assign(:news, Enum.slice(assigns.news, 0, assigns.max_news))
-      |> assign(:color_theme, Config.webpage_theme())
-
-    ~H"""
-    <section class="mb-8">
-      <div class={"flex justify-between items-center border-b-2 border-#{@color_theme}-200 pb-3 mb-6"}>
-        <h2 class={"text-2xl font-bold text-#{@color_theme}-950"}>{@title}</h2>
-        <a
-          href={@view_all_url}
-          class={"text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium flex items-center"}
-        >
-          {@view_all_text}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 ml-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </a>
-      </div>
-
-      <div class={"grid gap-6 #{@grid_columns}"}>
-        <%= for news_item <- @news do %>
-          <.news_card
-            title={news_item.title}
-            date={news_item.date}
-            image={news_item.image}
-            excerpt={news_item.excerpt}
-            url={news_item.url}
-            category={news_item.category}
-          />
-        <% end %>
-      </div>
-    </section>
     """
   end
 

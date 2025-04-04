@@ -1,30 +1,31 @@
+# lib/policia_web/controllers/user_session_html/new.html.heex
 <div class="mx-auto max-w-sm">
   <.header class="text-center">
-    Log in to account
+    Iniciar sesión
     <:subtitle>
-      Don't have an account?
+      ¿No tienes una cuenta?
       <.link navigate={~p"/users/register"} class="font-semibold text-brand hover:underline">
-        Sign up
+        Regístrate
       </.link>
-      for an account now.
+      ahora.
     </:subtitle>
   </.header>
 
   <.simple_form :let={f} for={@conn.params["user"]} as={:user} action={~p"/users/log_in"}>
     <.error :if={@error_message}>{@error_message}</.error>
 
-    <.input field={f[:email]} type="email" label="Email" required />
-    <.input field={f[:password]} type="password" label="Password" required />
+    <.input field={f[:username]} type="text" label="Nombre de usuario" required />
+    <.input field={f[:password]} type="password" label="Contraseña" required />
 
     <:actions :let={f}>
-      <.input field={f[:remember_me]} type="checkbox" label="Keep me logged in" />
+      <.input field={f[:remember_me]} type="checkbox" label="Mantener sesión iniciada" />
       <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
-        Forgot your password?
+        ¿Olvidaste tu contraseña?
       </.link>
     </:actions>
     <:actions>
-      <.button phx-disable-with="Logging in..." class="w-full">
-        Log in <span aria-hidden="true">→</span>
+      <.button phx-disable-with="Iniciando sesión..." class="w-full">
+        Iniciar sesión <span aria-hidden="true">→</span>
       </.button>
     </:actions>
   </.simple_form>

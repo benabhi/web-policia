@@ -10,6 +10,18 @@ defmodule Policia.Accounts do
 
   ## Database getters
 
+  # Añade una función para obtener usuario por nombre de usuario
+  def get_user_by_username(username) when is_binary(username) do
+    Repo.get_by(User, username: username)
+  end
+
+  # Modifica la función de autenticación para usar username en lugar de email
+  def get_user_by_username_and_password(username, password)
+      when is_binary(username) and is_binary(password) do
+    user = Repo.get_by(User, username: username)
+    if User.valid_password?(user, password), do: user
+  end
+
   @doc """
   Gets a user by email.
 
@@ -106,6 +118,25 @@ defmodule Policia.Accounts do
   """
   def change_user_email(user, attrs \\ %{}) do
     User.email_changeset(user, attrs, validate_email: false)
+  end
+
+  def change_user_profile(%User{} = user, attrs \\ %{}) do
+    User.profile_changeset(user, attrs, validate_username: true)
+  end
+
+  def update_user_profile(user, password, attrs) do
+    changeset =
+      user
+      |> User.profile_changeset(attrs)
+      |> User.validate_current_password(password)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, changeset)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """

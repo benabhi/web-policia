@@ -1,13 +1,46 @@
+# lib/policia_web/controllers/user_settings_html/edit.html.heex
 <.header class="text-center">
-  Account Settings
-  <:subtitle>Manage your account email address and password settings</:subtitle>
+  Configuración de Cuenta
+  <:subtitle>Gestiona tu información personal y configuración de cuenta</:subtitle>
 </.header>
 
 <div class="space-y-12 divide-y">
+  <!-- Sección de datos personales -->
+  <div>
+    <.simple_form
+      :let={f}
+      for={@profile_changeset}
+      action={~p"/users/settings"}
+      id="update_profile"
+    >
+      <.error :if={@profile_changeset.action}>
+        Oops, algo salió mal! Por favor revisa los errores.
+      </.error>
+
+      <input type="hidden" name="action" value="update_profile" />
+
+      <.input field={f[:first_name]} type="text" label="Nombre" required />
+      <.input field={f[:last_name]} type="text" label="Apellido" required />
+      <.input field={f[:username]} type="text" label="Nombre de usuario" required />
+      <.input
+        field={f[:current_password]}
+        name="current_password"
+        type="password"
+        label="Contraseña actual"
+        required
+        id="current_password_for_profile"
+      />
+      <:actions>
+        <.button phx-disable-with="Actualizando...">Actualizar perfil</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+  
+<!-- Sección de email -->
   <div>
     <.simple_form :let={f} for={@email_changeset} action={~p"/users/settings"} id="update_email">
       <.error :if={@email_changeset.action}>
-        Oops, something went wrong! Please check the errors below.
+        Oops, algo salió mal! Por favor revisa los errores.
       </.error>
 
       <input type="hidden" name="action" value="update_email" />
@@ -17,15 +50,17 @@
         field={f[:current_password]}
         name="current_password"
         type="password"
-        label="Current Password"
+        label="Contraseña actual"
         required
         id="current_password_for_email"
       />
       <:actions>
-        <.button phx-disable-with="Changing...">Change Email</.button>
+        <.button phx-disable-with="Cambiando...">Cambiar Email</.button>
       </:actions>
     </.simple_form>
   </div>
+  
+<!-- Sección de contraseña -->
   <div>
     <.simple_form
       :let={f}
@@ -34,16 +69,16 @@
       id="update_password"
     >
       <.error :if={@password_changeset.action}>
-        Oops, something went wrong! Please check the errors below.
+        Oops, algo salió mal! Por favor revisa los errores.
       </.error>
 
       <input type="hidden" name="action" value="update_password" />
 
-      <.input field={f[:password]} type="password" label="New password" required />
+      <.input field={f[:password]} type="password" label="Nueva contraseña" required />
       <.input
         field={f[:password_confirmation]}
         type="password"
-        label="Confirm new password"
+        label="Confirma nueva contraseña"
         required
       />
 
@@ -51,12 +86,12 @@
         field={f[:current_password]}
         name="current_password"
         type="password"
-        label="Current password"
+        label="Contraseña actual"
         id="current_password_for_password"
         required
       />
       <:actions>
-        <.button phx-disable-with="Changing...">Change Password</.button>
+        <.button phx-disable-with="Cambiando...">Cambiar Contraseña</.button>
       </:actions>
     </.simple_form>
   </div>

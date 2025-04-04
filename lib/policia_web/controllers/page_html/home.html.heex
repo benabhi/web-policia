@@ -35,68 +35,12 @@
   </:hero>
 
   <div class="space-y-8">
-    <!-- Sección de últimas noticias con el nuevo componente -->
-    <.latest_news
+    <!-- Sección de últimas noticias con el componente article_grid reutilizable -->
+    <.article_grid
       title="Últimas Noticias"
       view_all_url="/articles"
       view_all_text="Ver todas"
-      max_news={6}
-      news={[
-        %{
-          title: "Nuevo sistema de monitoreo para la seguridad vial",
-          date: "3 Abril 2025",
-          image: "/images/demo/featured1.png",
-          excerpt:
-            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-          url: "#",
-          category: "Seguridad Vial"
-        },
-        %{
-          title: "Capacitación en primeros auxilios para el personal policial",
-          date: "1 Abril 2025",
-          image: "/images/demo/featured2.png",
-          excerpt:
-            "Más de 200 efectivos participaron del programa de capacitación en primeros auxilios y RCP, vital para situaciones de emergencia.",
-          url: "#",
-          category: "Capacitación"
-        },
-        %{
-          title: "Inauguración de nueva comisaría en El Bolsón",
-          date: "28 Marzo 2025",
-          image: "/images/demo/featured3.png",
-          excerpt:
-            "La nueva dependencia policial cuenta con tecnología de punta y mejores instalaciones para la atención al público.",
-          url: "#",
-          category: "Infraestructura"
-        },
-        %{
-          title: "Nuevo sistema de monitoreo para la seguridad vial",
-          date: "3 Abril 2025",
-          image: "/images/demo/featured1.png",
-          excerpt:
-            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-          url: "#",
-          category: "Seguridad Vial"
-        },
-        %{
-          title: "Nuevo sistema de monitoreo para la seguridad vial",
-          date: "3 Abril 2025",
-          image: "/images/demo/featured1.png",
-          excerpt:
-            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-          url: "#",
-          category: "Seguridad Vial"
-        },
-        %{
-          title: "Nuevo sistema de monitoreo para la seguridad vial",
-          date: "3 Abril 2025",
-          image: "/images/demo/featured1.png",
-          excerpt:
-            "La Policía de Río Negro implementa un moderno sistema de cámaras y monitoreo para mejorar la seguridad en las rutas provinciales.",
-          url: "#",
-          category: "Seguridad Vial"
-        }
-      ]}
+      articles={@latest_articles}
     />
     
 <!-- Sección de servicios destacados -->
@@ -154,7 +98,7 @@
   </div>
 
   <:sidebar>
-    <!-- Primera tarjeta de barra lateral - Trámites frecuentes -->
+    <!-- Contenido de la barra lateral permanece igual -->
     <.sidebar_box title="Trámites frecuentes">
       <.sidebar_links items={[
         %{
@@ -183,8 +127,7 @@
         }
       ]} />
     </.sidebar_box>
-    
-<!-- Segunda tarjeta de barra lateral - Enlaces rápidos -->
+
     <div class="mt-6">
       <.sidebar_box title="Enlaces rápidos">
         <.sidebar_links items={[
@@ -206,8 +149,7 @@
         ]} />
       </.sidebar_box>
     </div>
-    
-<!-- Tercera tarjeta - Estadísticas -->
+
     <div class="mt-6">
       <.sidebar_box title="Estadísticas">
         <div class="text-center space-y-4">

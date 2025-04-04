@@ -3,6 +3,9 @@ defmodule Policia.Accounts.User do
   import Ecto.Changeset
 
   schema "users" do
+    field :username, :string
+    field :first_name, :string
+    field :last_name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
@@ -37,27 +40,26 @@ defmodule Policia.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :username, :first_name, :last_name])
+    |> validate_username(opts)
     |> validate_email(opts)
     |> validate_password(opts)
   end
 
-  defp validate_email(changeset, opts) do
+  defp validate_username(changeset, opts) do
     changeset
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
-    |> validate_length(:email, max: 160)
-    |> maybe_validate_unique_email(opts)
+    |> validate_required([:username])
+    |> validate_length(:username, min: 3, max: 20)
+    |> validate_format(:username, ~r/^[a-zA-Z0-9_]+$/,
+      message: "solo puede contener letras, números y guiones bajos"
+    )
+    |> maybe_validate_unique_username(opts)
   end
 
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
     |> validate_length(:password, min: 12, max: 72)
-    # Examples of additional password validation:
-    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
     |> maybe_hash_password(opts)
   end
 
@@ -67,10 +69,7 @@ defmodule Policia.Accounts.User do
 
     if hash_password? && password && changeset.valid? do
       changeset
-      # If using Bcrypt, then further validate it is at most 72 bytes long
       |> validate_length(:password, max: 72, count: :bytes)
-      # Hashing could be done with `Ecto.Changeset.prepare_changes/2`, but that
-      # would keep the database transaction open longer and hurt performance.
       |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
       |> delete_change(:password)
     else
@@ -78,11 +77,11 @@ defmodule Policia.Accounts.User do
     end
   end
 
-  defp maybe_validate_unique_email(changeset, opts) do
-    if Keyword.get(opts, :validate_email, true) do
+  defp maybe_validate_unique_username(changeset, opts) do
+    if Keyword.get(opts, :validate_username, true) do
       changeset
-      |> unsafe_validate_unique(:email, Policia.Repo)
-      |> unique_constraint(:email)
+      |> unsafe_validate_unique(:username, Policia.Repo)
+      |> unique_constraint(:username)
     else
       changeset
     end
@@ -157,5 +156,34 @@ defmodule Policia.Accounts.User do
     else
       add_error(changeset, :current_password, "is not valid")
     end
+  end
+
+  def profile_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:first_name, :last_name, :username])
+    |> validate_required([:first_name, :last_name, :username])
+    |> validate_length(:username, min: 3, max: 20)
+    |> validate_format(:username, ~r/^[a-zA-Z0-9_]+$/,
+      message: "solo puede contener letras, números y guiones bajos"
+    )
+    |> maybe_validate_unique_username(opts)
+  end
+
+  defp maybe_validate_unique_email(changeset, opts) do
+    if Keyword.get(opts, :validate_email, true) do
+      changeset
+      |> unsafe_validate_unique(:email, Policia.Repo)
+      |> unique_constraint(:email)
+    else
+      changeset
+    end
+  end
+
+  defp validate_email(changeset, opts) do
+    changeset
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: 160)
+    |> maybe_validate_unique_email(opts)
   end
 end

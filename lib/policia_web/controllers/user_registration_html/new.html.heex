@@ -1,25 +1,29 @@
+# lib/policia_web/controllers/user_registration_html/new.html.heex
 <div class="mx-auto max-w-sm">
   <.header class="text-center">
-    Register for an account
+    Regístrate
     <:subtitle>
-      Already registered?
+      ¿Ya tienes una cuenta?
       <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-        Log in
+        Inicia sesión
       </.link>
-      to your account now.
+      ahora.
     </:subtitle>
   </.header>
 
   <.simple_form :let={f} for={@changeset} action={~p"/users/register"}>
     <.error :if={@changeset.action == :insert}>
-      Oops, something went wrong! Please check the errors below.
+      Oops, algo salió mal! Por favor revisa los errores.
     </.error>
 
+    <.input field={f[:first_name]} type="text" label="Nombre" required />
+    <.input field={f[:last_name]} type="text" label="Apellido" required />
+    <.input field={f[:username]} type="text" label="Nombre de usuario" required />
     <.input field={f[:email]} type="email" label="Email" required />
-    <.input field={f[:password]} type="password" label="Password" required />
+    <.input field={f[:password]} type="password" label="Contraseña" required />
 
     <:actions>
-      <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+      <.button phx-disable-with="Creando cuenta..." class="w-full">Crear cuenta</.button>
     </:actions>
   </.simple_form>
 </div>
