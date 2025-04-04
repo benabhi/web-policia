@@ -25,7 +25,9 @@ defmodule PoliciaWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
     get "/articles", ArticleController, :index
+    get "/articles/new", ArticleController, :new
     get "/articles/category/:slug", ArticleController, :by_category
     get "/articles/:id", ArticleController, :show
 
