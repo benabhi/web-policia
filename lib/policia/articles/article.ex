@@ -4,12 +4,16 @@ defmodule Policia.Articles.Article do
 
   schema "articles" do
     field :title, :string
-    field :author, :string
     field :content, :string
     field :image_url, :string
     field :image, :any, virtual: true
 
+    # Eliminamos el campo author que será reemplazado por la relación
+    # field :author, :string
+
     belongs_to :category, Policia.Articles.Category
+    # Agregamos la relación con User
+    belongs_to :user, Policia.Accounts.User
 
     timestamps(type: :utc_datetime)
   end
@@ -17,8 +21,8 @@ defmodule Policia.Articles.Article do
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :content, :image_url, :author, :category_id, :image])
-    |> validate_required([:title, :content, :author])
+    |> cast(attrs, [:title, :content, :image_url, :category_id, :image, :user_id])
+    |> validate_required([:title, :content, :user_id])
     |> validate_image()
   end
 

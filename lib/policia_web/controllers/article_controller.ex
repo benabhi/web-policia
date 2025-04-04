@@ -3,8 +3,11 @@ defmodule PoliciaWeb.ArticleController do
 
   alias Policia.Articles
   alias Policia.Articles.Article
+  import PoliciaWeb.UserAuth
 
   @articles_per_page 6
+
+  plug :require_authenticated_user when action in [:new, :create, :edit, :update, :delete]
 
   def index(conn, params) do
     page = params_to_integer(params["page"], 1)
@@ -44,6 +47,9 @@ defmodule PoliciaWeb.ArticleController do
   end
 
   def create(conn, %{"article" => article_params}) do
+    # Asignar el ID del usuario actual al artículo
+    article_params = Map.put(article_params, "user_id", conn.assigns.current_user.id)
+
     # Procesamos la imagen si existe
     article_params = process_image(article_params)
 
@@ -93,6 +99,17 @@ defmodule PoliciaWeb.ArticleController do
   def update(conn, %{"id" => id, "article" => article_params}) do
     article = Articles.get_article_with_category!(id)
 
+    # Verificar que el artículo pertenezca al usuario actual o tenga permisos
+    unless article.user_id == conn.assigns.current_user.id do
+      conn
+      |> put_flash(:error, "No tienes permiso para editar este artículo.")
+      |> redirect(to: ~p"/articles/#{article}")
+      |> halt()
+    end
+
+    # Asegurar que el user_id no se cambie
+    article_params = Map.put(article_params, "user_id", article.user_id)
+
     # Mantenemos la imagen existente si la casilla está marcada y no hay nueva imagen
     keep_existing = Map.get(conn.params, "keep_existing_image") == "true"
     article_params = process_image(article_params, article.image_url, keep_existing)
@@ -111,6 +128,14 @@ defmodule PoliciaWeb.ArticleController do
 
   def delete(conn, %{"id" => id}) do
     article = Articles.get_article!(id)
+
+    # Verificar que el artículo pertenezca al usuario actual o tenga permisos
+    unless article.user_id == conn.assigns.current_user.id do
+      conn
+      |> put_flash(:error, "No tienes permiso para eliminar este artículo.")
+      |> redirect(to: ~p"/articles/#{article}")
+      |> halt()
+    end
 
     # Eliminar imagen si existe
     if article.image_url do

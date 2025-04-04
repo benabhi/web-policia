@@ -2,11 +2,14 @@ defmodule PoliciaWeb.PageController do
   use PoliciaWeb, :controller
 
   alias Policia.Articles
+  alias Policia.Repo
 
   def home(conn, _params) do
     # Obtener los artículos más recientes para mostrar en la página principal
     latest_articles =
       Articles.list_articles_with_category()
+      # Ahora puede usar Repo directamente
+      |> Repo.preload(:user)
       |> Enum.sort_by(& &1.inserted_at, {:desc, DateTime})
       |> Enum.take(6)
       |> Enum.map(fn article ->
@@ -18,7 +21,11 @@ defmodule PoliciaWeb.PageController do
           excerpt: String.slice(article.content || "", 0, 150) <> "...",
           url: ~p"/articles/#{article}",
           category: if(article.category, do: article.category.name, else: nil),
-          author: article.author
+          author:
+            if(article.user,
+              do: "#{article.user.first_name} #{article.user.last_name}",
+              else: "Autor desconocido"
+            )
         }
       end)
 

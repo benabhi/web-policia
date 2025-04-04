@@ -3,19 +3,25 @@ defmodule Policia.Repo.Migrations.CreateArticles do
 
   def change do
     create table(:articles) do
-      add :title, :string, null: false
-      add :content, :text, null: false
+      add :title, :string
+      add :content, :text
       add :image_url, :string
-      add :author, :string, null: false
-      # Referencia a la tabla categories
+
+      # add :author, :string  <-- Comenta o elimina esta línea
+
+      # Si prefieres mantenerlo por compatibilidad pero no usarlo:
+      add :author, :string, null: true
+
+      # Añadimos la referencia al usuario
+      add :user_id, references(:users, on_delete: :nilify_all), null: true
+
       add :category_id, references(:categories, on_delete: :nilify_all)
 
       timestamps(type: :utc_datetime)
     end
 
-    # Crear índice para la referencia a categorías
     create index(:articles, [:category_id])
-    # Crear índice para búsquedas por título
-    create index(:articles, [:title])
+    # Añade un índice para user_id
+    create index(:articles, [:user_id])
   end
 end

@@ -25,10 +25,10 @@ defmodule PoliciaWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-
-    # Coloca la ruta personalizada ANTES del recurso
+    get "/articles", ArticleController, :index
     get "/articles/category/:slug", ArticleController, :by_category
-    resources "/articles", ArticleController
+    get "/articles/:id", ArticleController, :show
+
     resources "/categories", CategoryController
   end
 
@@ -71,6 +71,13 @@ defmodule PoliciaWeb.Router do
 
   scope "/", PoliciaWeb do
     pipe_through [:browser, :require_authenticated_user]
+
+    get "/articles/new", ArticleController, :new
+    post "/articles", ArticleController, :create
+    get "/articles/:id/edit", ArticleController, :edit
+    put "/articles/:id", ArticleController, :update
+    patch "/articles/:id", ArticleController, :update
+    delete "/articles/:id", ArticleController, :delete
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update

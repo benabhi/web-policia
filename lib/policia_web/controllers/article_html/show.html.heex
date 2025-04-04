@@ -92,7 +92,13 @@
       </p>
       <p>
         <span class="text-blue-800">Por:</span>
-        <span class="font-medium text-blue-700">{@article.author}</span>
+        <span class="font-medium text-blue-700">
+          <%= if @article.user do %>
+            {@article.user.first_name} {@article.user.last_name}
+          <% else %>
+            Autor desconocido
+          <% end %>
+        </span>
       </p>
     </div>
     

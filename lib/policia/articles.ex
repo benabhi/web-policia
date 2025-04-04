@@ -155,13 +155,13 @@ defmodule Policia.Articles do
     Article
     |> order_by([a], desc: a.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
-    |> preload_results_with_category()
+    |> preload_results_with_category_and_user()
   end
 
   def get_article_with_category!(id) do
     Article
     |> Repo.get!(id)
-    |> Repo.preload(:category)
+    |> Repo.preload([:category, :user])
   end
 
   def list_articles_by_category(category_id, limit \\ nil, opts \\ []) do
@@ -233,6 +233,10 @@ defmodule Policia.Articles do
   end
 
   # Función auxiliar para precargar categorías en resultados paginados
+  defp preload_results_with_category_and_user(%{entries: entries} = paginated_results) do
+    %{paginated_results | entries: Repo.preload(entries, [:category, :user])}
+  end
+
   defp preload_results_with_category(%{entries: entries} = paginated_results) do
     %{paginated_results | entries: Repo.preload(entries, :category)}
   end
