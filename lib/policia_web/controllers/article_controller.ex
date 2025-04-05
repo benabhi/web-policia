@@ -5,7 +5,7 @@ defmodule PoliciaWeb.ArticleController do
   alias Policia.Articles.Article
   import PoliciaWeb.UserAuth
 
-  @articles_per_page 6
+  @articles_per_page 9
 
   plug :require_authenticated_user when action in [:new, :create, :edit, :update, :delete]
 

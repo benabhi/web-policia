@@ -643,7 +643,6 @@ defmodule PoliciaWeb.CustomComponents do
   end
 
   # Componente para articulo unico
-  # Renombrar el componente de article a single_article
   attr :image_src, :string, required: true, doc: "Ruta de la imagen destacada"
   attr :image_alt, :string, default: "Imagen destacada", doc: "Texto alternativo para la imagen"
   attr :date, :string, required: true, doc: "Fecha de publicación (formato: '01 Abril 2025')"
@@ -653,7 +652,6 @@ defmodule PoliciaWeb.CustomComponents do
   attr :category, :string, default: nil, doc: "Categoría del artículo"
   attr :category_url, :string, default: nil, doc: "URL de la categoría para hacerla clickeable"
   attr :comment_count, :integer, default: 0, doc: "Número de comentarios"
-  attr :actions, :list, default: [], doc: "Lista de acciones (editar, eliminar, etc.)"
 
   attr :show_footer, :boolean,
     default: true,
@@ -673,30 +671,14 @@ defmodule PoliciaWeb.CustomComponents do
       <div class="flex flex-col md:flex-row md:gap-8">
         <!-- Columna de imagen (más pequeña en desktop) -->
         <div class="mb-6 md:mb-0 md:w-2/5 lg:w-1/3 flex-shrink-0">
-          <div class="relative rounded-lg overflow-hidden shadow-md h-full">
-            <img src={@image_src} alt={@image_alt} class="w-full h-auto object-cover md:max-h-80" />
+          <div class="relative rounded-lg overflow-hidden shadow-md h-64 md:h-80">
+            <img
+              src={@image_src}
+              alt={@image_alt}
+              class="absolute inset-0 w-full h-full object-cover"
+            />
             <div class={"absolute inset-0 border-2 border-#{@color_theme}-200 opacity-50 pointer-events-none rounded-lg"}>
             </div>
-            
-    <!-- Acciones administrativas si existen -->
-            <%= if Enum.any?(@actions) do %>
-              <div class="absolute top-2 right-2 flex space-x-1 p-2">
-                <%= for action <- @actions do %>
-                  <.link
-                    href={action.url}
-                    method={Map.get(action, :method)}
-                    data-confirm={Map.get(action, :confirm)}
-                    class={"bg-#{action.color || @color_theme}-600 text-white p-2 rounded-md hover:bg-#{action.color || @color_theme}-700 transition-all flex items-center justify-center shadow-md"}
-                  >
-                    <%= if action.icon do %>
-                      <.button_icon name={action.icon} />
-                    <% else %>
-                      <span>{action.text}</span>
-                    <% end %>
-                  </.link>
-                <% end %>
-              </div>
-            <% end %>
           </div>
         </div>
         
@@ -749,34 +731,77 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Pie de página (opcional) -->
       <%= if @show_footer do %>
         <div class="mt-8 pt-4 border-t border-gray-200">
-          <!-- Código del footer... -->
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <!-- Botones de compartir -->
+            <div class="flex flex-wrap gap-3">
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                </svg>
+                Twitter
+              </a>
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                </svg>
+                Facebook
+              </a>
+              <a
+                href="#"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium transition-colors duration-200"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" />
+                </svg>
+                Instagram
+              </a>
+            </div>
+            <!-- Comentarios con icono -->
+            <div class="flex items-center">
+              <a
+                href="#comentarios"
+                class={"inline-flex items-center text-#{@color_theme}-700 hover:text-#{@color_theme}-900 transition-colors duration-200"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mr-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>
+                <span class="text-sm font-medium">{@comment_count} comentarios</span>
+              </a>
+            </div>
+          </div>
         </div>
       <% end %>
     </article>
-    """
-  end
-
-  # Mantener el componente original por compatibilidad (deprecated)
-  # pero usar internamente single_article
-  def article(assigns) do
-    assigns =
-      assigns
-      |> assign(:color_theme, Config.webpage_theme())
-
-    ~H"""
-    <.single_article
-      image_src={@image_src}
-      image_alt={@image_alt}
-      date={@date}
-      time={@time}
-      author={@author}
-      title={@title}
-      category={@category}
-      comment_count={@comment_count}
-      show_footer={true}
-    >
-      {render_slot(@inner_block)}
-    </.single_article>
     """
   end
 

@@ -65,20 +65,6 @@
     category_url={
       if @article.category, do: ~p"/articles?category=#{@article.category.slug}", else: nil
     }
-    actions={[
-      %{
-        url: ~p"/articles/#{@article}/edit",
-        icon: "edit",
-        color: "blue"
-      },
-      %{
-        url: ~p"/articles/#{@article}",
-        method: :delete,
-        confirm: "¿Estás seguro que deseas eliminar este artículo?",
-        icon: "close",
-        color: "red"
-      }
-    ]}
     show_footer={true}
   >
     {raw(format_content(@article.content))}
