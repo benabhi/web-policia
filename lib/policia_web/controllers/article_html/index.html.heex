@@ -107,13 +107,25 @@
   <:sidebar>
     <!-- Enlaces administrativos -->
     <div class="mb-6">
-      <.sidebar_box title="Administración">
+      <.sidebar_box
+        title="Panel de administración"
+        highlight={true}
+        icon="admin"
+        role_name="Editor"
+        highlight_color="blue"
+      >
         <.sidebar_links items={[
           %{
-            icon: "add",
-            title: "Crear artículo",
-            description: "Publicar un nuevo artículo",
+            icon: "",
+            title: "Nuevo Artículo",
+            description: "Crear un nuevo artículo",
             url: ~p"/articles/new"
+          },
+          %{
+            icon: "doc",
+            title: "Todos los artículos",
+            description: "Ver listado completo",
+            url: ~p"/articles"
           },
           %{
             icon: "edit",
