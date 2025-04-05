@@ -206,7 +206,10 @@ defmodule PoliciaWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
+      |> PoliciaWeb.AlertHelper.put_alert(
+        :error,
+        "Debe iniciar sesión para acceder a esta página."
+      )
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()

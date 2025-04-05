@@ -1,29 +1,94 @@
-# lib/policia_web/controllers/user_registration_html/new.html.heex
-<div class="mx-auto max-w-sm">
-  <.header class="text-center">
-    Regístrate
-    <:subtitle>
-      ¿Ya tienes una cuenta?
-      <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-        Inicia sesión
-      </.link>
-      ahora.
-    </:subtitle>
-  </.header>
+<div class="py-6 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md mx-auto">
+    <div class="text-center">
+      <h2 class="text-2xl font-bold text-blue-950">
+        Registro de cuenta
+      </h2>
+      <p class="mt-1 text-sm text-gray-600">
+        Complete el formulario para crear una nueva cuenta
+      </p>
+    </div>
 
-  <.simple_form :let={f} for={@changeset} action={~p"/users/register"}>
-    <.error :if={@changeset.action == :insert}>
-      Oops, algo salió mal! Por favor revisa los errores.
-    </.error>
+    <div class="mt-4 bg-white py-6 px-6 shadow-md rounded-lg border border-gray-200">
+      <.simple_form :let={f} for={@changeset} action={~p"/users/register"}>
+        <.error :if={@changeset.action == :insert}>
+          <div class="bg-red-50 border-l-4 border-red-500 p-3 rounded-md">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-red-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-red-700">
+                  Ocurrió un error. Por favor revisa los campos a continuación.
+                </p>
+              </div>
+            </div>
+          </div>
+        </.error>
 
-    <.input field={f[:first_name]} type="text" label="Nombre" required />
-    <.input field={f[:last_name]} type="text" label="Apellido" required />
-    <.input field={f[:username]} type="text" label="Nombre de usuario" required />
-    <.input field={f[:email]} type="email" label="Email" required />
-    <.input field={f[:password]} type="password" label="Contraseña" required />
+        <div class="space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <.input field={f[:first_name]} type="text" label="Nombre" required placeholder="Juan" />
+            <.input
+              field={f[:last_name]}
+              type="text"
+              label="Apellido"
+              required
+              placeholder="Pérez"
+            />
+          </div>
 
-    <:actions>
-      <.button phx-disable-with="Creando cuenta..." class="w-full">Crear cuenta</.button>
-    </:actions>
-  </.simple_form>
+          <.input
+            field={f[:username]}
+            type="text"
+            label="Nombre de usuario"
+            required
+            placeholder="juanperez"
+          />
+          <p class="text-xs text-gray-500 -mt-2">Solo letras, números y guiones bajos</p>
+
+          <.input
+            field={f[:email]}
+            type="email"
+            label="Email"
+            required
+            placeholder="usuario@example.com"
+          />
+
+          <.input field={f[:password]} type="password" label="Contraseña" required />
+          <p class="text-xs text-gray-500 -mt-2">Mínimo 12 caracteres</p>
+        </div>
+
+        <:actions>
+          <button
+            type="submit"
+            phx-disable-with="Creando cuenta..."
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
+          >
+            Crear cuenta
+          </button>
+        </:actions>
+      </.simple_form>
+    </div>
+
+    <div class="text-center mt-3">
+      <p class="text-sm text-gray-600">
+        ¿Ya tienes una cuenta?
+        <.link navigate={~p"/users/log_in"} class="font-medium text-blue-600 hover:text-blue-500">
+          Iniciar sesión
+        </.link>
+      </p>
+    </div>
+  </div>
 </div>

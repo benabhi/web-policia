@@ -18,7 +18,7 @@ defmodule PoliciaWeb.CategoryController do
     case Articles.create_category(category_params) do
       {:ok, category} ->
         conn
-        |> put_flash(:info, "Category created successfully.")
+        |> PoliciaWeb.AlertHelper.put_alert(:success, "Categoría creada exitosamente.")
         |> redirect(to: ~p"/categories/#{category}")
 
       {:error, %Ecto.Changeset{} = changeset} ->

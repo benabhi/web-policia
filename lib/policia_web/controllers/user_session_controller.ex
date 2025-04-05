@@ -14,7 +14,7 @@ defmodule PoliciaWeb.UserSessionController do
 
     if user = Accounts.get_user_by_username_and_password(username, password) do
       conn
-      |> put_flash(:info, "Bienvenido de nuevo!")
+      |> PoliciaWeb.AlertHelper.put_alert(:success, "Bienvenido de nuevo!")
       |> UserAuth.log_in_user(user, user_params)
     else
       # Para prevenir enumeración de usuarios, no revelar si el username existe
@@ -24,7 +24,7 @@ defmodule PoliciaWeb.UserSessionController do
 
   def delete(conn, _params) do
     conn
-    |> put_flash(:info, "Sesión cerrada exitosamente.")
+    |> PoliciaWeb.AlertHelper.put_alert(:info, "Sesión cerrada exitosamente.")
     |> UserAuth.log_out_user()
   end
 end

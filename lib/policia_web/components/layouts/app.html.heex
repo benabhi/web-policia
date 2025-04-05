@@ -3,8 +3,24 @@
 
 <div class="bg-blue-50 py-8 md:py-12">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Flash Group para mensajes del sistema -->
-    <.flash_group flash={@flash} />
+    <!-- Procesamiento de alertas personalizado -->
+    <%= if @conn.assigns[:alert] && @conn.assigns.alert.show do %>
+      <.alert_banner
+        type={@conn.assigns.alert.type}
+        message={@conn.assigns.alert.message}
+        dismissible={true}
+      />
+    <% else %>
+      <% alert = PoliciaWeb.AlertHelper.prepare_alert(@conn) %>
+      <%= if alert.show do %>
+        <.alert_banner type={alert.type} message={alert.message} dismissible={true} />
+      <% end %>
+    <% end %>
+    
+<!-- No eliminamos el flash_group pero lo ocultamos para mantener compatibilidad -->
+    <div class="hidden">
+      <.flash_group flash={@flash} />
+    </div>
     
 <!-- Contenido dinámico de la página -->
     {@inner_content}

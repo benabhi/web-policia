@@ -56,7 +56,7 @@ defmodule PoliciaWeb.ArticleController do
     case Articles.create_article(article_params) do
       {:ok, article} ->
         conn
-        |> put_flash(:info, "Artículo creado exitosamente.")
+        |> PoliciaWeb.AlertHelper.put_alert(:success, "Artículo creado exitosamente.")
         |> redirect(to: ~p"/articles/#{article}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
