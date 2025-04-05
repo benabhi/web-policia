@@ -14,24 +14,50 @@ defmodule PoliciaWeb.ArticleController do
     search = Map.get(params, "search", "")
     category_slug = Map.get(params, "category", "")
 
-    # Obtener artículos paginados
-    %{entries: articles, page_number: page, total_pages: total_pages} =
-      Articles.list_articles_with_category_paginated(page, @articles_per_page)
+    # Obtener artículos paginados con filtros aplicados
+    {articles, total_pages} =
+      cond do
+        category_slug != "" ->
+          # Si hay categoría seleccionada
+          category = Articles.get_category_by_slug!(category_slug)
 
-    # Obtener categorías para los filtros
-    categories = Articles.list_categories()
+          %{entries: entries, total_pages: pages} =
+            Articles.list_articles_by_category_paginated(category.id, page, @articles_per_page,
+              search: search
+            )
+
+          {entries, pages}
+
+        search != "" ->
+          # Si hay búsqueda pero no categoría
+          %{entries: entries, total_pages: pages} =
+            Articles.search_articles_paginated(search, page, @articles_per_page)
+
+          {entries, pages}
+
+        true ->
+          # Sin filtros
+          %{entries: entries, total_pages: pages} =
+            Articles.list_articles_with_category_paginated(page, @articles_per_page)
+
+          {entries, pages}
+      end
+
+    # Obtener las 10 categorías más populares
+    top_categories = Articles.list_top_categories(10)
+
+    # Obtener todas las categorías (para otros usos, como el desplegable de filtros)
+    all_categories = Articles.list_categories()
 
     conn
     |> assign(:page_title, "Noticias")
     |> assign(:subtitle, "Listado de todas las noticias del sitio")
     |> assign(:articles, articles)
-    # Añadido: asignar categorías
-    |> assign(:categories, categories)
+    |> assign(:categories, all_categories)
+    |> assign(:top_categories, top_categories)
     |> assign(:page, page)
     |> assign(:total_pages, total_pages)
-    # Añadido: asignar término de búsqueda
     |> assign(:search_term, search)
-    # Añadido: asignar categoría actual
     |> assign(:current_category, category_slug)
     |> render(:index)
   end
@@ -102,7 +128,7 @@ defmodule PoliciaWeb.ArticleController do
     # Verificar que el artículo pertenezca al usuario actual o tenga permisos
     unless article.user_id == conn.assigns.current_user.id do
       conn
-      |> put_flash(:error, "No tienes permiso para editar este artículo.")
+      |> PoliciaWeb.AlertHelper.put_alert(:error, "No tienes permiso para editar este artículo.")
       |> redirect(to: ~p"/articles/#{article}")
       |> halt()
     end
@@ -117,7 +143,7 @@ defmodule PoliciaWeb.ArticleController do
     case Articles.update_article(article, article_params) do
       {:ok, article} ->
         conn
-        |> put_flash(:info, "Artículo actualizado exitosamente.")
+        |> PoliciaWeb.AlertHelper.put_alert(:success, "Artículo actualizado exitosamente.")
         |> redirect(to: ~p"/articles/#{article}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -132,7 +158,10 @@ defmodule PoliciaWeb.ArticleController do
     # Verificar que el artículo pertenezca al usuario actual o tenga permisos
     unless article.user_id == conn.assigns.current_user.id do
       conn
-      |> put_flash(:error, "No tienes permiso para eliminar este artículo.")
+      |> PoliciaWeb.AlertHelper.put_alert(
+        :error,
+        "No tienes permiso para eliminar este artículo."
+      )
       |> redirect(to: ~p"/articles/#{article}")
       |> halt()
     end
@@ -145,7 +174,7 @@ defmodule PoliciaWeb.ArticleController do
     {:ok, _article} = Articles.delete_article(article)
 
     conn
-    |> put_flash(:info, "Artículo eliminado exitosamente.")
+    |> PoliciaWeb.AlertHelper.put_alert(:success, "Artículo eliminado exitosamente.")
     |> redirect(to: ~p"/articles")
   end
 

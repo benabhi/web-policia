@@ -3,20 +3,17 @@
   <!-- Encabezado y botones de administración - Mejorado para responsividad -->
   <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
     <div class="w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
-      <.breadcrumb
-        max_width={true}
-        items={[
-          %{text: "Artículos", href: ~p"/articles"},
-          if(@article.category,
-            do: %{
-              text: @article.category.name,
-              href: ~p"/articles?category=#{@article.category.slug}"
-            },
-            else: %{text: "Sin categoría"}
-          ),
-          %{text: @article.title}
-        ]}
-      />
+      <.breadcrumb items={[
+        %{text: "Artículos", href: ~p"/articles"},
+        if(@article.category,
+          do: %{
+            text: @article.category.name,
+            href: ~p"/articles?category=#{@article.category.slug}"
+          },
+          else: %{text: "Sin categoría"}
+        ),
+        %{text: @article.title}
+      ]} />
     </div>
 
     <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">

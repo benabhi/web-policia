@@ -120,27 +120,45 @@
           <.link
             href={~p"/articles"}
             class={"flex items-center px-3 py-2 text-sm hover:bg-blue-50 rounded-md group " <>
-              if !@current_category || @current_category == "", do: "bg-blue-100 font-semibold", else: ""}
+            if !@current_category || @current_category == "", do: "bg-blue-100 font-semibold", else: ""}
           >
             <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
             <span>Todas las categorías</span>
           </.link>
         </li>
-        <%= for category <- @categories do %>
+        <%= for category <- @top_categories do %>
           <li>
             <.link
               href={~p"/articles?category=#{category.slug}"}
               class={"flex items-center px-3 py-2 text-sm hover:bg-blue-50 rounded-md group " <>
-                if @current_category == category.slug, do: "bg-blue-100 font-semibold", else: ""}
+              if @current_category == category.slug, do: "bg-blue-100 font-semibold", else: ""}
             >
               <span class="w-2 h-2 rounded-full bg-blue-600 mr-2"></span>
               <span>{category.name}</span>
               <span class="ml-auto text-xs text-gray-500 bg-gray-100 rounded-full px-2 py-0.5 group-hover:bg-white">
-                {length(category.articles || [])}
+                {category.article_count}
               </span>
             </.link>
           </li>
         <% end %>
+        
+<!-- Enlace para ver todas las categorías -->
+        <li class="pt-2 mt-2 border-t border-gray-200">
+          <.link
+            href={~p"/categories"}
+            class="text-sm text-blue-600 hover:underline flex items-center justify-center"
+          >
+            <span>Ver todas las categorías</span>
+            <svg class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </.link>
+        </li>
       </ul>
     </.sidebar_box>
     

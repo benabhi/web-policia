@@ -13,9 +13,14 @@ defmodule PoliciaWeb.AlertHelper do
   def prepare_alert(conn) do
     info = Phoenix.Flash.get(conn.assigns[:flash] || conn.flash, :info)
     error = Phoenix.Flash.get(conn.assigns[:flash] || conn.flash, :error)
+    success = Phoenix.Flash.get(conn.assigns[:flash] || conn.flash, :success)
 
     cond do
+      is_binary(success) && success != "" ->
+        %{show: true, type: "success", message: success}
+
       is_binary(info) && info != "" ->
+        # Aquí convierte info a success
         %{show: true, type: "success", message: info}
 
       is_binary(error) && error != "" ->

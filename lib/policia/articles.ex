@@ -223,13 +223,36 @@ defmodule Policia.Articles do
   """
   def search_articles_paginated(search_term, page, per_page)
       when is_binary(search_term) and search_term != "" do
-    search_pattern = "%#{search_term}%"
+    # Para hacer la búsqueda insensible a mayúsculas/minúsculas en SQLite
+    search_pattern = "%#{String.downcase(search_term)}%"
 
     Article
-    |> where([a], ilike(a.title, ^search_pattern) or ilike(a.content, ^search_pattern))
+    |> where(
+      [a],
+      like(fragment("lower(?)", a.title), ^search_pattern) or
+        like(fragment("lower(?)", a.content), ^search_pattern)
+    )
     |> order_by([a], desc: a.inserted_at)
     |> Repo.paginate(page: page, page_size: per_page)
     |> preload_results_with_category()
+  end
+
+  @doc """
+  Retorna las 10 categorías con más artículos.
+  """
+  def list_top_categories(limit \\ 10) do
+    Repo.all(
+      from c in Category,
+        left_join: a in assoc(c, :articles),
+        group_by: c.id,
+        order_by: [desc: count(a.id)],
+        select: {c, count(a.id)},
+        limit: ^limit
+    )
+    |> Enum.map(fn {category, count} ->
+      # Estructura con el count para mostrar en la UI
+      Map.put(category, :article_count, count)
+    end)
   end
 
   # Función auxiliar para precargar categorías en resultados paginados
