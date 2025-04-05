@@ -1461,10 +1461,22 @@ defmodule PoliciaWeb.CustomComponents do
   slot :inner_block, required: true, doc: "Contenido de la barra lateral"
 
   def sidebar_box(assigns) do
+    # Obtenemos el color_theme
+    color_theme = Config.webpage_theme()
+
+    # Asignamos color_theme
+    assigns = assign(assigns, :color_theme, color_theme)
+
+    # Verificamos explícitamente si highlight_color está presente o es nil
+    # Si no está presente o es nil, asignamos el color_theme
+    highlight_color = Map.get(assigns, :highlight_color)
+
     assigns =
-      assigns
-      |> assign(:color_theme, Config.webpage_theme())
-      |> assign_new(:highlight_color, fn -> assigns.color_theme end)
+      if is_nil(highlight_color) do
+        assign(assigns, :highlight_color, color_theme)
+      else
+        assigns
+      end
 
     ~H"""
     <%= if @highlight do %>
