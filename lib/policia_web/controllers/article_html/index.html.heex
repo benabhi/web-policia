@@ -41,14 +41,6 @@
           </p>
         <% end %>
       </div>
-
-      <div>
-        <.link href={~p"/articles/new"}>
-          <.app_button icon="add" size="sm">
-            Nuevo artículo
-          </.app_button>
-        </.link>
-      </div>
     </div>
     
 <!-- Lista de noticias usando el componente reutilizable article_grid -->
@@ -113,6 +105,25 @@
   </div>
 
   <:sidebar>
+    <!-- Enlaces administrativos -->
+    <div class="mb-6">
+      <.sidebar_box title="Administración">
+        <.sidebar_links items={[
+          %{
+            icon: "add",
+            title: "Crear artículo",
+            description: "Publicar un nuevo artículo",
+            url: ~p"/articles/new"
+          },
+          %{
+            icon: "edit",
+            title: "Administrar categorías",
+            description: "Añadir o modificar categorías",
+            url: ~p"/categories"
+          }
+        ]} />
+      </.sidebar_box>
+    </div>
     <!-- Categorías -->
     <.sidebar_box title="Categorías">
       <ul class="space-y-2">
@@ -161,25 +172,5 @@
         </li>
       </ul>
     </.sidebar_box>
-    
-<!-- Enlaces administrativos -->
-    <div class="mt-6">
-      <.sidebar_box title="Administración">
-        <.sidebar_links items={[
-          %{
-            icon: "add",
-            title: "Crear artículo",
-            description: "Publicar un nuevo artículo",
-            url: ~p"/articles/new"
-          },
-          %{
-            icon: "edit",
-            title: "Administrar categorías",
-            description: "Añadir o modificar categorías",
-            url: ~p"/categories"
-          }
-        ]} />
-      </.sidebar_box>
-    </div>
   </:sidebar>
 </.content_layout>

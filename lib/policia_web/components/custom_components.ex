@@ -671,13 +671,93 @@ defmodule PoliciaWeb.CustomComponents do
       <div class="flex flex-col md:flex-row md:gap-8">
         <!-- Columna de imagen (más pequeña en desktop) -->
         <div class="mb-6 md:mb-0 md:w-2/5 lg:w-1/3 flex-shrink-0">
-          <div class="relative rounded-lg overflow-hidden shadow-md h-64 md:h-80">
+          <div
+            x-data="{ showModal: false }"
+            class="relative rounded-lg overflow-hidden shadow-md h-64 md:h-80 group"
+          >
+            <!-- Imagen sin comportamiento de clic -->
             <img
               src={@image_src}
               alt={@image_alt}
               class="absolute inset-0 w-full h-full object-cover"
             />
             <div class={"absolute inset-0 border-2 border-#{@color_theme}-200 opacity-50 pointer-events-none rounded-lg"}>
+            </div>
+            
+    <!-- Botón de lupa - Visible solo en hover -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button
+                @click="showModal = true; console.log('Modal should open')"
+                type="button"
+                class={"p-3 rounded-full bg-#{@color_theme}-900 bg-opacity-70 hover:bg-opacity-90 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100 cursor-pointer"}
+                aria-label="Ver imagen ampliada"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10v4m4-4v4m-7-1h10"
+                  />
+                </svg>
+              </button>
+            </div>
+            
+    <!-- Modal de imagen ampliada -->
+            <div
+              x-show="showModal"
+              x-cloak
+              class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12"
+              @keydown.escape.window="showModal = false"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div
+                class="fixed inset-0 bg-black bg-opacity-80 transition-opacity"
+                @click="showModal = false"
+              >
+              </div>
+
+              <div
+                class="relative max-w-5xl w-full max-h-[90vh] bg-white rounded-lg shadow-2xl overflow-hidden transform"
+                @click.outside="showModal = false"
+              >
+                <div class="relative h-full w-full flex items-center justify-center bg-gray-100">
+                  <img
+                    src={@image_src}
+                    alt={@image_alt}
+                    class="max-h-[80vh] max-w-full object-contain"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  class="absolute top-3 right-3 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-white"
+                  @click="showModal = false"
+                  aria-label="Cerrar"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1509,25 +1589,53 @@ defmodule PoliciaWeb.CustomComponents do
     ~H"""
     <div class={"bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-#{@color_theme}-100 flex flex-col h-full group #{@class}"}>
       <%= if @image do %>
-        <div class="relative h-48 overflow-hidden">
+        <div class="relative h-48 overflow-hidden" x-data="{ showModal: false }">
+          <!-- Imagen sin comportamiento de clic -->
           <img
             src={@image}
             alt={@image_alt}
             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
+          
+    <!-- Botón de lupa exclusivo para abrir el modal -->
+          <button
+            type="button"
+            class={"absolute top-2 left-2 bg-#{@color_theme}-900 bg-opacity-60 hover:bg-opacity-90 text-white p-1.5 rounded-full z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"}
+            @click.stop.prevent="showModal = true"
+            aria-label="Ver imagen ampliada"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10v4m4-4v4m-7-1h10"
+              />
+            </svg>
+          </button>
+          
+    <!-- Enlace al artículo (SOLO en el título, no en la imagen) -->
           <%= if @category do %>
-            <div class="absolute top-2 right-2">
-              <.badge text={@category} color={@color_theme} size="sm" />
+            <div class="absolute top-2 right-2 z-30">
+              <.badge text={@category} color={assigns.color_theme} size="sm" />
             </div>
           <% end %>
 
           <%= if Enum.any?(@actions) do %>
-            <div class="absolute bottom-0 right-0 flex space-x-1 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="absolute bottom-0 right-0 flex space-x-1 p-2 opacity-0 group-hover:opacity-100 transition-opacity z-30">
               <%= for action <- @actions do %>
                 <.link
                   href={action.url}
                   method={Map.get(action, :method)}
                   data-confirm={Map.get(action, :confirm)}
+                  class="relative"
+                  @click.stop.prevent
                 >
                   <span class={"bg-#{action.color || @color_theme}-600 text-white p-2 rounded-md hover:bg-#{action.color || @color_theme}-700 transition-all flex items-center justify-center"}>
                     <%= if action.icon do %>
@@ -1540,6 +1648,65 @@ defmodule PoliciaWeb.CustomComponents do
               <% end %>
             </div>
           <% end %>
+          
+    <!-- Modal de imagen ampliada -->
+          <template x-if="showModal">
+            <div
+              class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12"
+              @keydown.escape.window="showModal = false"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div
+                class="fixed inset-0 bg-black bg-opacity-80 transition-opacity"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                @click="showModal = false"
+              >
+              </div>
+
+              <div
+                class="relative max-w-5xl w-full max-h-[90vh] bg-white rounded-lg shadow-2xl overflow-hidden transform"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                @click.outside="showModal = false"
+              >
+                <div class="relative h-full w-full flex items-center justify-center bg-gray-100">
+                  <img src={@image} alt={@image_alt} class="max-h-[80vh] max-w-full object-contain" />
+                </div>
+
+                <button
+                  type="button"
+                  class="absolute top-3 right-3 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-white"
+                  @click.stop="showModal = false"
+                  aria-label="Cerrar"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </template>
         </div>
       <% end %>
 
@@ -2642,12 +2809,12 @@ defmodule PoliciaWeb.CustomComponents do
 
     ~H"""
     <nav class={"flex text-sm text-gray-500 #{@class}"} aria-label="Breadcrumb">
-      <ol class="inline-flex items-center space-x-1">
+      <ol class="inline-flex items-center space-x-1 flex-wrap">
         <%= for {item, index} <- Enum.with_index(@items) do %>
           <li class="flex items-center">
             <%= if index > 0 do %>
               <%= if @separator_svg do %>
-                <svg class="w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="flex-shrink-0 w-4 h-4 mx-1" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fill-rule="evenodd"
                     d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -2661,11 +2828,14 @@ defmodule PoliciaWeb.CustomComponents do
             <% end %>
 
             <%= if item[:href] do %>
-              <.link navigate={item.href} class={"hover:text-#{@color_theme}-700 truncate"}>
+              <.link
+                navigate={item.href}
+                class={"hover:text-#{@color_theme}-700 truncate max-w-[100px] sm:max-w-[150px] md:max-w-[200px] lg:max-w-[250px]"}
+              >
                 {item.text}
               </.link>
             <% else %>
-              <span class={"text-gray-700 truncate max-w-[150px] md:max-w-[300px] #{if index == length(@items) - 1, do: "font-medium", else: ""}"}>
+              <span class={"text-gray-700 truncate max-w-[120px] sm:max-w-[150px] md:max-w-[250px] lg:max-w-[350px] #{if index == length(@items) - 1, do: "font-medium", else: ""}"}>
                 {item.text}
               </span>
             <% end %>
@@ -2696,6 +2866,77 @@ defmodule PoliciaWeb.CustomComponents do
         [1, :ellipsis] ++
           Enum.to_list((current_page - 1)..(current_page + 1)) ++ [:ellipsis, total_pages]
     end
+  end
+
+  attr :id, :string, required: true, doc: "ID único para el modal"
+  attr :image_src, :string, required: true, doc: "URL de la imagen"
+  attr :image_alt, :string, default: "Imagen", doc: "Texto alternativo para la imagen"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  def image_modal(assigns) do
+    ~H"""
+    <div
+      id={@id}
+      x-data="{ open: false }"
+      x-show="open"
+      x-cloak
+      @keydown.escape.window="open = false"
+      class={"fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12 #{@class}"}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        class="fixed inset-0 bg-black bg-opacity-80 transition-opacity"
+        x-show="open"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        @click="open = false"
+      >
+      </div>
+
+      <div
+        class="relative max-w-5xl w-full max-h-[90vh] bg-white rounded-lg shadow-2xl overflow-hidden transform"
+        x-show="open"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        @click.outside="open = false"
+      >
+        <div class="relative h-full w-full flex items-center justify-center bg-gray-100">
+          <img src={@image_src} alt={@image_alt} class="max-h-[80vh] max-w-full object-contain" />
+        </div>
+
+        <button
+          type="button"
+          class="absolute top-3 right-3 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-white"
+          @click="open = false"
+          aria-label="Cerrar"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    """
   end
 
   # Helper para determinar si un enlace está activo

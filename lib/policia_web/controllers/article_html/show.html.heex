@@ -1,8 +1,8 @@
 <.content_layout title={@article.title} has_sidebar={true}>
   <!-- Encabezado y botones de administración -->
-  <!-- Encabezado y botones de administración - Mejorado para responsividad -->
-  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-    <div class="w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 w-full">
+    <!-- Breadcrumb con mejor manejo responsivo -->
+    <div class="w-full sm:flex-1 overflow-x-auto pb-2 sm:pb-0 border-b sm:border-0 mb-2 sm:mb-0">
       <.breadcrumb items={[
         %{text: "Artículos", href: ~p"/articles"},
         if(@article.category,
@@ -15,35 +15,38 @@
         %{text: @article.title}
       ]} />
     </div>
+    
+<!-- Botones organizados de manera más compacta -->
+    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0 sm:flex-shrink-0">
+      <div class="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
+        <.link href={~p"/articles/#{@article}/edit"} class="flex-1 sm:flex-initial">
+          <.app_button_secondary icon="edit" size="sm" class="w-full justify-center">
+            <span class="sm:inline">Editar</span>
+          </.app_button_secondary>
+        </.link>
 
-    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-      <.link href={~p"/articles/#{@article}/edit"} class="w-full sm:w-auto">
-        <.app_button_secondary icon="edit" size="sm" class="w-full sm:w-auto justify-center">
-          Editar
-        </.app_button_secondary>
-      </.link>
-
-      <.link
-        href={~p"/articles/#{@article}"}
-        method="delete"
-        data-confirm="¿Estás seguro que deseas eliminar este artículo?"
-        class="w-full sm:w-auto"
-      >
-        <.app_button_secondary
-          icon="close"
-          size="sm"
-          color="danger"
-          class="w-full sm:w-auto justify-center"
+        <.link
+          href={~p"/articles/#{@article}"}
+          method="delete"
+          data-confirm="¿Estás seguro que deseas eliminar este artículo?"
+          class="flex-1 sm:flex-initial"
         >
-          Eliminar
-        </.app_button_secondary>
-      </.link>
+          <.app_button_secondary
+            icon="close"
+            size="sm"
+            color="danger"
+            class="w-full justify-center"
+          >
+            <span class="sm:inline">Eliminar</span>
+          </.app_button_secondary>
+        </.link>
 
-      <.link href={~p"/articles/new"} class="w-full sm:w-auto">
-        <.app_button icon="add" size="sm" class="w-full sm:w-auto justify-center">
-          Nuevo artículo
-        </.app_button>
-      </.link>
+        <.link href={~p"/articles/new"} class="flex-grow sm:flex-initial">
+          <.app_button icon="add" size="sm" class="w-full justify-center">
+            <span class="sm:inline">Nuevo</span>
+          </.app_button>
+        </.link>
+      </div>
     </div>
   </div>
   
