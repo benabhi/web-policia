@@ -1,6 +1,6 @@
 defmodule PoliciaWeb.PageController do
   use PoliciaWeb, :controller
-  import Policia.Utils, only: [format_date: 1]
+  import Policia.Utils, only: [format_date: 1, format_time: 1]
 
   alias Policia.Articles
   alias Policia.Repo
@@ -42,6 +42,7 @@ defmodule PoliciaWeb.PageController do
             id: article.id,
             title: article.title,
             date: format_date(article.inserted_at),
+            time: format_time(article.inserted_at),
             image: article.image_url || "/images/demo/featured-weekly.png",
             content: article.content,
             url: ~p"/articles/#{article}",

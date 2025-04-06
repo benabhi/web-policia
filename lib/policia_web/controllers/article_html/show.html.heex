@@ -45,6 +45,28 @@
           </.app_button_secondary>
         </.link>
 
+        <.link
+          href={~p"/articles/#{@article}/toggle_featured"}
+          method="put"
+          data-confirm={
+            if @article.featured_of_week,
+              do: "¿Quitar este artículo como destacado de la semana?",
+              else: "¿Marcar este artículo como destacado de la semana?"
+          }
+          class="flex-1 sm:flex-initial"
+        >
+          <.app_button_secondary
+            icon={if @article.featured_of_week, do: "hero-star-solid", else: "hero-star"}
+            size="sm"
+            color="warning"
+            class="w-full justify-center"
+          >
+            <span class="sm:inline">
+              {if @article.featured_of_week, do: "Quitar destacado", else: "Destacar"}
+            </span>
+          </.app_button_secondary>
+        </.link>
+
         <.link href={~p"/articles/new"} class="flex-grow sm:flex-initial">
           <.app_button icon="hero-plus-solid" size="sm" class="w-full justify-center">
             <span class="sm:inline">Nuevo</span>
