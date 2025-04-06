@@ -1,8 +1,132 @@
-<.header>
-  New Category
-  <:subtitle>Use this form to manage category records in your database.</:subtitle>
-</.header>
+<.content_layout
+  title="Nueva Categoría"
+  subtitle="Cree una nueva categoría para organizar los artículos del sitio"
+  has_sidebar={true}
+>
+  <div class="space-y-6">
+    <!-- Formulario de categoría -->
+    <.category_form changeset={@changeset} action={~p"/categories"} />
+    
+<!-- Botón de navegación -->
+    <div class="flex justify-start mt-6">
+      <.link
+        navigate={~p"/categories"}
+        class="text-blue-600 hover:text-blue-800 flex items-center"
+      >
+        <.icon name="hero-arrow-left" class="h-4 w-4 mr-1" /> Volver a categorías
+      </.link>
+    </div>
+  </div>
 
-<.category_form changeset={@changeset} action={~p"/categories"} />
+  <:sidebar>
+    <!-- Panel de administración -->
+    <.sidebar_box
+      title="Panel de administración"
+      highlight={true}
+      icon="admin"
+      role_name="Editor"
+      highlight_color="blue"
+    >
+      <.sidebar_links items={[
+        %{
+          icon: "hero-document-text",
+          title: "Todos los artículos",
+          description: "Ver listado completo",
+          url: ~p"/articles"
+        },
+        %{
+          icon: "hero-folder",
+          title: "Todas las categorías",
+          description: "Ver listado completo",
+          url: ~p"/categories"
+        },
+        %{
+          icon: "hero-home",
+          title: "Página principal",
+          description: "Volver al inicio",
+          url: ~p"/"
+        }
+      ]} />
+    </.sidebar_box>
+    
+<!-- Panel de ayuda -->
+    <div class="mt-6">
+      <.sidebar_box
+        title="Consejos para crear categorías"
+        highlight={true}
+        highlight_color="yellow"
+      >
+        <div class="space-y-4">
+          <p class="text-sm text-gray-600">
+            Las categorías bien definidas ayudan a organizar el contenido y facilitan la navegación de los usuarios.
+          </p>
 
-<.back navigate={~p"/categories"}>Back to categories</.back>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Use nombres descriptivos y concisos para las categorías.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Evite crear categorías demasiado específicas o demasiado generales.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Mantenga un número razonable de categorías para no confundir a los usuarios.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Las categorías ayudan a los usuarios a encontrar contenido relacionado.
+              </span>
+            </li>
+          </ul>
+        </div>
+      </.sidebar_box>
+    </div>
+    
+<!-- Ejemplos de categorías -->
+    <div class="mt-6">
+      <.sidebar_box title="Ejemplos de categorías efectivas">
+        <div class="space-y-3">
+          <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
+            <div class="font-medium text-gray-800">Noticias Institucionales</div>
+            <div class="text-xs text-gray-500 mt-1">
+              Para comunicados oficiales y eventos de la institución
+            </div>
+          </div>
+          <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
+            <div class="font-medium text-gray-800">Seguridad Ciudadana</div>
+            <div class="text-xs text-gray-500 mt-1">
+              Para artículos sobre prevención y seguridad pública
+            </div>
+          </div>
+          <div class="p-3 bg-gray-50 rounded-md border border-gray-200">
+            <div class="font-medium text-gray-800">Capacitación Policial</div>
+            <div class="text-xs text-gray-500 mt-1">
+              Para contenido sobre formación y desarrollo profesional
+            </div>
+          </div>
+        </div>
+      </.sidebar_box>
+    </div>
+  </:sidebar>
+</.content_layout>

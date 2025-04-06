@@ -35,12 +35,7 @@
           data-confirm="¿Estás seguro que deseas eliminar este artículo?"
           class="flex-1 sm:flex-initial"
         >
-          <.app_button_secondary
-            icon="hero-trash-solid"
-            size="sm"
-            color="danger"
-            class="w-full justify-center"
-          >
+          <.app_button_secondary icon="hero-trash-solid" size="sm" class="w-full justify-center">
             <span class="sm:inline">Eliminar</span>
           </.app_button_secondary>
         </.link>
@@ -58,7 +53,6 @@
           <.app_button_secondary
             icon={if @article.featured_of_week, do: "hero-star-solid", else: "hero-star"}
             size="sm"
-            color="warning"
             class="w-full justify-center"
           >
             <span class="sm:inline">
@@ -144,8 +138,34 @@
   </div>
 
   <:sidebar>
+    
+<!-- Enlaces administrativos -->
+    <div>
+      <.sidebar_box title="Administración" highlight={true}>
+        <.sidebar_links items={[
+          %{
+            icon: "doc",
+            title: "Todos los artículos",
+            description: "Ver listado completo",
+            url: ~p"/articles"
+          },
+          %{
+            icon: "add",
+            title: "Crear artículo",
+            description: "Publicar un nuevo artículo",
+            url: ~p"/articles/new"
+          },
+          %{
+            icon: "edit",
+            title: "Administrar categorías",
+            description: "Añadir o modificar categorías",
+            url: ~p"/categories"
+          }
+        ]} />
+      </.sidebar_box>
+    </div>
     <!-- Búsqueda -->
-    <.sidebar_box title="Buscar artículos">
+    <.sidebar_box title="Buscar artículos" class="mt-6">
       <.search_form
         action={~p"/articles"}
         search_term=""
@@ -185,32 +205,6 @@
             </li>
           <% end %>
         </ul>
-      </.sidebar_box>
-    </div>
-    
-<!-- Enlaces administrativos -->
-    <div class="mt-6">
-      <.sidebar_box title="Administración">
-        <.sidebar_links items={[
-          %{
-            icon: "doc",
-            title: "Todos los artículos",
-            description: "Ver listado completo",
-            url: ~p"/articles"
-          },
-          %{
-            icon: "add",
-            title: "Crear artículo",
-            description: "Publicar un nuevo artículo",
-            url: ~p"/articles/new"
-          },
-          %{
-            icon: "edit",
-            title: "Administrar categorías",
-            description: "Añadir o modificar categorías",
-            url: ~p"/categories"
-          }
-        ]} />
       </.sidebar_box>
     </div>
   </:sidebar>

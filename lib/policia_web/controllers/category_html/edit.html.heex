@@ -1,8 +1,127 @@
-<.header>
-  Edit Category {@category.id}
-  <:subtitle>Use this form to manage category records in your database.</:subtitle>
-</.header>
+<.content_layout
+  title="Editar Categoría: #{@category.name}"
+  subtitle="Modifique los datos de la categoría"
+  has_sidebar={true}
+>
+  <div class="space-y-6">
+    <!-- Formulario de edición -->
+    <.category_form changeset={@changeset} action={~p"/categories/#{@category}"} />
 
-<.category_form changeset={@changeset} action={~p"/categories/#{@category}"} />
+    <!-- Botones de navegación -->
+    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+      <.link
+        navigate={~p"/categories"}
+        class="text-blue-600 hover:text-blue-800 flex items-center"
+      >
+        <.icon name="hero-arrow-left" class="h-4 w-4 mr-1" /> Volver a categorías
+      </.link>
 
-<.back navigate={~p"/categories"}>Back to categories</.back>
+      <.link
+        navigate={~p"/categories/#{@category}"}
+        class="text-blue-600 hover:text-blue-800 flex items-center"
+      >
+        <.icon name="hero-eye" class="h-4 w-4 mr-1" /> Ver detalles
+      </.link>
+    </div>
+  </div>
+
+  <:sidebar>
+    <!-- Panel de administración -->
+    <.sidebar_box
+      title="Panel de administración"
+      highlight={true}
+      icon="admin"
+      role_name="Editor"
+      highlight_color="blue"
+    >
+      <.sidebar_links items={[
+        %{
+          icon: "hero-document-text",
+          title: "Todos los artículos",
+          description: "Ver listado completo",
+          url: ~p"/articles"
+        },
+        %{
+          icon: "hero-folder",
+          title: "Todas las categorías",
+          description: "Ver listado completo",
+          url: ~p"/categories"
+        },
+        %{
+          icon: "hero-plus-circle",
+          title: "Nueva categoría",
+          description: "Crear una nueva categoría",
+          url: ~p"/categories/new"
+        }
+      ]} />
+    </.sidebar_box>
+    
+    <!-- Información de la categoría -->
+    <div class="mt-6">
+      <.sidebar_box title="Información de la categoría">
+        <div class="space-y-4">
+          <div class="flex items-start">
+            <.icon name="hero-document-text" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+            <div>
+              <div class="font-medium text-gray-700">Nombre actual</div>
+              <div class="text-gray-900">{@category.name}</div>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <.icon name="hero-link" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+            <div>
+              <div class="font-medium text-gray-700">Slug actual</div>
+              <div class="flex items-center mt-1">
+                <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono border border-gray-200">
+                  {@category.slug}
+                </code>
+                <div class="ml-2 text-xs text-gray-500 italic">
+                  (se actualizará automáticamente)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-start">
+            <.icon name="hero-calendar" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+            <div>
+              <div class="font-medium text-gray-700">Creada el</div>
+              <div class="text-gray-600">
+                {Calendar.strftime(@category.inserted_at, "%d/%m/%Y %H:%M")}
+              </div>
+            </div>
+          </div>
+        </div>
+      </.sidebar_box>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="mt-6">
+      <.sidebar_box title="Acciones rápidas">
+        <div class="space-y-3">
+          <.link href={~p"/categories/#{@category}"} class="w-full">
+            <.app_button_secondary icon="hero-eye" class="w-full justify-center">
+              Ver detalles
+            </.app_button_secondary>
+          </.link>
+          <.link href={~p"/articles?category=#{@category.slug}"} class="w-full">
+            <.app_button_secondary icon="hero-document-text" class="w-full justify-center">
+              Ver artículos
+            </.app_button_secondary>
+          </.link>
+          <.link
+            href={~p"/categories/#{@category}"}
+            method="delete"
+            data-confirm="¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer."
+            class="w-full"
+          >
+            <.app_button_secondary icon="hero-trash" color="danger" class="w-full justify-center">
+              Eliminar categoría
+            </.app_button_secondary>
+          </.link>
+        </div>
+      </.sidebar_box>
+    </div>
+  </:sidebar>
+</.content_layout>

@@ -1,25 +1,163 @@
-<.header>
-  Listing Categories
-  <:actions>
-    <.link href={~p"/categories/new"}>
-      <.button>New Category</.button>
-    </.link>
-  </:actions>
-</.header>
-
-<.table id="categories" rows={@categories} row_click={&JS.navigate(~p"/categories/#{&1}")}>
-  <:col :let={category} label="Name">{category.name}</:col>
-  <:col :let={category} label="Slug">{category.slug}</:col>
-  <:col :let={category} label="Description">{category.description}</:col>
-  <:action :let={category}>
-    <div class="sr-only">
-      <.link navigate={~p"/categories/#{category}"}>Show</.link>
+<.content_layout
+  title="Administración de Categorías"
+  subtitle="Gestione las categorías para organizar los artículos del sitio"
+  has_sidebar={true}
+>
+  <!-- Panel principal con tabla de categorías -->
+  <div class="space-y-6">
+    <!-- Barra de acciones -->
+    <div class="flex justify-between items-center mb-6">
+      <div class="flex items-center space-x-2">
+        <.icon name="hero-folder-solid" class="h-5 w-5 text-blue-600" />
+        <h3 class="text-lg font-semibold text-gray-800">Listado de categorías</h3>
+      </div>
+      <.link href={~p"/categories/new"}>
+        <.app_button icon="hero-plus-solid" size="sm">
+          Nueva Categoría
+        </.app_button>
+      </.link>
     </div>
-    <.link navigate={~p"/categories/#{category}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={category}>
-    <.link href={~p"/categories/#{category}"} method="delete" data-confirm="Are you sure?">
-      Delete
-    </.link>
-  </:action>
-</.table>
+    
+<!-- Tabla de categorías -->
+    <div class="bg-white rounded-lg overflow-hidden border border-gray-200">
+      <.table id="categories" rows={@categories} row_click={&JS.navigate(~p"/categories/#{&1}")}>
+        <:col :let={category} label="Nombre">
+          <div class="font-medium text-blue-800">{category.name}</div>
+        </:col>
+        <:col :let={category} label="Slug">
+          <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">{category.slug}</code>
+        </:col>
+        <:col :let={category} label="Descripción">
+          <div class="truncate max-w-xs text-gray-600">
+            {category.description || "Sin descripción"}
+          </div>
+        </:col>
+
+        <:action :let={category}>
+          <div class="flex items-center space-x-1">
+            <.icon_button
+              href={~p"/categories/#{category}"}
+              icon_default="hero-eye"
+              icon_hover="hero-eye-solid"
+              color="blue"
+              title="Ver detalles"
+            />
+            <.icon_button
+              href={~p"/categories/#{category}/edit"}
+              icon_default="hero-pencil-square"
+              icon_hover="hero-pencil-square-solid"
+              color="blue"
+              title="Editar categoría"
+            />
+            <.icon_button
+              href={~p"/articles?category=#{category.slug}"}
+              icon_default="hero-document-text"
+              icon_hover="hero-document-text-solid"
+              color="green"
+              title="Ver artículos"
+            />
+            <.icon_button
+              href={~p"/categories/#{category}"}
+              method="delete"
+              confirm="¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer."
+              icon_default="hero-trash"
+              icon_hover="hero-trash-solid"
+              color="red"
+              title="Eliminar categoría"
+            />
+          </div>
+        </:action>
+      </.table>
+    </div>
+    
+<!-- Información sobre slugs -->
+    <div class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 bg-blue-100 rounded-full p-2 mr-4">
+          <.icon name="hero-information-circle" class="h-6 w-6 text-blue-600" />
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-blue-800 mb-2">Acerca de los slugs</h3>
+          <p class="text-sm text-blue-700 leading-relaxed">
+            Los slugs son versiones amigables para URL de los nombres de categorías. Se generan automáticamente a partir del nombre, eliminando caracteres especiales y espacios.
+          </p>
+          <p class="text-sm text-blue-700 mt-2">
+            <span class="font-medium">Ejemplo:</span>
+            "Noticias Institucionales" se convierte en "noticias-institucionales".
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <:sidebar>
+    <!-- Panel de administración -->
+    <.sidebar_box
+      title="Panel de administración"
+      highlight={true}
+      icon="admin"
+      role_name="Editor"
+      highlight_color="blue"
+    >
+      <.sidebar_links items={[
+        %{
+          icon: "hero-plus-circle",
+          title: "Nueva Categoría",
+          description: "Crear una nueva categoría",
+          url: ~p"/categories/new"
+        },
+        %{
+          icon: "hero-document-text",
+          title: "Artículos",
+          description: "Administrar artículos",
+          url: ~p"/articles"
+        },
+        %{
+          icon: "hero-home",
+          title: "Página principal",
+          description: "Volver al inicio",
+          url: ~p"/"
+        }
+      ]} />
+    </.sidebar_box>
+    
+<!-- Estadísticas -->
+    <div class="mt-6">
+      <.sidebar_box title="Estadísticas de categorías">
+        <div class="space-y-4">
+          <div class="bg-blue-50 rounded-lg p-4 text-center">
+            <div class="text-2xl font-bold text-blue-700">{length(@categories)}</div>
+            <div class="text-sm text-gray-600">Categorías totales</div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-4 mt-4">
+            <h4 class="text-sm font-semibold text-gray-700 mb-2">Consejos rápidos:</h4>
+            <ul class="text-sm text-gray-600 space-y-2">
+              <li class="flex items-start">
+                <.icon
+                  name="hero-check-circle"
+                  class="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"
+                />
+                <span>Use nombres descriptivos para las categorías</span>
+              </li>
+              <li class="flex items-start">
+                <.icon
+                  name="hero-check-circle"
+                  class="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"
+                />
+                <span>Evite crear categorías duplicadas o muy similares</span>
+              </li>
+              <li class="flex items-start">
+                <.icon
+                  name="hero-check-circle"
+                  class="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5"
+                />
+                <span>Mantenga un número razonable de categorías</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </.sidebar_box>
+    </div>
+  </:sidebar>
+</.content_layout>

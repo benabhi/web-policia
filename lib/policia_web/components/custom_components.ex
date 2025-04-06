@@ -1407,24 +1407,11 @@ defmodule PoliciaWeb.CustomComponents do
           <button
             type="button"
             x-ref="lupaBtn"
-            class={"absolute top-2 left-2 bg-#{@color_theme}-900 bg-opacity-70 hover:bg-opacity-90 text-white p-2 rounded-full z-30 opacity-0 transition-opacity duration-300 cursor-pointer"}
+            class={"absolute top-2 left-2 bg-#{@color_theme}-900 bg-opacity-70 hover:bg-opacity-90 text-white flex items-center justify-center w-8 h-8 rounded-full z-30 opacity-0 transition-opacity duration-300 cursor-pointer"}
             @click="showModal = true"
             aria-label="Ver imagen ampliada"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="h-4 w-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Zm-7-3v3m0 0v3m0-3h3m-3 0H7"
-              />
-            </svg>
+            <.icon name="hero-magnifying-glass-plus" class="h-4 w-4" />
           </button>
           
     <!-- Enlace al artículo (SOLO en el título, no en la imagen) -->
@@ -1510,67 +1497,21 @@ defmodule PoliciaWeb.CustomComponents do
             href={@url}
             class={"inline-flex items-center text-sm font-semibold text-#{@color_theme}-700 hover:text-#{@color_theme}-900"}
           >
-            Leer más
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 ml-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              />
-            </svg>
+            Leer más <.icon name="hero-arrow-right" class="h-4 w-4 ml-1" />
           </.link>
 
           <%= if length(@actions) > 0 do %>
             <div class="flex space-x-2">
               <%= for action <- @actions do %>
-                <%= if action[:method] do %>
-                  <div
-                    x-data="{ isHovered: false }"
-                    @mouseenter="isHovered = true"
-                    @mouseleave="isHovered = false"
-                  >
-                    <.link
-                      href={action[:url]}
-                      method={action[:method]}
-                      data-confirm={action[:confirm]}
-                      class={"p-1 text-#{action[:color]}-500 hover:text-#{action[:color]}-700 transition-colors duration-200 flex items-center justify-center"}
-                      title={action[:title] || "Acción"}
-                    >
-                      <div x-show="!isHovered" class="transition-all duration-200">
-                        <.icon name={action[:icon_default]} class="h-5 w-5" />
-                      </div>
-                      <div x-show="isHovered" class="transition-all duration-200">
-                        <.icon name={action[:icon_hover]} class="h-5 w-5" />
-                      </div>
-                    </.link>
-                  </div>
-                <% else %>
-                  <div
-                    x-data="{ isHovered: false }"
-                    @mouseenter="isHovered = true"
-                    @mouseleave="isHovered = false"
-                  >
-                    <.link
-                      href={action[:url]}
-                      class={"p-1 text-#{action[:color]}-500 hover:text-#{action[:color]}-700 transition-colors duration-200 flex items-center justify-center"}
-                      title={action[:title] || "Acción"}
-                    >
-                      <div x-show="!isHovered" class="transition-all duration-200">
-                        <.icon name={action[:icon_default]} class="h-5 w-5" />
-                      </div>
-                      <div x-show="isHovered" class="transition-all duration-200">
-                        <.icon name={action[:icon_hover]} class="h-5 w-5" />
-                      </div>
-                    </.link>
-                  </div>
-                <% end %>
+                <.icon_button
+                  href={action[:url]}
+                  method={action[:method]}
+                  confirm={action[:confirm]}
+                  icon_default={action[:icon_default]}
+                  icon_hover={action[:icon_hover]}
+                  color={action[:color]}
+                  title={action[:title] || "Acción"}
+                />
               <% end %>
             </div>
           <% end %>
@@ -1646,19 +1587,7 @@ defmodule PoliciaWeb.CustomComponents do
 
       <%= if Enum.empty?(@articles) do %>
         <div class={"bg-#{@color_theme}-50 border border-#{@color_theme}-200 text-#{@color_theme}-800 rounded-md p-6 text-center"}>
-          <svg
-            class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <.icon name="hero-face-frown" class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"} />
           <h3 class="text-lg font-semibold mb-2">{@empty_message}</h3>
           <p class={"text-#{@color_theme}-700"}>
             {@empty_text}
@@ -1692,7 +1621,7 @@ defmodule PoliciaWeb.CustomComponents do
                       url: "/articles/#{article.id}/toggle_featured",
                       icon_default: "hero-star",
                       icon_hover: "hero-star-solid",
-                      color: "yellow",
+                      color: @color_theme,
                       method: :put,
                       title: "Destacar de la semana"
                     },
@@ -1702,7 +1631,7 @@ defmodule PoliciaWeb.CustomComponents do
                       confirm: "¿Estás seguro de eliminar este artículo?",
                       icon_default: "hero-trash",
                       icon_hover: "hero-trash-solid",
-                      color: "red",
+                      color: @color_theme,
                       title: "Eliminar artículo"
                     }
                   ]
@@ -1715,6 +1644,143 @@ defmodule PoliciaWeb.CustomComponents do
         </div>
       <% end %>
     </section>
+    """
+  end
+
+  # Componente para botones de iconos con tooltip
+  attr :href, :string, required: true, doc: "URL del enlace"
+  attr :method, :string, default: nil, doc: "Método HTTP para el enlace (delete, put, etc.)"
+  attr :confirm, :string, default: nil, doc: "Mensaje de confirmación"
+  attr :icon_default, :string, required: true, doc: "Nombre del icono por defecto"
+
+  attr :icon_hover, :string,
+    default: nil,
+    doc: "Nombre del icono al pasar el mouse (si es nil, usa el mismo)"
+
+  attr :color, :string, default: "blue", doc: "Color del icono (blue, red, green, yellow, etc.)"
+  attr :title, :string, required: true, doc: "Texto del tooltip"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :disabled, :boolean, default: false, doc: "Si el botón está deshabilitado"
+  attr :rest, :global, doc: "Atributos adicionales para el elemento"
+
+  def icon_button(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:icon_hover, fn -> assigns.icon_default end)
+
+    ~H"""
+    <div
+      x-data="{ isHovered: false, showTooltip: false }"
+      @mouseenter="isHovered = true; showTooltip = true"
+      @mouseleave="isHovered = false; showTooltip = false"
+      class="relative inline-block"
+    >
+      <.link
+        href={@href}
+        method={@method}
+        data-confirm={@confirm}
+        class={"p-1.5 text-#{@color}-500 hover:text-#{@color}-700 transition-colors duration-200 flex items-center justify-center rounded-full hover:bg-#{@color}-50 #{@class} #{if @disabled, do: "opacity-50 cursor-not-allowed", else: ""}"}
+        {@rest}
+      >
+        <div class="relative w-5 h-5">
+          <div
+            x-show="!isHovered"
+            x-transition.duration.100ms
+            class="absolute inset-0 flex items-center justify-center"
+          >
+            <.icon name={@icon_default} class="h-5 w-5" />
+          </div>
+          <div
+            x-show="isHovered"
+            x-transition.duration.100ms
+            class="absolute inset-0 flex items-center justify-center"
+          >
+            <.icon name={@icon_hover} class="h-5 w-5" />
+          </div>
+        </div>
+      </.link>
+      
+    <!-- Tooltip - Posicionado con fixed para evitar problemas de overflow -->
+      <div
+        x-cloak
+        x-show="showTooltip"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 transform scale-95"
+        x-transition:enter-end="opacity-100 transform scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 transform scale-100"
+        x-transition:leave-end="opacity-0 transform scale-95"
+        class={"fixed z-50 px-2 py-1 text-xs font-medium text-white bg-#{@color}-700 rounded shadow-sm whitespace-nowrap pointer-events-none mb-1"}
+        role="tooltip"
+        style="display: none;"
+        x-init="$nextTick(() => {
+          $watch('showTooltip', value => {
+            if (value) {
+              const rect = $root.getBoundingClientRect();
+              const tooltipWidth = $el.offsetWidth;
+              const viewportWidth = window.innerWidth;
+
+              // Calcular posición base perfectamente centrada sobre el icono
+              // El icono tiene 20px de ancho y está centrado en el botón
+              // Obtenemos el centro exacto del botón
+              const buttonCenter = rect.left + (rect.width / 2);
+
+              // Ajustamos para centrar exactamente sobre el icono
+              let leftPos = buttonCenter - (tooltipWidth / 2);
+
+              // Aplicamos un pequeño ajuste para compensar cualquier desplazamiento visual
+              // Este valor puede necesitar ajustes según el diseño específico
+              leftPos = leftPos - 40;  // Ajuste extremadamente agresivo para centrar perfectamente
+
+              // Ajustar si se sale por la derecha
+              if (leftPos + tooltipWidth > viewportWidth - 10) {
+                leftPos = viewportWidth - tooltipWidth - 10;
+
+                // Asegurar que la flecha apunte al centro del botón
+                const arrowEl = $el.querySelector('div');
+                if (arrowEl) {
+                  // Usamos la misma referencia de buttonCenter que ya calculamos
+                  const tooltipLeft = leftPos;
+                  const newArrowLeft = buttonCenter - tooltipLeft;
+                  const maxArrowLeft = tooltipWidth - 10; // Evitar que la flecha se salga del tooltip
+                  arrowEl.style.left = `${Math.min(Math.max(newArrowLeft, 10), maxArrowLeft)}px`;
+                  arrowEl.style.transform = 'translateX(-50%)';
+                }
+              }
+
+              // Ajustar si se sale por la izquierda
+              if (leftPos < 10) {
+                leftPos = 10;
+
+                // Asegurar que la flecha apunte al centro del botón
+                const arrowEl = $el.querySelector('div');
+                if (arrowEl) {
+                  // Usamos la misma referencia de buttonCenter que ya calculamos
+                  const tooltipLeft = leftPos;
+                  const newArrowLeft = buttonCenter - tooltipLeft;
+                  const maxArrowLeft = tooltipWidth - 10; // Evitar que la flecha se salga del tooltip
+                  arrowEl.style.left = `${Math.min(Math.max(newArrowLeft, 10), maxArrowLeft)}px`;
+                  arrowEl.style.transform = 'translateX(-50%)';
+                }
+              }
+
+              $el.style.left = `${leftPos}px`;
+              $el.style.top = `${rect.top - $el.offsetHeight - 20}px`;  // Subimos 4px más
+              $el.style.display = 'block';
+            } else {
+              $el.style.display = 'none';
+            }
+          });
+        })"
+      >
+        {@title}
+        <!-- Flecha del tooltip -->
+        <div
+          class={"absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-#{@color}-700"}
+          style="pointer-events: none;"
+        />
+      </div>
+    </div>
     """
   end
 
@@ -1736,95 +1802,17 @@ defmodule PoliciaWeb.CustomComponents do
         <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-white/30 transition-colors duration-300">
           <%= case @icon do %>
             <% "doc" -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
+              <.icon name="hero-document-text" class="h-6 w-6" />
             <% "clock" -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <.icon name="hero-clock" class="h-6 w-6" />
             <% "alert" -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
+              <.icon name="hero-exclamation-triangle" class="h-6 w-6" />
             <% "card" -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
+              <.icon name="hero-credit-card" class="h-6 w-6" />
             <% "shield" -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                />
-              </svg>
+              <.icon name="hero-shield-check" class="h-6 w-6" />
             <% _ -> %>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
+              <.icon name="hero-bolt" class="h-6 w-6" />
           <% end %>
         </div>
         <h3 class="text-xl font-bold mb-2">{@title}</h3>
@@ -1836,18 +1824,7 @@ defmodule PoliciaWeb.CustomComponents do
           class={"inline-flex items-center text-sm font-semibold text-white hover:text-#{@color_theme}-200 transition-colors"}
         >
           {@action_text}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 ml-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          <.icon name="hero-arrow-right" class="h-4 w-4 ml-1" />
         </a>
       </div>
     </div>
@@ -2115,7 +2092,6 @@ defmodule PoliciaWeb.CustomComponents do
 
     theme = assigns.color_theme
 
-    # Mapeo de tamaños - DEBEN SER EXACTAMENTE IGUALES A app_button
     size_classes = %{
       # Misma altura forzada
       "sm" => "py-1.5 px-4 text-sm h-9",

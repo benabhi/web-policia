@@ -39,11 +39,20 @@ defmodule PoliciaWeb.CategoryController do
 
   def update(conn, %{"id" => id, "category" => category_params}) do
     category = Articles.get_category!(id)
+    old_slug = category.slug
 
     case Articles.update_category(category, category_params) do
       {:ok, category} ->
+        # Mensaje personalizado si el slug cambió
+        message =
+          if old_slug != category.slug do
+            "Categoría actualizada correctamente. El slug se ha actualizado de '#{old_slug}' a '#{category.slug}'."
+          else
+            "Categoría actualizada correctamente."
+          end
+
         conn
-        |> put_flash(:info, "Category updated successfully.")
+        |> PoliciaWeb.AlertHelper.put_alert(:success, message)
         |> redirect(to: ~p"/categories/#{category}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -53,10 +62,26 @@ defmodule PoliciaWeb.CategoryController do
 
   def delete(conn, %{"id" => id}) do
     category = Articles.get_category!(id)
-    {:ok, _category} = Articles.delete_category(category)
 
-    conn
-    |> put_flash(:info, "Category deleted successfully.")
-    |> redirect(to: ~p"/categories")
+    # Verificar si hay artículos asociados a esta categoría
+    articles_count = Policia.Repo.aggregate(Ecto.assoc(category, :articles), :count, :id)
+
+    if articles_count > 0 do
+      conn
+      |> PoliciaWeb.AlertHelper.put_alert(
+        :error,
+        "No se puede eliminar la categoría porque tiene #{articles_count} artículos asociados."
+      )
+      |> redirect(to: ~p"/categories/#{category}")
+    else
+      {:ok, _category} = Articles.delete_category(category)
+
+      conn
+      |> PoliciaWeb.AlertHelper.put_alert(
+        :success,
+        "Categoría '#{category.name}' eliminada correctamente."
+      )
+      |> redirect(to: ~p"/categories")
+    end
   end
 end
