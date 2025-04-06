@@ -567,25 +567,12 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Botón de lupa - Visible solo en hover -->
             <div class="absolute inset-0 flex items-center justify-center">
               <button
-                @click="showModal = true; console.log('Modal should open')"
+                @click="showModal = true"
                 type="button"
                 class={"p-3 rounded-full bg-#{@color_theme}-900 bg-opacity-70 hover:bg-opacity-90 text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100 cursor-pointer"}
                 aria-label="Ver imagen ampliada"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10v4m4-4v4m-7-1h10"
-                  />
-                </svg>
+                <.icon name="search-plus" class="h-8 w-8" stroke-width="1.5" type="stroke" />
               </button>
             </div>
             
@@ -622,20 +609,7 @@ defmodule PoliciaWeb.CustomComponents do
                   @click="showModal = false"
                   aria-label="Cerrar"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <.icon name="close" class="h-6 w-6" stroke-width="1.5" type="stroke" />
                 </button>
               </div>
             </div>
@@ -1094,30 +1068,14 @@ defmodule PoliciaWeb.CustomComponents do
         class={"absolute left-4 top-1/2 transform -translate-y-1/2 bg-#{@color_theme}-800/70 hover:bg-#{@color_theme}-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200"}
         aria-label="Imagen anterior"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
+        <.icon name="chevron-left" class="h-6 w-6" />
       </button>
       <button
         @click="current = (current + 1) % totalSlides"
         class={"absolute right-4 top-1/2 transform -translate-y-1/2 bg-#{@color_theme}-800/70 hover:bg-#{@color_theme}-700 text-white w-10 h-10 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-#{@color_theme}-500 focus:ring-opacity-50 transition-all duration-200"}
         aria-label="Imagen siguiente"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
+        <.icon name="chevron-right" class="h-6 w-6" />
       </button>
       
     <!-- Indicadores de posición -->
@@ -1465,7 +1423,11 @@ defmodule PoliciaWeb.CustomComponents do
     ~H"""
     <div class={"bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-#{@color_theme}-100 flex flex-col h-full group #{@class}"}>
       <%= if @image do %>
-        <div class="relative h-48 overflow-hidden" x-data="{ showModal: false }">
+        <div
+          class="relative h-48 overflow-hidden"
+          x-data="{ showModal: false }"
+          x-init="$nextTick(() => { showModal = false })"
+        >
           <!-- Imagen sin comportamiento de clic -->
           <img
             src={@image}
@@ -1476,24 +1438,11 @@ defmodule PoliciaWeb.CustomComponents do
     <!-- Botón de lupa exclusivo para abrir el modal -->
           <button
             type="button"
-            class={"absolute top-2 left-2 bg-#{@color_theme}-900 bg-opacity-60 hover:bg-opacity-90 text-white p-1.5 rounded-full z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"}
-            @click.stop.prevent="showModal = true"
+            class={"absolute top-2 left-2 bg-#{@color_theme}-900 bg-opacity-60 hover:bg-opacity-90 text-white p-1.5 rounded-full z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"}
+            @click="showModal = true"
             aria-label="Ver imagen ampliada"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10v4m4-4v4m-7-1h10"
-              />
-            </svg>
+            <.icon name="search-plus" class="h-4 w-4" stroke-width="1.5" type="stroke" />
           </button>
           
     <!-- Enlace al artículo (SOLO en el título, no en la imagen) -->
@@ -1511,11 +1460,10 @@ defmodule PoliciaWeb.CustomComponents do
                   method={Map.get(action, :method)}
                   data-confirm={Map.get(action, :confirm)}
                   class="relative"
-                  @click.stop.prevent
                 >
                   <span class={"bg-#{action.color || @color_theme}-600 text-white p-2 rounded-md hover:bg-#{action.color || @color_theme}-700 transition-all flex items-center justify-center"}>
                     <%= if action.icon do %>
-                      <.button_icon name={action.icon} />
+                      <.icon name={action.icon} class="h-5 w-5" stroke-width="1.5" type="stroke" />
                     <% else %>
                       <span>{action.text}</span>
                     <% end %>
@@ -1526,7 +1474,7 @@ defmodule PoliciaWeb.CustomComponents do
           <% end %>
           
     <!-- Modal de imagen ampliada -->
-          <template x-if="showModal">
+          <div x-show="showModal" x-cloak>
             <div
               class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-12"
               @keydown.escape.window="showModal = false"
@@ -1565,24 +1513,11 @@ defmodule PoliciaWeb.CustomComponents do
                   @click.stop="showModal = false"
                   aria-label="Cerrar"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <.icon name="close" class="h-6 w-6" stroke-width="1.5" type="stroke" />
                 </button>
               </div>
             </div>
-          </template>
+          </div>
         </div>
       <% end %>
 
@@ -1734,7 +1669,7 @@ defmodule PoliciaWeb.CustomComponents do
                       url: "/articles/#{article.id}",
                       method: :delete,
                       confirm: "¿Estás seguro de eliminar este artículo?",
-                      icon: "close",
+                      icon: "trash",
                       color: "red"
                     }
                   ]
@@ -2132,11 +2067,11 @@ defmodule PoliciaWeb.CustomComponents do
       {@rest}
     >
       <%= if @icon && @icon_position == "left" do %>
-        <.button_icon name={@icon} class="mr-1.5" />
+        <.icon name={@icon} class="h-5 w-5 mr-1.5" type="fill" />
       <% end %>
       {render_slot(@inner_block)}
       <%= if @icon && @icon_position == "right" do %>
-        <.button_icon name={@icon} class="ml-1.5" />
+        <.icon name={@icon} class="h-5 w-5 ml-1.5" type="fill" />
       <% end %>
     </button>
     """
@@ -2230,11 +2165,11 @@ defmodule PoliciaWeb.CustomComponents do
         {@rest}
       >
         <%= if @icon && @icon_position == "left" do %>
-          <.button_icon name={@icon} class="mr-1.5" />
+          <.icon name={@icon} class="h-5 w-5 mr-1.5" type="fill" />
         <% end %>
         {render_slot(@inner_block)}
         <%= if @icon && @icon_position == "right" do %>
-          <.button_icon name={@icon} class="ml-1.5" />
+          <.icon name={@icon} class="h-5 w-5 ml-1.5" type="fill" />
         <% end %>
       </.link>
     <% else %>
@@ -2245,109 +2180,13 @@ defmodule PoliciaWeb.CustomComponents do
         {@rest}
       >
         <%= if @icon && @icon_position == "left" do %>
-          <.button_icon name={@icon} class="mr-1.5" />
+          <.icon name={@icon} class="h-5 w-5 mr-1.5" type="fill" />
         <% end %>
         {render_slot(@inner_block)}
         <%= if @icon && @icon_position == "right" do %>
-          <.button_icon name={@icon} class="ml-1.5" />
+          <.icon name={@icon} class="h-5 w-5 ml-1.5" type="fill" />
         <% end %>
       </button>
-    <% end %>
-    """
-  end
-
-  # Componente auxiliar para los íconos de botones
-  attr :name, :string, required: true, doc: "Nombre del ícono"
-  attr :class, :string, default: "", doc: "Clases CSS adicionales"
-
-  def button_icon(assigns) do
-    ~H"""
-    <%= case @name do %>
-      <% "check" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      <% "back" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      <% "save" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-        </svg>
-      <% "close" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      <% "edit" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-        </svg>
-      <% "add" -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      <% _ -> %>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class={"h-5 w-5 #{@class}"}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M14 5l7 7m0 0l-7 7m7-7H3"
-          />
-        </svg>
     <% end %>
     """
   end
@@ -2385,41 +2224,11 @@ defmodule PoliciaWeb.CustomComponents do
             href={@route_func.(@page - 1)}
             class={"relative inline-flex items-center px-4 py-2 text-sm font-medium border border-r-0 border-#{@color_theme}-300 rounded-l-md hover:bg-#{@color_theme}-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-#{@color_theme}-500 focus:border-#{@color_theme}-500"}
           >
-            <svg
-              class="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              >
-              </path>
-            </svg>
-            Anterior
+            <.icon name="chevron-left" class="w-5 h-5 mr-1" /> Anterior
           </a>
         <% else %>
           <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium border border-r-0 border-gray-300 rounded-l-md text-gray-400 bg-gray-100 cursor-not-allowed">
-            <svg
-              class="w-5 h-5 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              >
-              </path>
-            </svg>
-            Anterior
+            <.icon name="chevron-left" class="w-5 h-5 mr-1" /> Anterior
           </span>
         <% end %>
         
@@ -2451,31 +2260,11 @@ defmodule PoliciaWeb.CustomComponents do
             href={@route_func.(@page + 1)}
             class={"relative inline-flex items-center px-4 py-2 text-sm font-medium border border-#{@color_theme}-300 rounded-r-md hover:bg-#{@color_theme}-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-#{@color_theme}-500 focus:border-#{@color_theme}-500"}
           >
-            Siguiente
-            <svg
-              class="w-5 h-5 ml-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-              </path>
-            </svg>
+            Siguiente <.icon name="chevron-right" class="w-5 h-5 ml-1" />
           </a>
         <% else %>
           <span class="relative inline-flex items-center px-4 py-2 text-sm font-medium border border-gray-300 rounded-r-md text-gray-400 bg-gray-100 cursor-not-allowed">
-            Siguiente
-            <svg
-              class="w-5 h-5 ml-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-              </path>
-            </svg>
+            Siguiente <.icon name="chevron-right" class="w-5 h-5 ml-1" />
           </span>
         <% end %>
       </nav>
@@ -3003,6 +2792,9 @@ defmodule PoliciaWeb.CustomComponents do
       "search" ->
         "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
 
+      "search-plus" ->
+        "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10v4m4-4v4m-7-1h10"
+
       # Usuarios y autenticación
       "settings" ->
         "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"
@@ -3108,6 +2900,9 @@ defmodule PoliciaWeb.CustomComponents do
 
       "add" ->
         "M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+
+      "trash" ->
+        "M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
 
       # Icono por defecto (fallback)
       _ ->
