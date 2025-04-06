@@ -53,27 +53,40 @@ categories =
   end)
 
 # Generar artículos para cada categoría
-Enum.each(categories, fn category ->
-  # Generar entre 2 y 4 artículos por categoría
-  num_articles = Enum.random(2..4)
+articles =
+  Enum.flat_map(categories, fn category ->
+    # Generar entre 2 y 4 artículos por categoría
+    num_articles = Enum.random(2..4)
 
-  Enum.each(1..num_articles, fn index ->
-    %Article{}
-    |> Article.changeset(%{
-      title: "#{category.name} - Artículo #{index}",
-      content: """
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      Nullam auctor, nunc eget ultricies tincidunt, velit velit
-      bibendum velit, vel bibendum sapien nunc vel lectus.
-      Fusce euismod, nunc sit amet aliquam lacinia, nisi enim
-      lobortis enim, vel lacinia nunc enim eget nunc.
-      """,
-      category_id: category.id,
-      user_id: user.id,
-      image_url: "/images/demo/imagen_de_prueba.png"
-    })
-    |> Repo.insert!()
+    Enum.map(1..num_articles, fn index ->
+      %Article{}
+      |> Article.changeset(%{
+        title: "#{category.name} - Artículo #{index}",
+        content: """
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Nullam auctor, nunc eget ultricies tincidunt, velit velit
+        bibendum velit, vel bibendum sapien nunc vel lectus.
+        Fusce euismod, nunc sit amet aliquam lacinia, nisi enim
+        lobortis enim, vel lacinia nunc enim eget nunc.
+        """,
+        category_id: category.id,
+        user_id: user.id,
+        image_url: "/images/demo/imagen_de_prueba.png",
+        featured_of_week: false
+      })
+      |> Repo.insert!()
+    end)
   end)
-end)
+
+# Marcar un artículo aleatorio como destacado de la semana
+if length(articles) > 0 do
+  featured_article = Enum.random(articles)
+
+  featured_article
+  |> Ecto.Changeset.change(featured_of_week: true)
+  |> Repo.update!()
+
+  IO.puts("Artículo '#{featured_article.title}' marcado como destacado de la semana.")
+end
 
 IO.puts("Seeds cargados exitosamente!")
