@@ -72,28 +72,45 @@
       <div class="flex justify-between items-center border-b-2 border-blue-200 pb-3 mb-6">
         <h2 class="text-2xl font-bold text-blue-950">Destacados de la Semana</h2>
       </div>
-      
-<!-- Artículo destacado con componente article -->
-      <.single_article
-        image_src="/images/demo/imagen_de_prueba.png"
-        image_alt="Operativo de seguridad"
-        date="1 Abril 2025"
-        time="10:30 AM"
-        author="Departamento de Prensa"
-        title="Operativo de seguridad especial para Semana Santa"
-        category="Seguridad"
-        comment_count={12}
-      >
-        <p>
-          La Policía de Río Negro implementará un operativo especial de seguridad en toda la provincia durante el fin de semana largo de Semana Santa. Se reforzará la presencia policial en las rutas provinciales, zonas turísticas y centros comerciales.
-        </p>
-        <p>
-          "Nuestro objetivo es garantizar que todos los ciudadanos y turistas puedan disfrutar de estas fechas con tranquilidad y seguridad", explicó el comisario Juan Martínez, coordinador del operativo. "Hemos dispuesto controles en los principales accesos y reforzado la vigilancia en zonas de alta concentración de personas".
-        </p>
-        <p>
-          El operativo contará con más de 500 efectivos distribuidos estratégicamente en toda la provincia, unidades móviles y puestos de control en las rutas. Además, se implementará un sistema de patrullaje preventivo en las zonas turísticas y centros urbanos.
-        </p>
-      </.single_article>
+
+      <%= if @featured_article do %>
+        <!-- Artículo destacado de la semana -->
+        <.single_article
+          image_src={@featured_article.image}
+          image_alt={@featured_article.title}
+          date={@featured_article.date}
+          time=""
+          author={@featured_article.author}
+          title={@featured_article.title}
+          category={@featured_article.category}
+          category_url={@featured_article.category_url}
+          show_footer={true}
+        >
+          {raw(format_content(@featured_article.content))}
+        </.single_article>
+      <% else %>
+        <!-- Artículo destacado con componente article (fallback) -->
+        <.single_article
+          image_src="/images/demo/imagen_de_prueba.png"
+          image_alt="Operativo de seguridad"
+          date="1 Abril 2025"
+          time="10:30 AM"
+          author="Departamento de Prensa"
+          title="Operativo de seguridad especial para Semana Santa"
+          category="Seguridad"
+          comment_count={12}
+        >
+          <p>
+            La Policía de Río Negro implementará un operativo especial de seguridad en toda la provincia durante el fin de semana largo de Semana Santa. Se reforzará la presencia policial en las rutas provinciales, zonas turísticas y centros comerciales.
+          </p>
+          <p>
+            "Nuestro objetivo es garantizar que todos los ciudadanos y turistas puedan disfrutar de estas fechas con tranquilidad y seguridad", explicó el comisario Juan Martínez, coordinador del operativo. "Hemos dispuesto controles en los principales accesos y reforzado la vigilancia en zonas de alta concentración de personas".
+          </p>
+          <p>
+            El operativo contará con más de 500 efectivos distribuidos estratégicamente en toda la provincia, unidades móviles y puestos de control en las rutas. Además, se implementará un sistema de patrullaje preventivo en las zonas turísticas y centros urbanos.
+          </p>
+        </.single_article>
+      <% end %>
     </div>
   </div>
 

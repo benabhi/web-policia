@@ -30,6 +30,7 @@ defmodule PoliciaWeb.Router do
     get "/articles/new", ArticleController, :new
     get "/articles/category/:slug", ArticleController, :by_category
     get "/articles/:id", ArticleController, :show
+    put "/articles/:id/toggle_featured", ArticleController, :toggle_featured
 
     resources "/categories", CategoryController
   end

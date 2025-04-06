@@ -7,7 +7,8 @@ defmodule PoliciaWeb.ArticleController do
 
   @articles_per_page 9
 
-  plug :require_authenticated_user when action in [:new, :create, :edit, :update, :delete]
+  plug :require_authenticated_user
+       when action in [:new, :create, :edit, :update, :delete, :toggle_featured]
 
   def index(conn, params) do
     page = params_to_integer(params["page"], 1)
@@ -176,6 +177,41 @@ defmodule PoliciaWeb.ArticleController do
     conn
     |> PoliciaWeb.AlertHelper.put_alert(:success, "Artículo eliminado exitosamente.")
     |> redirect(to: ~p"/articles")
+  end
+
+  def toggle_featured(conn, %{"id" => id}) do
+    article = Articles.get_article!(id)
+
+    # Verificar que el artículo pertenezca al usuario actual o tenga permisos
+    unless article.user_id == conn.assigns.current_user.id do
+      conn
+      |> PoliciaWeb.AlertHelper.put_alert(
+        :error,
+        "No tienes permiso para modificar este artículo."
+      )
+      |> redirect(to: ~p"/articles/#{article}")
+      |> halt()
+    end
+
+    # Cambiar el estado de destacado
+    new_featured_state = !article.featured_of_week
+
+    case Articles.update_article(article, %{featured_of_week: new_featured_state}) do
+      {:ok, _article} ->
+        message =
+          if new_featured_state,
+            do: "Artículo marcado como destacado de la semana.",
+            else: "Artículo desmarcado como destacado de la semana."
+
+        conn
+        |> PoliciaWeb.AlertHelper.put_alert(:success, message)
+        |> redirect(to: ~p"/articles")
+
+      {:error, _changeset} ->
+        conn
+        |> PoliciaWeb.AlertHelper.put_alert(:error, "Error al actualizar el artículo.")
+        |> redirect(to: ~p"/articles")
+    end
   end
 
   def all_articles(conn, params) do

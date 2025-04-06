@@ -30,6 +30,32 @@ defmodule PoliciaWeb.PageController do
         }
       end)
 
-    render(conn, :home, latest_articles: latest_articles)
+    # Obtener el artículo destacado de la semana
+    featured_article =
+      Articles.get_featured_of_week()
+      |> case do
+        nil ->
+          nil
+
+        article ->
+          %{
+            id: article.id,
+            title: article.title,
+            date: format_date(article.inserted_at),
+            image: article.image_url || "/images/demo/featured-weekly.png",
+            content: article.content,
+            url: ~p"/articles/#{article}",
+            category: if(article.category, do: article.category.name, else: nil),
+            category_url:
+              if(article.category, do: ~p"/articles?category=#{article.category.slug}", else: nil),
+            author:
+              if(article.user,
+                do: "#{article.user.first_name} #{article.user.last_name}",
+                else: "Autor desconocido"
+              )
+          }
+      end
+
+    render(conn, :home, latest_articles: latest_articles, featured_article: featured_article)
   end
 end

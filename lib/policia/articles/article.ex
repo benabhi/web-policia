@@ -7,6 +7,7 @@ defmodule Policia.Articles.Article do
     field :content, :string
     field :image_url, :string
     field :image, :any, virtual: true
+    field :featured_of_week, :boolean, default: false
 
     # Eliminamos el campo author que será reemplazado por la relación
     # field :author, :string
@@ -21,7 +22,15 @@ defmodule Policia.Articles.Article do
   @doc false
   def changeset(article, attrs) do
     article
-    |> cast(attrs, [:title, :content, :image_url, :category_id, :image, :user_id])
+    |> cast(attrs, [
+      :title,
+      :content,
+      :image_url,
+      :category_id,
+      :image,
+      :user_id,
+      :featured_of_week
+    ])
     |> validate_required([:title, :content, :user_id])
     |> validate_image()
   end

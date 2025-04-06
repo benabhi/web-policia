@@ -60,6 +60,13 @@ defmodule Policia.Articles do
 
   """
   def create_article(attrs \\ %{}) do
+    # Verificar si se está marcando como destacado de la semana
+    if Map.get(attrs, "featured_of_week") == "true" || Map.get(attrs, :featured_of_week) == true do
+      # Desmarcar cualquier otro artículo que esté marcado como destacado
+      from(a in Article, where: a.featured_of_week == true)
+      |> Repo.update_all(set: [featured_of_week: false])
+    end
+
     %Article{}
     |> Article.changeset(attrs)
     |> Repo.insert()
@@ -78,6 +85,13 @@ defmodule Policia.Articles do
 
   """
   def update_article(%Article{} = article, attrs) do
+    # Verificar si se está marcando como destacado de la semana
+    if Map.get(attrs, "featured_of_week") == "true" || Map.get(attrs, :featured_of_week) == true do
+      # Desmarcar cualquier otro artículo que esté marcado como destacado
+      from(a in Article, where: a.featured_of_week == true and a.id != ^article.id)
+      |> Repo.update_all(set: [featured_of_week: false])
+    end
+
     article
     |> Article.changeset(attrs)
     |> Repo.update()
@@ -216,6 +230,19 @@ defmodule Policia.Articles do
     query
     |> Repo.paginate(page: page, page_size: per_page)
     |> preload_results_with_category()
+  end
+
+  @doc """
+  Returns the article marked as featured of the week.
+  If multiple articles are marked, returns the most recent one.
+  """
+  def get_featured_of_week do
+    Article
+    |> where([a], a.featured_of_week == true)
+    |> order_by([a], desc: a.inserted_at)
+    |> limit(1)
+    |> Repo.one()
+    |> Repo.preload([:category, :user])
   end
 
   @doc """

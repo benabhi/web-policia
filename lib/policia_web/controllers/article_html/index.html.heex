@@ -54,7 +54,8 @@
             image: article.image_url || "/images/demo/featured1.png",
             excerpt: String.slice(article.content || "", 0, 150) <> "...",
             url: ~p"/articles/#{article}",
-            category: if(article.category, do: article.category.name, else: nil)
+            category: if(article.category, do: article.category.name, else: nil),
+            featured: article.featured_of_week
           }
         end)
       }

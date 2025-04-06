@@ -6,6 +6,7 @@ defmodule Policia.Repo.Migrations.CreateArticles do
       add :title, :string
       add :content, :text
       add :image_url, :string
+      add :featured_of_week, :boolean, default: false
 
       # add :author, :string  <-- Comenta o elimina esta línea
 
