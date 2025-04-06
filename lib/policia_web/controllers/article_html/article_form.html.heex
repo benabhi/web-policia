@@ -116,11 +116,11 @@
   
 <!-- Botones de acción -->
   <div class="flex justify-end space-x-4 mt-8">
-    <.app_button_secondary navigate={~p"/articles"} icon="back">
+    <.app_button_secondary navigate={~p"/articles"} icon="hero-arrow-left-solid">
       Cancelar
     </.app_button_secondary>
 
-    <.app_button type="submit" icon="check">
+    <.app_button type="submit" icon="hero-check-solid">
       {if @changeset.data.id, do: "Actualizar", else: "Crear"} Artículo
     </.app_button>
   </div>

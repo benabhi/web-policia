@@ -25,18 +25,16 @@ config :policia, :institution,
   phone: "+54 (2920) 423045",
   emails: ["contacto@policia.rionegro.gov.ar", "info@policia.rionegro.gov.ar"],
   social_links: [
-    %{name: "Twitter", url: "https://x.com/policiarionegro", icon: "twitter"},
+    %{name: "X", url: "https://x.com/policiarionegro"},
     %{
       name: "Facebook",
       url:
-        "https://www.facebook.com/p/Jefatura-de-Polic%C3%ADa-de-R%C3%ADo-Negro-100064633034065/?locale=es_LA&_rdr",
-      icon: "facebook"
+        "https://www.facebook.com/p/Jefatura-de-Polic%C3%ADa-de-R%C3%ADo-Negro-100064633034065/?locale=es_LA&_rdr"
     },
-    %{name: "Instagram", url: "https://www.instagram.com/policiarionegro/", icon: "instagram"},
+    %{name: "Instagram", url: "https://www.instagram.com/policiarionegro/"},
     %{
       name: "YouTube",
-      url: "https://www.youtube.com/user/policiarionegro/videos",
-      icon: "youtube"
+      url: "https://www.youtube.com/user/policiarionegro/videos"
     }
   ]
 
