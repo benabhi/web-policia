@@ -1475,12 +1475,22 @@ defmodule PoliciaWeb.CustomComponents do
   attr :featured, :boolean, default: false, doc: "Si el artículo está destacado de la semana"
   attr :id, :integer, default: nil, doc: "ID del artículo para acciones"
   attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
 
   def article_card(assigns) do
+    # Verificar si el usuario tiene permisos para ver las acciones (editor o admin)
+    show_actions =
+      cond do
+        is_nil(assigns[:current_user]) -> false
+        assigns.current_user.role in ["editor", "admin"] -> true
+        true -> false
+      end
+
     assigns =
       assigns
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
       |> assign_new(:image_alt, fn -> assigns[:title] end)
+      |> assign(:show_actions, show_actions)
 
     ~H"""
     <div class={"bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-#{@color_theme}-100 flex flex-col h-full group #{@class}"}>
@@ -1597,7 +1607,7 @@ defmodule PoliciaWeb.CustomComponents do
             Leer más <.icon name="hero-arrow-right" class="h-4 w-4 ml-1" />
           </.link>
 
-          <%= if length(@actions) > 0 do %>
+          <%= if length(@actions) > 0 && @show_actions do %>
             <div class="flex space-x-2">
               <%= for action <- @actions do %>
                 <.icon_button
@@ -1642,6 +1652,8 @@ defmodule PoliciaWeb.CustomComponents do
     doc: "Si se deben mostrar acciones administrativas"
 
   attr :show_border, :boolean, default: true, doc: "Si se debe mostrar borde en el encabezado"
+
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
 
   def article_grid(assigns) do
     assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
@@ -1704,6 +1716,7 @@ defmodule PoliciaWeb.CustomComponents do
               author={article[:author]}
               featured={article[:featured]}
               id={article[:id]}
+              current_user={@current_user}
               actions={
                 if @with_actions do
                   [
@@ -1894,11 +1907,21 @@ defmodule PoliciaWeb.CustomComponents do
 
   attr :color_theme, :string, default: nil, doc: "Tema de color para la tarjeta"
   attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
 
   def category_card(assigns) do
+    # Verificar si el usuario tiene permisos para ver las acciones (editor o admin)
+    show_actions =
+      cond do
+        is_nil(assigns[:current_user]) -> false
+        assigns.current_user.role in ["editor", "admin"] -> true
+        true -> false
+      end
+
     assigns =
       assigns
       |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+      |> assign(:show_actions, show_actions)
 
     ~H"""
     <div class={"bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col h-full group #{@class}"}>
@@ -1954,7 +1977,7 @@ defmodule PoliciaWeb.CustomComponents do
           </span>
         </div>
 
-        <%= if @with_actions do %>
+        <%= if @with_actions && @show_actions do %>
           <div class="flex items-center space-x-1">
             <.icon_button
               href={"/categories/#{@id}/edit"}
@@ -2004,6 +2027,8 @@ defmodule PoliciaWeb.CustomComponents do
 
   attr :show_border, :boolean, default: true, doc: "Si se debe mostrar borde en el encabezado"
 
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
+
   def category_grid(assigns) do
     assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
 
@@ -2049,6 +2074,7 @@ defmodule PoliciaWeb.CustomComponents do
               id={category.id}
               with_actions={@with_actions}
               article_count={length(category.articles || [])}
+              current_user={@current_user}
             />
           <% end %>
         </div>
