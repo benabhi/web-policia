@@ -1,0 +1,132 @@
+<.form_container
+  title="Información del usuario"
+  icon="hero-user"
+  description="Datos personales y credenciales de acceso"
+  show_info={true}
+  info_title="Información sobre los roles"
+>
+  <.simple_form :let={f} for={@changeset} action={@action}>
+    <.error :if={@changeset.action}>
+      <div class="flex items-center">
+        <.icon name="hero-exclamation-circle" class="h-5 w-5 text-red-500 mr-2" />
+        <span>Ha ocurrido un error. Por favor, revise los campos a continuación.</span>
+      </div>
+    </.error>
+
+    <div class="space-y-6">
+      <%= if @mode == :edit do %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Nombre de usuario</p>
+            <p class="mt-1 text-sm text-gray-900">{@user.username}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Nombre completo</p>
+            <p class="mt-1 text-sm text-gray-900">{"#{@user.first_name} #{@user.last_name}"}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Email</p>
+            <p class="mt-1 text-sm text-gray-900">{@user.email}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Fecha de registro</p>
+            <p class="mt-1 text-sm text-gray-900">{format_date(@user.inserted_at)}</p>
+          </div>
+        </div>
+      <% else %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <.input
+              field={f[:username]}
+              type="text"
+              label="Nombre de usuario"
+              required
+              placeholder="Ej: usuario123"
+            />
+          </div>
+
+          <div>
+            <.input
+              field={f[:email]}
+              type="email"
+              label="Email"
+              required
+              placeholder="correo@ejemplo.com"
+            />
+          </div>
+
+          <div>
+            <.input
+              field={f[:first_name]}
+              type="text"
+              label="Nombre"
+              required
+              placeholder="Ej: Juan"
+            />
+          </div>
+
+          <div>
+            <.input
+              field={f[:last_name]}
+              type="text"
+              label="Apellido"
+              required
+              placeholder="Ej: Pérez"
+            />
+          </div>
+
+          <div>
+            <.input
+              field={f[:password]}
+              type="password"
+              label="Contraseña"
+              required
+              placeholder="••••••••"
+            />
+            <p class="mt-1 text-xs text-gray-500">
+              Mínimo 8 caracteres, incluyendo letras y números.
+            </p>
+          </div>
+        </div>
+      <% end %>
+
+      <div>
+        <.input
+          field={f[:role]}
+          type="select"
+          label="Rol"
+          options={@roles}
+          prompt="Seleccione un rol..."
+        />
+        <p class="mt-1 text-xs text-gray-500">
+          El rol determina los permisos del usuario en el sistema.
+        </p>
+      </div>
+    </div>
+
+    <:actions>
+      <div class="flex justify-end space-x-3">
+        <.link navigate={~p"/admin/users"} class="inline-flex">
+          <.app_button_secondary icon="hero-arrow-left-solid">
+            Cancelar
+          </.app_button_secondary>
+        </.link>
+        <.app_button type="submit" icon="hero-check">
+          {if @mode == :edit, do: "Guardar cambios", else: "Crear usuario"}
+        </.app_button>
+      </div>
+    </:actions>
+  </.simple_form>
+
+  <:info>
+    <ul class="list-disc list-inside mt-1">
+      <li><strong>Lector:</strong> Solo puede ver contenido publicado.</li>
+      <li><strong>Escritor:</strong> Puede crear y editar sus propios artículos.</li>
+      <li><strong>Editor:</strong> Puede gestionar todos los artículos y categorías.</li>
+      <li><strong>Administrador:</strong> Acceso completo a todas las funciones.</li>
+    </ul>
+  </:info>
+</.form_container>

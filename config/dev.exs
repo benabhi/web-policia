@@ -83,3 +83,7 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :bandit,
+  # 5 minutos en milisegundos
+  request_timeout: 300_000

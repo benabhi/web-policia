@@ -3,6 +3,12 @@ defmodule PoliciaWeb.Admin.UserHTML do
 
   embed_templates "user_html/*"
 
+  # Función para renderizar el formulario de usuario
+  # Esta función se usa para incluir el template user_form.html.heex
+  def user_form(assigns) do
+    # El template user_form.html.heex se renderiza automáticamente
+  end
+
   # Función para formatear la fecha
   def format_date(datetime) do
     Calendar.strftime(datetime, "%d/%m/%Y %H:%M")
