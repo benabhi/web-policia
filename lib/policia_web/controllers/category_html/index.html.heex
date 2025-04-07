@@ -5,70 +5,20 @@
 >
   <!-- Panel principal con tabla de categorías -->
   <div class="space-y-6">
-    <!-- Barra de acciones -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center space-x-2">
-        <.icon name="hero-folder-solid" class="h-5 w-5 text-blue-600" />
-        <h3 class="text-lg font-semibold text-gray-800">Listado de categorías</h3>
-      </div>
-      <.link href={~p"/categories/new"}>
-        <.app_button icon="hero-plus-solid" size="sm">
-          Nueva Categoría
-        </.app_button>
-      </.link>
+    <!-- Encabezado de la sección -->
+    <div class="flex items-center space-x-2 mb-6">
+      <.icon name="hero-folder-solid" class="h-5 w-5 text-blue-600" />
+      <h3 class="text-lg font-semibold text-gray-800">Listado de categorías</h3>
     </div>
     
-<!-- Tabla de categorías -->
-    <div class="bg-white rounded-lg overflow-hidden border border-gray-200">
-      <.table id="categories" rows={@categories} row_click={&JS.navigate(~p"/categories/#{&1}")}>
-        <:col :let={category} label="Nombre">
-          <div class="font-medium text-blue-800">{category.name}</div>
-        </:col>
-        <:col :let={category} label="Slug">
-          <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono">{category.slug}</code>
-        </:col>
-        <:col :let={category} label="Descripción">
-          <div class="truncate max-w-xs text-gray-600">
-            {category.description || "Sin descripción"}
-          </div>
-        </:col>
-
-        <:action :let={category}>
-          <div class="flex items-center space-x-1">
-            <.icon_button
-              href={~p"/categories/#{category}"}
-              icon_default="hero-eye"
-              icon_hover="hero-eye-solid"
-              color="blue"
-              title="Ver detalles"
-            />
-            <.icon_button
-              href={~p"/categories/#{category}/edit"}
-              icon_default="hero-pencil-square"
-              icon_hover="hero-pencil-square-solid"
-              color="blue"
-              title="Editar categoría"
-            />
-            <.icon_button
-              href={~p"/articles?category=#{category.slug}"}
-              icon_default="hero-document-text"
-              icon_hover="hero-document-text-solid"
-              color="green"
-              title="Ver artículos"
-            />
-            <.icon_button
-              href={~p"/categories/#{category}"}
-              method="delete"
-              confirm="¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer."
-              icon_default="hero-trash"
-              icon_hover="hero-trash-solid"
-              color="red"
-              title="Eliminar categoría"
-            />
-          </div>
-        </:action>
-      </.table>
-    </div>
+<!-- Grid de categorías usando el componente category_grid -->
+    <.category_grid
+      categories={@categories}
+      with_actions={true}
+      show_border={false}
+      empty_message="No hay categorías"
+      empty_text="Comience creando su primera categoría para organizar sus artículos."
+    />
     
 <!-- Información sobre slugs -->
     <div class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">

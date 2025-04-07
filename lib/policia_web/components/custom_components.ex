@@ -1784,6 +1784,181 @@ defmodule PoliciaWeb.CustomComponents do
     """
   end
 
+  # Componente para tarjetas de categorías
+  attr :name, :string, required: true, doc: "Nombre de la categoría"
+  attr :slug, :string, required: true, doc: "Slug de la categoría"
+  attr :description, :string, default: nil, doc: "Descripción de la categoría"
+  attr :id, :integer, default: nil, doc: "ID de la categoría para acciones"
+
+  attr :with_actions, :boolean,
+    default: false,
+    doc: "Si se deben mostrar acciones administrativas"
+
+  attr :color_theme, :string, default: nil, doc: "Tema de color para la tarjeta"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+
+  def category_card(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:color_theme, fn -> Config.webpage_theme() end)
+
+    ~H"""
+    <div class={"bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col h-full group #{@class}"}>
+      <!-- Cabecera de la tarjeta -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="bg-white/20 p-2 rounded-full">
+            <.icon name="hero-folder" class="h-5 w-5 text-white" />
+          </div>
+          <h3 class="text-lg font-semibold text-white truncate">{@name}</h3>
+        </div>
+        <div class="flex items-center space-x-1">
+          <.icon_button
+            href={"/categories/#{@id}"}
+            icon_default="hero-eye"
+            icon_hover="hero-eye-solid"
+            color="white"
+            title="Ver detalles"
+          />
+        </div>
+      </div>
+      
+    <!-- Contenido de la tarjeta -->
+      <div class="p-4 flex-grow">
+        <!-- Slug -->
+        <div class="mb-4">
+          <div class="text-xs text-gray-500 mb-1">Slug:</div>
+          <code class="bg-gray-100 px-2 py-1 rounded text-sm font-mono block w-full overflow-x-auto">
+            {@slug}
+          </code>
+        </div>
+        
+    <!-- Descripción -->
+        <div class="mb-4">
+          <div class="text-xs text-gray-500 mb-1">Descripción:</div>
+          <div class="text-gray-700 text-sm min-h-[60px] max-h-[80px] overflow-y-auto">
+            <%= if @description && String.trim(@description) != "" do %>
+              {@description}
+            <% else %>
+              <span class="text-gray-400 italic">Sin descripción</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      
+    <!-- Pie de la tarjeta con acciones -->
+      <div class="border-t border-gray-100 p-4 bg-gray-50 flex justify-between items-center">
+        <.link
+          href={"/articles?category=#{@slug}"}
+          class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+        >
+          <.icon name="hero-document-text" class="h-4 w-4 mr-1" />
+          <span>Ver artículos</span>
+        </.link>
+
+        <%= if @with_actions do %>
+          <div class="flex items-center space-x-1">
+            <.icon_button
+              href={"/categories/#{@id}/edit"}
+              icon_default="hero-pencil-square"
+              icon_hover="hero-pencil-square-solid"
+              color="blue"
+              title="Editar categoría"
+            />
+            <.icon_button
+              href={"/categories/#{@id}"}
+              method="delete"
+              confirm="¿Está seguro de que desea eliminar esta categoría? Esta acción no se puede deshacer."
+              icon_default="hero-trash"
+              icon_hover="hero-trash-solid"
+              color="red"
+              title="Eliminar categoría"
+            />
+          </div>
+        <% end %>
+      </div>
+    </div>
+    """
+  end
+
+  # Componente para grilla de categorías
+  attr :columns, :string,
+    default: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+    doc: "Clases para controlar las columnas"
+
+  attr :categories, :list, required: true, doc: "Lista de categorías a mostrar"
+  attr :title, :string, default: nil, doc: "Título opcional de la sección"
+  attr :subtitle, :string, default: nil, doc: "Subtítulo opcional"
+  attr :view_all_url, :string, default: nil, doc: "URL para ver todas las categorías"
+  attr :view_all_text, :string, default: "Ver todas", doc: "Texto para el enlace 'ver todas'"
+
+  attr :empty_message, :string,
+    default: "No se encontraron categorías",
+    doc: "Mensaje cuando no hay categorías"
+
+  attr :empty_text, :string,
+    default: "No hay categorías disponibles",
+    doc: "Texto descriptivo cuando no hay categorías"
+
+  attr :with_actions, :boolean,
+    default: false,
+    doc: "Si se deben mostrar acciones administrativas"
+
+  attr :show_border, :boolean, default: true, doc: "Si se debe mostrar borde en el encabezado"
+
+  def category_grid(assigns) do
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
+    ~H"""
+    <section class="mb-8">
+      <%= if @title do %>
+        <div class={[
+          "flex justify-between items-center pb-3 mb-6",
+          @show_border && "border-b-2 border-#{@color_theme}-200"
+        ]}>
+          <div>
+            <h2 class={"text-2xl font-bold text-#{@color_theme}-950"}>{@title}</h2>
+            <%= if @subtitle do %>
+              <p class={"text-sm text-#{@color_theme}-700 mt-1"}>{@subtitle}</p>
+            <% end %>
+          </div>
+          <%= if @view_all_url do %>
+            <.link
+              href={@view_all_url}
+              class={"text-#{@color_theme}-700 hover:text-#{@color_theme}-900 text-sm font-medium flex items-center"}
+            >
+              {@view_all_text}
+              <.icon name="hero-arrow-right" class="h-4 w-4 ml-1" />
+            </.link>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= if Enum.empty?(@categories) do %>
+        <div class={"bg-#{@color_theme}-50 border border-#{@color_theme}-200 text-#{@color_theme}-800 rounded-md p-6 text-center"}>
+          <.icon name="hero-folder-open" class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"} />
+          <h3 class="text-lg font-semibold mb-2">{@empty_message}</h3>
+          <p class={"text-#{@color_theme}-700"}>
+            {@empty_text}
+          </p>
+        </div>
+      <% else %>
+        <div class={"grid gap-6 #{@columns}"}>
+          <%= for category <- @categories do %>
+            <.category_card
+              name={category.name}
+              slug={category.slug}
+              description={category.description}
+              id={category.id}
+              with_actions={@with_actions}
+            />
+          <% end %>
+        </div>
+      <% end %>
+    </section>
+    """
+  end
+
   # Componente para tarjetas de servicios
   attr :title, :string, required: true, doc: "Título del servicio"
   attr :description, :string, required: true, doc: "Descripción del servicio"
