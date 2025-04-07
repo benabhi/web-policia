@@ -1,7 +1,7 @@
 <.content_layout
   title="Editar artículo"
   subtitle="Modifique la información del artículo"
-  has_sidebar={false}
+  has_sidebar={true}
 >
   <div class="mb-6 flex justify-between items-center">
     <.header>
@@ -12,23 +12,101 @@
     </.header>
 
     <div class="flex space-x-2">
-      <.link href={~p"/articles/#{@article}"}>
-        <.app_button_secondary icon="hero-document-solid" size="sm">
-          Ver artículo
+      <.link navigate={~p"/articles"}>
+        <.app_button_secondary icon="hero-arrow-left-solid" size="sm">
+          Volver
         </.app_button_secondary>
       </.link>
 
-      <.link href={~p"/articles"}>
-        <.app_button_secondary icon="hero-arrow-left-solid" size="sm">
-          Volver a artículos
+      <.link navigate={~p"/articles/#{@article}"}>
+        <.app_button_secondary icon="hero-eye" size="sm">
+          Ver detalles
         </.app_button_secondary>
       </.link>
     </div>
   </div>
 
-  <.article_form
-    changeset={@changeset}
-    categories={@categories}
-    action={~p"/articles/#{@article}"}
-  />
+  <div class="space-y-6">
+    <.article_form
+      changeset={@changeset}
+      categories={@categories}
+      action={~p"/articles/#{@article}"}
+    />
+  </div>
+
+  <:sidebar>
+    <!-- Información del artículo -->
+    <.sidebar_box title="Información del artículo">
+      <div class="space-y-4">
+        <div class="flex items-start">
+          <.icon name="hero-document-text" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+          <div>
+            <div class="font-medium text-gray-700">Título actual</div>
+            <div class="text-gray-900">{@article.title}</div>
+          </div>
+        </div>
+
+        <div class="flex items-start">
+          <.icon name="hero-calendar" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+          <div>
+            <div class="font-medium text-gray-700">Creado el</div>
+            <div class="text-gray-600">
+              {format_date(@article.inserted_at)}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-start">
+          <.icon name="hero-folder" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
+          <div>
+            <div class="font-medium text-gray-700">Categoría</div>
+            <div class="text-gray-600">
+              {category_name(@article.category_id, @categories)}
+            </div>
+          </div>
+        </div>
+
+        <%= if @article.featured_of_week do %>
+          <div class="flex items-start">
+            <.icon name="hero-star" class="h-5 w-5 text-yellow-500 mr-2 mt-0.5" />
+            <div>
+              <div class="font-medium text-gray-700">Estado</div>
+              <div class="text-yellow-600 font-medium">
+                Destacado de la semana
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </.sidebar_box>
+    
+<!-- Panel de acciones -->
+    <div class="mt-6">
+      <.sidebar_box title="Panel de acciones" highlight={true} icon="admin" highlight_color="blue">
+        <.sidebar_links
+          current_user={@current_user}
+          items={[
+            %{
+              icon: "hero-document-text",
+              title: "Todos los artículos",
+              description: "Ver listado completo",
+              url: ~p"/articles"
+            },
+            %{
+              icon: "hero-folder",
+              title: "Todas las categorías",
+              description: "Ver listado completo",
+              url: ~p"/categories"
+            },
+            %{
+              icon: "hero-home",
+              title: "Página principal",
+              description: "Volver al inicio",
+              url: ~p"/"
+            }
+          ]}
+        />
+      </.sidebar_box>
+    </div>
+  </:sidebar>
 </.content_layout>

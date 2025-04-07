@@ -35,4 +35,14 @@ defmodule PoliciaWeb.ArticleHTML do
     |> String.split("\n")
     |> Enum.join("<br>")
   end
+
+  @doc """
+  Obtiene el nombre de una categoría a partir de su ID y una lista de categorías.
+  """
+  def category_name(category_id, categories) do
+    case Enum.find(categories, fn {_name, id} -> id == category_id end) do
+      {name, _id} -> name
+      _ -> "Categoría no encontrada"
+    end
+  end
 end

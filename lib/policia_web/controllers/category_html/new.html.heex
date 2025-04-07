@@ -3,19 +3,26 @@
   subtitle="Cree una nueva categoría para organizar los artículos del sitio"
   has_sidebar={true}
 >
+  <div class="mb-6 flex justify-between items-center">
+    <.header>
+      Nueva Categoría
+      <:subtitle>
+        Complete el formulario para crear una nueva categoría
+      </:subtitle>
+    </.header>
+
+    <div>
+      <.link navigate={~p"/categories"}>
+        <.app_button_secondary icon="hero-arrow-left-solid" size="sm">
+          Volver a categorías
+        </.app_button_secondary>
+      </.link>
+    </div>
+  </div>
+
   <div class="space-y-6">
     <!-- Formulario de categoría -->
     <.category_form changeset={@changeset} action={~p"/categories"} />
-    
-<!-- Botón de navegación -->
-    <div class="flex justify-start mt-6">
-      <.link
-        navigate={~p"/categories"}
-        class="text-blue-600 hover:text-blue-800 flex items-center"
-      >
-        <.icon name="hero-arrow-left" class="h-4 w-4 mr-1" /> Volver a categorías
-      </.link>
-    </div>
   </div>
 
   <:sidebar>

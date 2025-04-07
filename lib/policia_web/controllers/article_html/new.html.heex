@@ -1,18 +1,18 @@
 <.content_layout
   title="Crear un nuevo artículo"
   subtitle="Complete el formulario para crear un artículo"
-  has_sidebar={false}
+  has_sidebar={true}
 >
   <div class="mb-6 flex justify-between items-center">
     <.header>
       Nuevo Artículo
       <:subtitle>
-        Use este formulario para crear un nuevo artículo
+        Complete el formulario para crear un nuevo artículo
       </:subtitle>
     </.header>
 
     <div>
-      <.link href={~p"/articles"}>
+      <.link navigate={~p"/articles"}>
         <.app_button_secondary icon="hero-arrow-left-solid" size="sm">
           Volver a artículos
         </.app_button_secondary>
@@ -20,5 +20,96 @@
     </div>
   </div>
 
-  <.article_form changeset={@changeset} categories={@categories} action={~p"/articles"} />
+  <div class="space-y-6">
+    <.article_form changeset={@changeset} categories={@categories} action={~p"/articles"} />
+  </div>
+
+  <:sidebar>
+    <!-- Panel de acciones -->
+    <.sidebar_box
+      title="Panel de acciones"
+      highlight={true}
+      icon="admin"
+      role_name={@current_user && String.capitalize(@current_user.role)}
+      highlight_color="blue"
+    >
+      <.sidebar_links
+        current_user={@current_user}
+        items={[
+          %{
+            icon: "hero-document-text",
+            title: "Todos los artículos",
+            description: "Ver listado completo",
+            url: ~p"/articles"
+          },
+          %{
+            icon: "hero-folder",
+            title: "Todas las categorías",
+            description: "Ver listado completo",
+            url: ~p"/categories"
+          },
+          %{
+            icon: "hero-home",
+            title: "Página principal",
+            description: "Volver al inicio",
+            url: ~p"/"
+          }
+        ]}
+      />
+    </.sidebar_box>
+    
+<!-- Panel de consejos -->
+    <div class="mt-6">
+      <.sidebar_box
+        title="Consejos para crear artículos"
+        highlight={true}
+        highlight_color="yellow"
+      >
+        <div class="space-y-4">
+          <p class="text-sm text-gray-600">
+            Los artículos bien estructurados mejoran la experiencia de lectura y el posicionamiento en buscadores.
+          </p>
+
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Use títulos descriptivos y concisos para captar la atención.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Incluya imágenes relevantes y de buena calidad.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Organice el contenido en párrafos cortos y secciones claras.
+              </span>
+            </li>
+            <li class="flex items-start">
+              <.icon
+                name="hero-check-circle"
+                class="h-5 w-5 text-yellow-500 mr-2 flex-shrink-0 mt-0.5"
+              />
+              <span class="text-sm">
+                Seleccione la categoría adecuada para facilitar la navegación.
+              </span>
+            </li>
+          </ul>
+        </div>
+      </.sidebar_box>
+    </div>
+  </:sidebar>
 </.content_layout>

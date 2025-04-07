@@ -3,26 +3,32 @@
   subtitle="Modifique los datos de la categoría"
   has_sidebar={true}
 >
+  <div class="mb-6 flex justify-between items-center">
+    <.header>
+      Editar Categoría
+      <:subtitle>
+        Modifique los datos de la categoría "{@category.name}"
+      </:subtitle>
+    </.header>
+
+    <div class="flex space-x-2">
+      <.link navigate={~p"/categories"}>
+        <.app_button_secondary icon="hero-arrow-left-solid" size="sm">
+          Volver
+        </.app_button_secondary>
+      </.link>
+
+      <.link navigate={~p"/categories/#{@category}"}>
+        <.app_button_secondary icon="hero-eye" size="sm">
+          Ver detalles
+        </.app_button_secondary>
+      </.link>
+    </div>
+  </div>
+
   <div class="space-y-6">
     <!-- Formulario de edición -->
     <.category_form changeset={@changeset} action={~p"/categories/#{@category}"} />
-    
-<!-- Botones de navegación -->
-    <div class="flex justify-between items-center pt-4 border-t border-gray-200">
-      <.link
-        navigate={~p"/categories"}
-        class="text-blue-600 hover:text-blue-800 flex items-center"
-      >
-        <.icon name="hero-arrow-left" class="h-4 w-4 mr-1" /> Volver a categorías
-      </.link>
-
-      <.link
-        navigate={~p"/categories/#{@category}"}
-        class="text-blue-600 hover:text-blue-800 flex items-center"
-      >
-        <.icon name="hero-eye" class="h-4 w-4 mr-1" /> Ver detalles
-      </.link>
-    </div>
   </div>
 
   <:sidebar>

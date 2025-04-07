@@ -1,14 +1,17 @@
 <.simple_form :let={f} for={@changeset} action={@action} multipart={true} class="space-y-8">
   <.error :if={@changeset.action}>
-    <div class="bg-red-50 text-red-800 p-4 rounded-lg border border-red-200 mb-6">
-      <p class="font-medium">Ocurrió un error al guardar el artículo</p>
-      <p class="mt-1">Por favor revisa los errores a continuación.</p>
+    <div class="flex items-center">
+      <.icon name="hero-exclamation-circle" class="h-5 w-5 text-red-500 mr-2" />
+      <span>Ha ocurrido un error. Por favor, revise los campos a continuación.</span>
     </div>
   </.error>
   
 <!-- Sección de información básica -->
-  <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Información básica</h3>
+  <.form_container
+    title="Información básica"
+    icon="hero-document-text"
+    description="Datos principales del artículo"
+  >
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div class="md:col-span-2">
         <.input
@@ -19,7 +22,6 @@
           placeholder="Introduce un título descriptivo"
         />
       </div>
-      <!-- Eliminamos el campo author -->
       <.input
         field={f[:category_id]}
         type="select"
@@ -34,11 +36,14 @@
         </p>
       </div>
     </div>
-  </div>
+  </.form_container>
   
 <!-- Sección de contenido -->
-  <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Contenido</h3>
+  <.form_container
+    title="Contenido"
+    icon="hero-pencil-square"
+    description="Cuerpo principal del artículo"
+  >
     <.input
       field={f[:content]}
       type="textarea"
@@ -46,12 +51,16 @@
       rows="12"
       placeholder="Escribe aquí el contenido completo del artículo..."
     />
-  </div>
+  </.form_container>
   
 <!-- Sección de multimedia -->
-  <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Imagen destacada</h3>
-
+  <.form_container
+    title="Imagen destacada"
+    icon="hero-photo"
+    description="Imagen principal que se mostrará con el artículo"
+    show_info={true}
+    info_title="Formatos de imagen soportados"
+  >
     <%= if @changeset.data.image_url && String.length(@changeset.data.image_url || "") > 0 do %>
       <div class="mb-6">
         <p class="text-sm text-gray-500 mb-2">Imagen actual:</p>
@@ -118,16 +127,28 @@
       value={f[:image_url].value}
       id="article_image_url"
     />
-  </div>
-  
-<!-- Botones de acción -->
-  <div class="flex justify-end space-x-4 mt-8">
-    <.app_button_secondary navigate={~p"/articles"} icon="hero-arrow-left-solid">
-      Cancelar
-    </.app_button_secondary>
 
-    <.app_button type="submit" icon="hero-check-solid">
-      {if @changeset.data.id, do: "Actualizar", else: "Crear"} Artículo
-    </.app_button>
-  </div>
+    <:info>
+      <p>Puedes subir imágenes en los siguientes formatos:</p>
+      <ul class="list-disc list-inside mt-1">
+        <li>JPEG/JPG - Ideal para fotografías</li>
+        <li>PNG - Mejor para gráficos e imágenes con transparencia</li>
+        <li>GIF - Para imágenes animadas</li>
+      </ul>
+      <p class="mt-2">El tamaño máximo permitido es de 5MB.</p>
+    </:info>
+  </.form_container>
+
+  <:actions>
+    <div class="flex justify-end space-x-3">
+      <.link navigate={~p"/articles"} class="inline-flex">
+        <.app_button_secondary icon="hero-arrow-left-solid">
+          Cancelar
+        </.app_button_secondary>
+      </.link>
+      <.app_button type="submit" icon="hero-check">
+        {if @changeset.data.id, do: "Actualizar", else: "Crear"} Artículo
+      </.app_button>
+    </div>
+  </:actions>
 </.simple_form>

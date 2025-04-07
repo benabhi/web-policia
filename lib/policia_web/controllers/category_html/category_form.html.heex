@@ -1,83 +1,71 @@
-<div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-  <div class="bg-blue-50 px-6 py-4 border-b border-blue-100">
-    <div class="flex items-center">
-      <.icon name="hero-folder-plus" class="h-5 w-5 text-blue-600 mr-2" />
-      <h3 class="text-lg font-medium text-blue-800">Datos de la categoría</h3>
-    </div>
-  </div>
+<.form_container
+  title="Datos de la categoría"
+  icon="hero-folder-plus"
+  show_info={true}
+  info_title="Generación automática de slug"
+>
+  <.simple_form :let={f} for={@changeset} action={@action}>
+    <.error :if={@changeset.action}>
+      <div class="flex items-center">
+        <.icon name="hero-exclamation-circle" class="h-5 w-5 text-red-500 mr-2" />
+        <span>Ha ocurrido un error. Por favor, revise los campos a continuación.</span>
+      </div>
+    </.error>
 
-  <div class="p-6">
-    <.simple_form :let={f} for={@changeset} action={@action}>
-      <.error :if={@changeset.action}>
-        <div class="flex items-center">
-          <.icon name="hero-exclamation-circle" class="h-5 w-5 text-red-500 mr-2" />
-          <span>Ha ocurrido un error. Por favor, revise los campos a continuación.</span>
-        </div>
-      </.error>
-
-      <div class="space-y-6">
-        <div>
-          <.input
-            field={f[:name]}
-            type="text"
-            label="Nombre"
-            required
-            placeholder="Ej: Noticias Institucionales"
-            autocomplete="off"
-          />
-          <p class="mt-1 text-xs text-gray-500">El nombre debe ser descriptivo y conciso.</p>
-        </div>
-
-        <div>
-          <.input
-            field={f[:description]}
-            type="textarea"
-            label="Descripción"
-            placeholder="Descripción detallada de la categoría y su propósito..."
-            rows={4}
-          />
-          <p class="mt-1 text-xs text-gray-500">
-            La descripción es opcional pero ayuda a entender el propósito de la categoría.
-          </p>
-        </div>
-        
-<!-- Nota informativa sobre el slug -->
-        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100 flex items-start">
-          <.icon
-            name="hero-information-circle"
-            class="h-5 w-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5"
-          />
-          <div>
-            <h4 class="font-medium text-blue-800 text-sm">Generación automática de slug</h4>
-            <p class="text-sm text-blue-700 mt-1">
-              El slug se generará automáticamente a partir del nombre de la categoría, eliminando espacios y caracteres especiales.
-            </p>
-            <p class="text-sm text-blue-700 mt-1">
-              <span class="font-medium">Ejemplo:</span>
-              "Noticias Institucionales" → "noticias-institucionales"
-            </p>
-          </div>
-        </div>
+    <div class="space-y-6">
+      <div>
+        <.input
+          field={f[:name]}
+          type="text"
+          label="Nombre"
+          required
+          placeholder="Ej: Noticias Institucionales"
+          autocomplete="off"
+        />
+        <p class="mt-1 text-xs text-gray-500">El nombre debe ser descriptivo y conciso.</p>
       </div>
 
-      <:actions>
-        <div class="flex justify-end space-x-3">
-          <.link
-            navigate={
-              (@action == ~p"/categories" && ~p"/categories") ||
-                ~p"/categories/#{@changeset.data.id}"
-            }
-            class="inline-flex"
-          >
-            <.app_button_secondary>
-              Cancelar
-            </.app_button_secondary>
-          </.link>
-          <.app_button type="submit" icon="hero-check">
-            {if @action == ~p"/categories", do: "Crear categoría", else: "Guardar cambios"}
-          </.app_button>
-        </div>
-      </:actions>
-    </.simple_form>
-  </div>
-</div>
+      <div>
+        <.input
+          field={f[:description]}
+          type="textarea"
+          label="Descripción"
+          placeholder="Descripción detallada de la categoría y su propósito..."
+          rows={4}
+        />
+        <p class="mt-1 text-xs text-gray-500">
+          La descripción es opcional pero ayuda a entender el propósito de la categoría.
+        </p>
+      </div>
+    </div>
+
+    <:actions>
+      <div class="flex justify-end space-x-3">
+        <.link
+          navigate={
+            (@action == ~p"/categories" && ~p"/categories") ||
+              ~p"/categories/#{@changeset.data.id}"
+          }
+          class="inline-flex"
+        >
+          <.app_button_secondary icon="hero-arrow-left-solid">
+            Cancelar
+          </.app_button_secondary>
+        </.link>
+        <.app_button type="submit" icon="hero-check">
+          {if @action == ~p"/categories", do: "Crear categoría", else: "Guardar cambios"}
+        </.app_button>
+      </div>
+    </:actions>
+  </.simple_form>
+
+  <:info>
+    <p>
+      El slug se generará automáticamente a partir del nombre de la categoría, eliminando espacios y caracteres especiales.
+    </p>
+    <p class="mt-1">
+      <span class="font-medium">Ejemplo:</span>
+      "Noticias Institucionales" → "noticias-institucionales"
+    </p>
+  </:info>
+</.form_container>
