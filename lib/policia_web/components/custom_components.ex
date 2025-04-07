@@ -142,7 +142,7 @@ defmodule PoliciaWeb.CustomComponents do
           x-transition:leave="transition-transform ease-in duration-300"
           x-transition:leave-start="translate-x-0"
           x-transition:leave-end="-translate-x-full"
-          class={"fixed top-0 left-0 w-72 h-full bg-#{@color_theme}-950 shadow-lg transform z-40 overflow-y-auto"}
+          class={"fixed top-0 left-0 w-60 h-full bg-#{@color_theme}-950 shadow-lg transform z-40 overflow-y-auto"}
           x-cloak
         >
           <!-- Encabezado del menú con botón para cerrar -->
@@ -1246,8 +1246,8 @@ defmodule PoliciaWeb.CustomComponents do
       <% end %>
       
     <!-- Layout principal con contenido y barra lateral (si existe) -->
-      <div class={"grid gap-8 " <> if(@has_sidebar && render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-3", else: "")}>
-        <div class={if(@has_sidebar && render_slot(@sidebar), do: "lg:col-span-2", else: "")}>
+      <div class={"grid gap-8 " <> if(@has_sidebar && render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-4", else: "")}>
+        <div class={if(@has_sidebar && render_slot(@sidebar), do: "lg:col-span-3", else: "")}>
           <div class={"bg-white rounded-lg shadow-md p-4 sm:p-6 border border-#{@color_theme}-100"}>
             {render_slot(@inner_block)}
           </div>
