@@ -187,6 +187,11 @@ defmodule Policia.Articles do
     |> preload_results_with_category_and_user()
   end
 
+  def get_article_with_category!(id) when id == "new" do
+    # Caso especial para evitar el error cuando id es "new"
+    raise Ecto.NoResultsError, queryable: Article
+  end
+
   def get_article_with_category!(id) do
     Article
     |> Repo.get!(id)

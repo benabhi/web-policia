@@ -34,6 +34,13 @@ defmodule PoliciaWeb.Router do
     plug PoliciaWeb.Plugs.RoleAuth, "admin"
   end
 
+  # Ruta especial para crear nuevos artículos (debe estar antes de /articles/:id)
+  scope "/", PoliciaWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_writer]
+
+    get "/articles/new", ArticleController, :new
+  end
+
   scope "/", PoliciaWeb do
     pipe_through :browser
 
@@ -96,7 +103,8 @@ defmodule PoliciaWeb.Router do
   scope "/", PoliciaWeb do
     pipe_through [:browser, :require_authenticated_user, :require_writer]
 
-    get "/articles/new", ArticleController, :new
+    # La ruta get "/articles/new" se movió al scope público
+    # pero necesita protección de autenticación y rol
     post "/articles", ArticleController, :create
   end
 
