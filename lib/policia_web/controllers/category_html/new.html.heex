@@ -24,7 +24,15 @@
       title="Panel de acciones"
       highlight={true}
       icon="admin"
-      role_name={@current_user && @current_user.role}
+      role_name={
+        @current_user &&
+          case @current_user.role do
+            "writer" -> "Escritor"
+            "editor" -> "Editor"
+            "admin" -> "Admin"
+            role -> String.capitalize(role)
+          end
+      }
       min_role="editor"
       current_user={@current_user}
       highlight_color="blue"

@@ -1312,6 +1312,8 @@ defmodule PoliciaWeb.CustomComponents do
     current_user = Map.get(assigns, :current_user)
     min_role = Map.get(assigns, :min_role)
 
+    # Ya no necesitamos traducir el rol aquí, se hace en las vistas
+
     # Depuración
     if current_user do
       IO.puts(
@@ -1359,7 +1361,7 @@ defmodule PoliciaWeb.CustomComponents do
               <h2 class="font-semibold text-lg">{@title}</h2>
               <%= if @role_name do %>
                 <span class={"text-xs font-medium text-#{@highlight_color}-100"}>
-                  Rol: {@role_name}
+                  Rol: {String.capitalize(@role_name)}
                 </span>
               <% end %>
             </div>

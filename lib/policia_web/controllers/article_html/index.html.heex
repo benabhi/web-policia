@@ -113,7 +113,15 @@
         title="Panel de acciones"
         highlight={true}
         icon="admin"
-        role_name={@current_user && @current_user.role}
+        role_name={
+          @current_user &&
+            case @current_user.role do
+              "writer" -> "Escritor"
+              "editor" -> "Editor"
+              "admin" -> "Admin"
+              role -> String.capitalize(role)
+            end
+        }
         min_role="writer"
         current_user={@current_user}
         highlight_color="blue"
@@ -127,12 +135,6 @@
               description: "Crear un nuevo artículo",
               url: ~p"/articles/new",
               min_role: "writer"
-            },
-            %{
-              icon: "hero-document-text",
-              title: "Todos los artículos",
-              description: "Ver listado completo",
-              url: ~p"/articles"
             },
             %{
               icon: "hero-folder",
