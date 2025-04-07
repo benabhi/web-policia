@@ -15,16 +15,23 @@ defmodule PoliciaWeb.ArticleHTML do
   def article_form(assigns)
 
   def format_content(content) when is_binary(content) do
-    content
-    |> String.split("\n\n")
-    |> Enum.map(fn paragraph ->
-      if String.trim(paragraph) != "" do
-        "<p>#{paragraph |> String.trim() |> HtmlEntities.encode() |> add_line_breaks()}</p>"
-      else
-        ""
-      end
-    end)
-    |> Enum.join("\n")
+    # Si el contenido ya tiene etiquetas HTML (viene del editor rich text)
+    if String.contains?(content, "<") && String.contains?(content, ">") do
+      # Devolver el contenido tal cual, ya está formateado con HTML
+      content
+    else
+      # Formato antiguo (texto plano) - convertir a HTML
+      content
+      |> String.split("\n\n")
+      |> Enum.map(fn paragraph ->
+        if String.trim(paragraph) != "" do
+          "<p>#{paragraph |> String.trim() |> HtmlEntities.encode() |> add_line_breaks()}</p>"
+        else
+          ""
+        end
+      end)
+      |> Enum.join("\n")
+    end
   end
 
   def format_content(_), do: ""

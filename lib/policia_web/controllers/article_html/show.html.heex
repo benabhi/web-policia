@@ -106,7 +106,12 @@
             title={related.title}
             date={format_date(related.inserted_at)}
             image={related.image_url || "/images/demo/featured1.png"}
-            excerpt={String.slice(related.content, 0, 100) <> "..."}
+            excerpt={
+              if(String.length(related.content || "") > 100,
+                do: String.slice(related.content || "", 0, 100) <> "...",
+                else: related.content || ""
+              )
+            }
             url={~p"/articles/#{related}"}
             category={if related.category, do: related.category.name, else: nil}
           />

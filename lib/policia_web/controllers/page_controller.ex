@@ -19,7 +19,11 @@ defmodule PoliciaWeb.PageController do
           title: article.title,
           date: format_date(article.inserted_at),
           image: article.image_url || "/images/demo/featured1.png",
-          excerpt: String.slice(article.content || "", 0, 150) <> "...",
+          excerpt:
+            if(String.length(article.content || "") > 150,
+              do: String.slice(article.content || "", 0, 150) <> "...",
+              else: article.content || ""
+            ),
           url: ~p"/articles/#{article}",
           category: if(article.category, do: article.category.name, else: nil),
           author:

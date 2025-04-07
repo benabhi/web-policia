@@ -44,12 +44,11 @@
     icon="hero-pencil-square"
     description="Cuerpo principal del artículo"
   >
-    <.input
+    <.rich_text_editor
       field={f[:content]}
-      type="textarea"
       label="Contenido del artículo"
-      rows="12"
       placeholder="Escribe aquí el contenido completo del artículo..."
+      height="400px"
     />
   </.form_container>
   

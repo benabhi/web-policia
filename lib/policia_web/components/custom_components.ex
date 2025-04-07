@@ -3,6 +3,7 @@ defmodule PoliciaWeb.CustomComponents do
   alias Policia.Config
   # alias Policia.Utils
   import PoliciaWeb.CoreComponents
+  import Phoenix.HTML, only: [raw: 1]
 
   # Componente para mensajes de "no hay elementos"
   attr :message, :string, required: true, doc: "Mensaje principal a mostrar"
@@ -96,7 +97,7 @@ defmodule PoliciaWeb.CustomComponents do
           aria-hidden="true"
         >
         </div>
-
+        
     <!-- Header móvil con logo o nombre del sitio y botón hamburguesa -->
         <div class="container mx-auto px-4 py-3 flex items-center justify-between relative z-10">
           <!-- Logo o nombre del sitio -->
@@ -110,7 +111,7 @@ defmodule PoliciaWeb.CustomComponents do
               </span>
             </a>
           </div>
-
+          
     <!-- Botón hamburguesa -->
           <button
             type="button"
@@ -125,7 +126,7 @@ defmodule PoliciaWeb.CustomComponents do
             <.icon name="hero-bars-3-solid" class="h-6 w-6" />
           </button>
         </div>
-
+        
     <!-- Menú lateral deslizante -->
         <div
           id={@menu_id}
@@ -155,7 +156,7 @@ defmodule PoliciaWeb.CustomComponents do
               <.icon name="hero-x-mark-solid" class="h-6 w-6" />
             </button>
           </div>
-
+          
     <!-- Contenido del menú lateral -->
           <nav aria-label="Menú principal móvil">
             <ul class="py-2">
@@ -250,7 +251,7 @@ defmodule PoliciaWeb.CustomComponents do
                   <% end %>
                 </li>
               <% end %>
-
+              
     <!-- Sección de autenticación móvil -->
               <li class={"mt-4 border-t border-#{@color_theme}-900 pt-4 pb-2 px-4"}>
                 <h3 class={"text-#{@color_theme}-300 text-sm font-semibold uppercase tracking-wider mb-2"}>
@@ -338,7 +339,7 @@ defmodule PoliciaWeb.CustomComponents do
           </nav>
         </div>
       </div>
-
+      
     <!-- Versión desktop -->
       <div class="hidden md:block container mx-auto px-4">
         <div class="flex justify-between items-center py-2">
@@ -351,7 +352,7 @@ defmodule PoliciaWeb.CustomComponents do
               <span class="text-white font-semibold text-xl">{@site_name}</span>
             </a>
           </div>
-
+          
     <!-- Menú principal desktop -->
           <nav class="flex-grow flex justify-center" aria-label="Menú principal">
             <ul class="flex justify-center space-x-1 py-3" role="menubar">
@@ -476,7 +477,7 @@ defmodule PoliciaWeb.CustomComponents do
               <% end %>
             </ul>
           </nav>
-
+          
     <!-- Botones de autenticación desktop -->
           <div class="flex items-center space-x-2 flex-shrink-0 ml-4">
             <%= if @current_user do %>
@@ -598,7 +599,7 @@ defmodule PoliciaWeb.CustomComponents do
             />
             <div class={"absolute inset-0 border-2 border-#{@color_theme}-200 opacity-50 pointer-events-none rounded-lg"}>
             </div>
-
+            
     <!-- Botón de lupa - Visible solo en hover -->
             <div class="absolute inset-0 flex items-center justify-center">
               <button
@@ -610,7 +611,7 @@ defmodule PoliciaWeb.CustomComponents do
                 <.icon name="hero-magnifying-glass-plus-solid" class="h-8 w-8" />
               </button>
             </div>
-
+            
     <!-- Modal de imagen ampliada -->
             <div
               x-show="showModal"
@@ -650,7 +651,7 @@ defmodule PoliciaWeb.CustomComponents do
             </div>
           </div>
         </div>
-
+        
     <!-- Columna de contenido -->
         <div class="flex-grow">
           <!-- Fecha, hora y autor -->
@@ -671,12 +672,12 @@ defmodule PoliciaWeb.CustomComponents do
               </a>
             </p>
           </div>
-
+          
     <!-- Título -->
           <h1 class={"text-2xl sm:text-3xl font-bold mb-4 text-#{@color_theme}-950"}>
             {@title}
           </h1>
-
+          
     <!-- Categoría -->
           <%= if @category do %>
             <div class="mb-6">
@@ -689,14 +690,14 @@ defmodule PoliciaWeb.CustomComponents do
               <% end %>
             </div>
           <% end %>
-
+          
     <!-- Contenido -->
           <div class="text-gray-700 leading-relaxed space-y-4">
             {render_slot(@inner_block)}
           </div>
         </div>
       </div>
-
+      
     <!-- Pie de página (opcional) -->
       <%= if @show_footer do %>
         <div class="mt-8 pt-4 border-t border-gray-200">
@@ -880,7 +881,7 @@ defmodule PoliciaWeb.CustomComponents do
               <p class={"text-#{@color_theme}-300 text-sm"}>{@slogan}</p>
             </div>
           </div>
-
+          
     <!-- Redes sociales -->
           <div>
             <h3 class={"text-sm font-semibold mb-2 uppercase tracking-wider text-#{@color_theme}-300"}>
@@ -974,7 +975,7 @@ defmodule PoliciaWeb.CustomComponents do
             </div>
           </div>
         </div>
-
+        
     <!-- Grid de enlaces -->
         <div class={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 border-b border-#{@color_theme}-900 pb-8 mb-6"}>
           <%= for column <- @menu_columns do %>
@@ -1006,7 +1007,7 @@ defmodule PoliciaWeb.CustomComponents do
             </div>
           <% end %>
         </div>
-
+        
     <!-- Información de contacto -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div class="flex items-start">
@@ -1044,7 +1045,7 @@ defmodule PoliciaWeb.CustomComponents do
             </div>
           </div>
         </div>
-
+        
     <!-- Derechos y política de privacidad -->
         <div class={"border-t border-#{@color_theme}-900 pt-6 flex flex-col sm:flex-row justify-between items-center"}>
           <p class="text-sm text-gray-400 mb-4 sm:mb-0">
@@ -1140,7 +1141,7 @@ defmodule PoliciaWeb.CustomComponents do
             <!-- Gradiente superpuesto -->
             <div class={"absolute inset-0 bg-gradient-to-t from-#{@color_theme}-950/70 to-transparent"}>
             </div>
-
+            
     <!-- Leyenda de la imagen si existe -->
             <%= if Enum.at(@captions, index) do %>
               <div class="absolute bottom-12 left-0 right-0 p-4 md:p-6 text-white">
@@ -1157,7 +1158,7 @@ defmodule PoliciaWeb.CustomComponents do
           </div>
         <% end %>
       </div>
-
+      
     <!-- Controles de navegación -->
       <button
         @click="current = (current - 1 + totalSlides) % totalSlides"
@@ -1191,7 +1192,7 @@ defmodule PoliciaWeb.CustomComponents do
           <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
       </button>
-
+      
     <!-- Indicadores de posición -->
       <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
         <%= for {_image, index} <- Enum.with_index(@images) do %>
@@ -1236,14 +1237,14 @@ defmodule PoliciaWeb.CustomComponents do
           <div class={"w-20 h-1 bg-#{@color_theme}-600 mx-auto mt-4"}></div>
         </div>
       <% end %>
-
+      
     <!-- Área para contenido destacado (slider) -->
       <%= if render_slot(@hero) do %>
         <div class="mb-8">
           {render_slot(@hero)}
         </div>
       <% end %>
-
+      
     <!-- Layout principal con contenido y barra lateral (si existe) -->
       <div class={"grid gap-8 " <> if(@has_sidebar && render_slot(@sidebar), do: "grid-cols-1 lg:grid-cols-3", else: "")}>
         <div class={if(@has_sidebar && render_slot(@sidebar), do: "lg:col-span-2", else: "")}>
@@ -1511,7 +1512,7 @@ defmodule PoliciaWeb.CustomComponents do
             class="w-full h-full object-cover transition-transform duration-300"
             x-bind:class="{ 'scale-105': isHovered }"
           />
-
+          
     <!-- Botón de lupa exclusivo para abrir el modal -->
           <button
             type="button"
@@ -1522,14 +1523,14 @@ defmodule PoliciaWeb.CustomComponents do
           >
             <.icon name="hero-magnifying-glass-plus" class="h-4 w-4" />
           </button>
-
+          
     <!-- Enlace al artículo (SOLO en el título, no en la imagen) -->
           <%= if @category do %>
             <div class="absolute top-2 right-2 z-30">
               <.badge text={@category} color={assigns.color_theme} size="sm" />
             </div>
           <% end %>
-
+          
     <!-- Modal de imagen ampliada -->
           <div x-show="showModal" x-cloak>
             <div
@@ -1591,7 +1592,7 @@ defmodule PoliciaWeb.CustomComponents do
         <h3 class={"font-bold text-lg text-#{@color_theme}-950 mb-2 group-hover:text-#{@color_theme}-700"}>
           <.link href={@url} class="hover:underline">{@title}</.link>
         </h3>
-        <p class="text-gray-600 text-sm line-clamp-3 mb-4">{@excerpt}</p>
+        <p class="text-gray-600 text-sm line-clamp-3 mb-4">{raw(@excerpt)}</p>
       </div>
 
       <div class="px-4 pb-4 mt-auto border-t border-gray-100 pt-2">
@@ -1811,7 +1812,7 @@ defmodule PoliciaWeb.CustomComponents do
           </div>
         </div>
       </.link>
-
+      
     <!-- Tooltip - Posicionado con fixed para evitar problemas de overflow -->
       <div
         x-cloak
@@ -1945,7 +1946,7 @@ defmodule PoliciaWeb.CustomComponents do
           </.link>
         </div>
       </div>
-
+      
     <!-- Contenido de la tarjeta -->
       <div class="p-4 flex-grow">
         <!-- Slug -->
@@ -1955,7 +1956,7 @@ defmodule PoliciaWeb.CustomComponents do
             {@slug}
           </code>
         </div>
-
+        
     <!-- Descripción -->
         <div class="mb-4">
           <div class="text-xs text-gray-500 mb-1">Descripción:</div>
@@ -1968,7 +1969,7 @@ defmodule PoliciaWeb.CustomComponents do
           </div>
         </div>
       </div>
-
+      
     <!-- Pie de la tarjeta con acciones -->
       <div class="border-t border-gray-100 p-4 bg-gray-50 flex justify-between items-center">
         <!-- Contador de artículos -->
@@ -2473,13 +2474,24 @@ defmodule PoliciaWeb.CustomComponents do
 
   # Componente para estandarizar formularios
   attr :title, :string, required: true, doc: "Título del formulario"
-  attr :icon, :string, default: "hero-document-text", doc: "Icono para el encabezado del formulario"
+
+  attr :icon, :string,
+    default: "hero-document-text",
+    doc: "Icono para el encabezado del formulario"
+
   attr :description, :string, default: nil, doc: "Descripción opcional del formulario"
   attr :class, :string, default: "", doc: "Clases CSS adicionales para el contenedor"
   attr :form_class, :string, default: "", doc: "Clases CSS adicionales para el formulario interno"
   attr :show_info, :boolean, default: false, doc: "Mostrar sección de información adicional"
-  attr :info_title, :string, default: "Información importante", doc: "Título de la sección de información"
-  attr :info_icon, :string, default: "hero-information-circle", doc: "Icono para la sección de información"
+
+  attr :info_title, :string,
+    default: "Información importante",
+    doc: "Título de la sección de información"
+
+  attr :info_icon, :string,
+    default: "hero-information-circle",
+    doc: "Icono para la sección de información"
+
   slot :info, doc: "Contenido de la sección de información"
   slot :inner_block, required: true, doc: "Contenido del formulario"
 
@@ -2562,7 +2574,7 @@ defmodule PoliciaWeb.CustomComponents do
             <.icon name="hero-chevron-left-outline" class="w-5 h-5 mr-1" /> Anterior
           </span>
         <% end %>
-
+        
     <!-- Números de página -->
         <%= for page_num <- @pages_to_show do %>
           <%= if page_num == :ellipsis do %>
@@ -2584,7 +2596,7 @@ defmodule PoliciaWeb.CustomComponents do
             </a>
           <% end %>
         <% end %>
-
+        
     <!-- Botón Siguiente -->
         <%= if @page < @total_pages do %>
           <a
@@ -2652,7 +2664,7 @@ defmodule PoliciaWeb.CustomComponents do
                 <% end %>
               </select>
             </div>
-
+            
     <!-- Buscador (versión profesional) -->
             <div class="flex-grow max-w-md">
               <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
@@ -2672,7 +2684,7 @@ defmodule PoliciaWeb.CustomComponents do
                 </div>
               </div>
             </div>
-
+            
     <!-- Botón de búsqueda (versión profesional) -->
             <div class="flex self-end mb-0.5">
               <button
@@ -2705,7 +2717,7 @@ defmodule PoliciaWeb.CustomComponents do
                 <% end %>
               </select>
             </div>
-
+            
     <!-- Buscador -->
             <div class="flex-grow max-w-md">
               <label for="search" class={"block text-sm font-medium text-#{@color_theme}-700 mb-1"}>
@@ -2725,7 +2737,7 @@ defmodule PoliciaWeb.CustomComponents do
                 </div>
               </div>
             </div>
-
+            
     <!-- Botón de búsqueda -->
             <div class="flex self-end mb-0.5">
               <button
@@ -2759,7 +2771,7 @@ defmodule PoliciaWeb.CustomComponents do
           <input type="hidden" name="category" value={@current_category} />
         <% end %>
       <% end %>
-
+      
     <!-- Preservar página actual -->
       <input type="hidden" name="page" value="1" />
     </form>
@@ -2911,5 +2923,74 @@ defmodule PoliciaWeb.CustomComponents do
 
   defp active_class(current_path, link) do
     if current_path == link, do: "bg-#{Config.webpage_theme()}-700 text-white", else: ""
+  end
+
+  # Componente para editor de texto enriquecido con Quill.js
+  attr :field, Phoenix.HTML.FormField, doc: "Campo del formulario, por ejemplo: @form[:content]"
+
+  attr :id, :string,
+    default: nil,
+    doc: "ID del editor (generado automáticamente si no se proporciona)"
+
+  attr :label, :string, default: nil, doc: "Etiqueta para el campo"
+  attr :placeholder, :string, default: "Escribe aquí...", doc: "Texto de placeholder"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :height, :string, default: "300px", doc: "Altura del editor"
+
+  def rich_text_editor(assigns) do
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> "quill-editor-#{assigns.field.id}" end)
+      |> assign_new(:name, fn -> assigns.field.name end)
+      |> assign_new(:value, fn ->
+        Phoenix.HTML.Form.normalize_value("textarea", assigns.field.value)
+      end)
+      |> assign(:color_theme, Config.webpage_theme())
+
+    ~H"""
+    <div>
+      <%= if @label do %>
+        <.label for={@id}>{@label}</.label>
+      <% end %>
+      <div
+        x-data="{
+          content: '',
+          quill: null,
+          init() {
+            // Inicializar el editor Quill
+            this.quill = new Quill(this.$refs.editor, {
+              theme: 'snow',
+              placeholder: '#{@placeholder}',
+              modules: {
+                toolbar: [
+                  ['bold', 'underline', 'strike'],
+                  [{ 'header': 1 }, { 'header': 2 }, { 'header': 3 }],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  ['link']
+                ]
+              }
+            });
+
+            // Establecer el contenido inicial desde el campo oculto
+            this.content = this.$refs.input.value;
+            if (this.content) {
+              this.quill.root.innerHTML = this.content;
+            }
+
+            // Actualizar el campo oculto cuando cambie el contenido
+            this.quill.on('text-change', () => {
+              this.content = this.quill.root.innerHTML;
+              this.$refs.input.value = this.content;
+            });
+          }
+        }"
+        class={["mt-2 block w-full rounded-lg", @class]}
+      >
+        <div x-ref="editor" style={"height: #{@height}; overflow-y: auto"} class="bg-white"></div>
+        <input type="hidden" id={@id} name={@name} value={@value} x-ref="input" />
+      </div>
+      <.error :for={msg <- @field.errors}>{msg}</.error>
+    </div>
+    """
   end
 end

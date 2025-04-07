@@ -35,8 +35,36 @@
   </div>
 
   <:sidebar>
+    <!-- Panel de acciones -->
+    <div>
+      <.sidebar_box title="Panel de acciones" highlight={true} icon="admin" highlight_color="blue">
+        <.sidebar_links
+          current_user={@current_user}
+          items={[
+            %{
+              icon: "hero-document-text",
+              title: "Todos los artículos",
+              description: "Ver listado completo",
+              url: ~p"/articles"
+            },
+            %{
+              icon: "hero-folder",
+              title: "Todas las categorías",
+              description: "Ver listado completo",
+              url: ~p"/categories"
+            },
+            %{
+              icon: "hero-home",
+              title: "Página principal",
+              description: "Volver al inicio",
+              url: ~p"/"
+            }
+          ]}
+        />
+      </.sidebar_box>
+    </div>
     <!-- Información del artículo -->
-    <.sidebar_box title="Información del artículo">
+    <.sidebar_box title="Información del artículo" class="mt-6">
       <div class="space-y-4">
         <div class="flex items-start">
           <.icon name="hero-document-text" class="h-5 w-5 text-gray-400 mr-2 mt-0.5" />
@@ -79,34 +107,5 @@
         <% end %>
       </div>
     </.sidebar_box>
-    
-<!-- Panel de acciones -->
-    <div class="mt-6">
-      <.sidebar_box title="Panel de acciones" highlight={true} icon="admin" highlight_color="blue">
-        <.sidebar_links
-          current_user={@current_user}
-          items={[
-            %{
-              icon: "hero-document-text",
-              title: "Todos los artículos",
-              description: "Ver listado completo",
-              url: ~p"/articles"
-            },
-            %{
-              icon: "hero-folder",
-              title: "Todas las categorías",
-              description: "Ver listado completo",
-              url: ~p"/categories"
-            },
-            %{
-              icon: "hero-home",
-              title: "Página principal",
-              description: "Volver al inicio",
-              url: ~p"/"
-            }
-          ]}
-        />
-      </.sidebar_box>
-    </div>
   </:sidebar>
 </.content_layout>
