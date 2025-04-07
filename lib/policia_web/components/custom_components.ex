@@ -1823,6 +1823,7 @@ defmodule PoliciaWeb.CustomComponents do
   attr :slug, :string, required: true, doc: "Slug de la categoría"
   attr :description, :string, default: nil, doc: "Descripción de la categoría"
   attr :id, :integer, default: nil, doc: "ID de la categoría para acciones"
+  attr :article_count, :integer, default: 0, doc: "Número de artículos en la categoría"
 
   attr :with_actions, :boolean,
     default: false,
@@ -1840,20 +1841,20 @@ defmodule PoliciaWeb.CustomComponents do
     <div class={"bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col h-full group #{@class}"}>
       <!-- Cabecera de la tarjeta -->
       <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-4 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-          <div class="bg-white/20 p-2 rounded-full">
+        <div class="flex items-center space-x-3 max-w-[75%]">
+          <div class="bg-white/20 p-2 rounded-full flex-shrink-0">
             <.icon name="hero-folder" class="h-5 w-5 text-white" />
           </div>
           <h3 class="text-lg font-semibold text-white truncate">{@name}</h3>
         </div>
         <div class="flex items-center space-x-1">
-          <.icon_button
-            href={"/categories/#{@id}"}
-            icon_default="hero-eye"
-            icon_hover="hero-eye-solid"
-            color="white"
-            title="Ver detalles"
-          />
+          <.link
+            href={"/articles?category=#{@slug}"}
+            class="p-1.5 text-white hover:text-white/90 transition-colors duration-200 flex items-center justify-center rounded-full hover:bg-white/20"
+            aria-label="Ver artículos de esta categoría"
+          >
+            <.icon name="hero-eye" class="h-5 w-5" />
+          </.link>
         </div>
       </div>
       
@@ -1882,13 +1883,13 @@ defmodule PoliciaWeb.CustomComponents do
       
     <!-- Pie de la tarjeta con acciones -->
       <div class="border-t border-gray-100 p-4 bg-gray-50 flex justify-between items-center">
-        <.link
-          href={"/articles?category=#{@slug}"}
-          class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
-        >
+        <!-- Contador de artículos -->
+        <div class="flex items-center text-gray-600">
           <.icon name="hero-document-text" class="h-4 w-4 mr-1" />
-          <span>Ver artículos</span>
-        </.link>
+          <span class="text-sm font-medium">
+            {@article_count} artículo{if @article_count != 1, do: "s"}
+          </span>
+        </div>
 
         <%= if @with_actions do %>
           <div class="flex items-center space-x-1">
@@ -1984,6 +1985,7 @@ defmodule PoliciaWeb.CustomComponents do
               description={category.description}
               id={category.id}
               with_actions={@with_actions}
+              article_count={length(category.articles || [])}
             />
           <% end %>
         </div>
