@@ -216,6 +216,30 @@ defmodule PoliciaWeb.UserAuth do
     end
   end
 
+  @doc """
+  Used for routes that require the user to have a specific role.
+  """
+  def require_role(conn, role) when is_binary(role) do
+    alias Policia.Accounts.User
+
+    if user = conn.assigns[:current_user] do
+      if User.has_role_or_higher?(user, role) do
+        conn
+      else
+        conn
+        |> PoliciaWeb.AlertHelper.put_alert(
+          :error,
+          "No tienes permisos suficientes para acceder a esta página."
+        )
+        |> redirect(to: ~p"/")
+        |> halt()
+      end
+    else
+      conn
+      |> require_authenticated_user([])
+    end
+  end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)

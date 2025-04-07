@@ -21,16 +21,27 @@ defmodule PoliciaWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Pipelines para roles
+  pipeline :require_writer do
+    plug PoliciaWeb.Plugs.RoleAuth, "writer"
+  end
+
+  pipeline :require_editor do
+    plug PoliciaWeb.Plugs.RoleAuth, "editor"
+  end
+
+  pipeline :require_admin do
+    plug PoliciaWeb.Plugs.RoleAuth, "admin"
+  end
+
   scope "/", PoliciaWeb do
     pipe_through :browser
 
     get "/", PageController, :home
 
     get "/articles", ArticleController, :index
-    get "/articles/new", ArticleController, :new
     get "/articles/category/:slug", ArticleController, :by_category
     get "/articles/:id", ArticleController, :show
-    put "/articles/:id/toggle_featured", ArticleController, :toggle_featured
 
     # Rutas públicas (no requieren autenticación)
   end
@@ -72,22 +83,41 @@ defmodule PoliciaWeb.Router do
     put "/users/reset_password/:token", UserResetPasswordController, :update
   end
 
+  # Rutas para usuarios autenticados (cualquier rol)
   scope "/", PoliciaWeb do
     pipe_through [:browser, :require_authenticated_user]
-
-    get "/articles/new", ArticleController, :new
-    post "/articles", ArticleController, :create
-    get "/articles/:id/edit", ArticleController, :edit
-    put "/articles/:id", ArticleController, :update
-    patch "/articles/:id", ArticleController, :update
-    delete "/articles/:id", ArticleController, :delete
-
-    # Rutas protegidas de categorías
-    resources "/categories", CategoryController
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  # Rutas para escritores y roles superiores
+  scope "/", PoliciaWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_writer]
+
+    get "/articles/new", ArticleController, :new
+    post "/articles", ArticleController, :create
+  end
+
+  # Rutas para editores y roles superiores
+  scope "/", PoliciaWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_editor]
+
+    get "/articles/:id/edit", ArticleController, :edit
+    put "/articles/:id", ArticleController, :update
+    patch "/articles/:id", ArticleController, :update
+    put "/articles/:id/toggle_featured", ArticleController, :toggle_featured
+  end
+
+  # Rutas para administradores
+  scope "/", PoliciaWeb do
+    pipe_through [:browser, :require_authenticated_user, :require_admin]
+
+    delete "/articles/:id", ArticleController, :delete
+
+    # Rutas protegidas de categorías
+    resources "/categories", CategoryController
   end
 
   scope "/", PoliciaWeb do

@@ -11,9 +11,13 @@ defmodule Policia.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+    field :role, :string, default: "reader"
 
     timestamps(type: :utc_datetime)
   end
+
+  @roles ["reader", "writer", "editor", "admin"]
+  def roles, do: @roles
 
   @doc """
   A user changeset for registration.
@@ -40,10 +44,41 @@ defmodule Policia.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :username, :first_name, :last_name])
+    |> cast(attrs, [:email, :password, :username, :first_name, :last_name, :role])
     |> validate_username(opts)
     |> validate_email(opts)
     |> validate_password(opts)
+    |> validate_role()
+  end
+
+  defp validate_role(changeset) do
+    changeset
+    |> validate_inclusion(:role, @roles, message: "debe ser uno de: #{Enum.join(@roles, ", ")}")
+  end
+
+  @doc """
+  Verifica si un usuario tiene un rol específico.
+  """
+  def has_role?(user, role) when is_binary(role) do
+    user.role == role
+  end
+
+  @doc """
+  Verifica si un usuario tiene al menos el nivel de rol especificado.
+  Los roles tienen una jerarquía: admin > editor > writer > reader
+  """
+  def has_role_or_higher?(user, min_role) do
+    role_level = %{
+      "reader" => 1,
+      "writer" => 2,
+      "editor" => 3,
+      "admin" => 4
+    }
+
+    user_level = Map.get(role_level, user.role, 0)
+    min_level = Map.get(role_level, min_role, 0)
+
+    user_level >= min_level
   end
 
   defp validate_username(changeset, opts) do

@@ -77,6 +77,9 @@ defmodule Policia.Accounts do
   @doc """
   Registers a user.
 
+  Asigna automáticamente el rol "admin" al primer usuario registrado.
+  Los demás usuarios reciben el rol especificado o "reader" por defecto.
+
   ## Examples
 
       iex> register_user(%{field: value})
@@ -87,6 +90,17 @@ defmodule Policia.Accounts do
 
   """
   def register_user(attrs) do
+    # Verificar si es el primer usuario
+    is_first_user = Repo.aggregate(User, :count) == 0
+
+    # Asignar rol admin al primer usuario
+    attrs =
+      if is_first_user do
+        Map.put(attrs, "role", "admin")
+      else
+        attrs
+      end
+
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
