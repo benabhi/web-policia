@@ -32,7 +32,7 @@ defmodule PoliciaWeb.Router do
     get "/articles/:id", ArticleController, :show
     put "/articles/:id/toggle_featured", ArticleController, :toggle_featured
 
-    resources "/categories", CategoryController
+    # Rutas públicas (no requieren autenticación)
   end
 
   # Other scopes may use custom stacks.
@@ -81,6 +81,9 @@ defmodule PoliciaWeb.Router do
     put "/articles/:id", ArticleController, :update
     patch "/articles/:id", ArticleController, :update
     delete "/articles/:id", ArticleController, :delete
+
+    # Rutas protegidas de categorías
+    resources "/categories", CategoryController
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
