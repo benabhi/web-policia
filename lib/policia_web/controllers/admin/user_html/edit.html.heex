@@ -1,0 +1,119 @@
+<.content_layout
+  title="Editar Usuario"
+  subtitle={"Modificar el rol del usuario #{@user.username}"}
+  has_sidebar={true}
+>
+  <div class="space-y-6">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Información del usuario</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <p class="text-sm font-medium text-gray-500">Nombre de usuario</p>
+            <p class="mt-1 text-sm text-gray-900">{@user.username}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Nombre completo</p>
+            <p class="mt-1 text-sm text-gray-900">{"#{@user.first_name} #{@user.last_name}"}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Email</p>
+            <p class="mt-1 text-sm text-gray-900">{@user.email}</p>
+          </div>
+
+          <div>
+            <p class="text-sm font-medium text-gray-500">Fecha de registro</p>
+            <p class="mt-1 text-sm text-gray-900">{format_date(@user.inserted_at)}</p>
+          </div>
+        </div>
+
+        <.form :let={f} for={@changeset} action={~p"/admin/users/#{@user.id}"}>
+          <div class="space-y-4">
+            <div>
+              <label for="role" class="block text-sm font-medium text-gray-700">Rol</label>
+              <select
+                name="user[role]"
+                id="user_role"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+              >
+                <%= for role <- @roles do %>
+                  <option value={role} selected={@user.role == role}>{format_role(role)}</option>
+                <% end %>
+              </select>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+              <.link
+                href={~p"/admin/users"}
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancelar
+              </.link>
+
+              <button
+                type="submit"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Guardar cambios
+              </button>
+            </div>
+          </div>
+        </.form>
+      </div>
+    </div>
+  </div>
+
+  <:sidebar>
+    <!-- Panel de acciones -->
+    <.sidebar_box
+      title="Panel de acciones"
+      highlight={true}
+      icon="admin"
+      role_name={
+        @current_user &&
+          case @current_user.role do
+            "writer" -> "Escritor"
+            "editor" -> "Editor"
+            "admin" -> "Admin"
+            role -> String.capitalize(role)
+          end
+      }
+      min_role="admin"
+      current_user={@current_user}
+      highlight_color="blue"
+    >
+      <.sidebar_links
+        current_user={@current_user}
+        items={[
+          %{
+            icon: "hero-users",
+            title: "Todos los usuarios",
+            description: "Volver al listado",
+            url: ~p"/admin/users"
+          },
+          %{
+            icon: "hero-document-text",
+            title: "Artículos",
+            description: "Administrar artículos",
+            url: ~p"/articles"
+          },
+          %{
+            icon: "hero-folder",
+            title: "Categorías",
+            description: "Administrar categorías",
+            url: ~p"/categories"
+          },
+          %{
+            icon: "hero-home",
+            title: "Página principal",
+            description: "Volver al inicio",
+            url: ~p"/"
+          }
+        ]}
+      />
+    </.sidebar_box>
+  </:sidebar>
+</.content_layout>

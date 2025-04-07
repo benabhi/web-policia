@@ -72,6 +72,71 @@ defmodule Policia.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  @doc """
+  Returns the list of users.
+
+  ## Examples
+
+      iex> list_users()
+      [%User{}, ...]
+
+  """
+  def list_users do
+    Repo.all(User)
+  end
+
+  @doc """
+  Returns a paginated list of users.
+
+  ## Examples
+
+      iex> list_users_paginated(1, 10)
+      %{entries: [%User{}, ...], page_number: 1, page_size: 10, total_entries: 20, total_pages: 2}
+
+  """
+  def list_users_paginated(page, per_page) do
+    query = from(u in User, order_by: [desc: u.inserted_at])
+
+    Repo.paginate(query, page: page, page_size: per_page)
+  end
+
+  @doc """
+  Updates a user's role.
+
+  ## Examples
+
+      iex> update_user_role(user, "editor")
+      {:ok, %User{}}
+
+      iex> update_user_role(user, "invalid")
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_role(%User{} = user, role)
+      when role in ["reader", "writer", "editor", "admin"] do
+    user
+    |> Ecto.Changeset.change(role: role)
+    |> Repo.update()
+  end
+
+  def update_user_role(%User{} = _user, _role), do: {:error, "Invalid role"}
+
+  @doc """
+  Deletes a user.
+
+  ## Examples
+
+      iex> delete_user(user)
+      {:ok, %User{}}
+
+      iex> delete_user(user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
+  end
+
   ## User registration
 
   @doc """

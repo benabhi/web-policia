@@ -120,6 +120,13 @@ defmodule PoliciaWeb.Router do
     delete "/articles/:id", ArticleController, :delete
   end
 
+  # Rutas para administración de usuarios (solo admin)
+  scope "/admin", PoliciaWeb.Admin do
+    pipe_through [:browser, :require_authenticated_user, :require_admin]
+
+    resources "/users", UserController, except: [:show]
+  end
+
   scope "/", PoliciaWeb do
     pipe_through [:browser]
 
