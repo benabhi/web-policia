@@ -1,8 +1,8 @@
 <.content_layout title={@article.title} has_sidebar={true}>
   <!-- Encabezado y botones de administración -->
-  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 w-full">
+  <div class="flex flex-col mb-6 w-full">
     <!-- Breadcrumb con mejor manejo responsivo -->
-    <div class="w-full sm:flex-1 overflow-x-auto pb-2 sm:pb-0 border-b sm:border-0 mb-2 sm:mb-0">
+    <div class="w-full overflow-x-auto pb-2 border-b mb-4">
       <.breadcrumb items={[
         %{text: "Artículos", href: ~p"/articles"},
         if(@article.category,
@@ -17,15 +17,15 @@
     </div>
     
 <!-- Botones que se muestran solo cuando se solapa la barra lateral -->
-    <div class="flex lg:hidden flex-wrap gap-2 mt-2 sm:mt-0 sm:flex-shrink-0">
-      <div class="flex gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
-        <.link href={~p"/articles/#{@article}/edit"} class="flex-1 sm:flex-initial">
+    <div class="flex lg:hidden flex-wrap gap-2">
+      <div class="flex gap-2 flex-wrap w-full">
+        <.link href={~p"/articles/#{@article}/edit"} class="flex-1">
           <.app_button_secondary
             icon="hero-pencil-square-solid"
             size="sm"
             class="w-full justify-center"
           >
-            <span class="sm:inline">Editar</span>
+            <span>Editar</span>
           </.app_button_secondary>
         </.link>
 
@@ -33,10 +33,10 @@
           href={~p"/articles/#{@article}"}
           method="delete"
           data-confirm="¿Estás seguro que deseas eliminar este artículo?"
-          class="flex-1 sm:flex-initial"
+          class="flex-1"
         >
           <.app_button_secondary icon="hero-trash-solid" size="sm" class="w-full justify-center">
-            <span class="sm:inline">Eliminar</span>
+            <span>Eliminar</span>
           </.app_button_secondary>
         </.link>
 
@@ -48,22 +48,22 @@
               do: "¿Quitar este artículo como destacado de la semana?",
               else: "¿Marcar este artículo como destacado de la semana?"
           }
-          class="flex-1 sm:flex-initial"
+          class="flex-1"
         >
           <.app_button_secondary
             icon={if @article.featured_of_week, do: "hero-star-solid", else: "hero-star"}
             size="sm"
             class="w-full justify-center"
           >
-            <span class="sm:inline">
+            <span>
               {if @article.featured_of_week, do: "Quitar destacado", else: "Destacar"}
             </span>
           </.app_button_secondary>
         </.link>
 
-        <.link href={~p"/articles/new"} class="flex-grow sm:flex-initial">
+        <.link href={~p"/articles/new"} class="flex-1">
           <.app_button icon="hero-plus-solid" size="sm" class="w-full justify-center">
-            <span class="sm:inline">Nuevo</span>
+            <span>Nuevo</span>
           </.app_button>
         </.link>
       </div>
