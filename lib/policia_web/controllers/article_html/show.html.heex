@@ -141,55 +141,74 @@
     
 <!-- Enlaces administrativos -->
     <div>
-      <.sidebar_box title="Administración" highlight={true}>
-        <.sidebar_links items={
-          [
-            %{
-              icon: "hero-pencil-square",
-              title: "Editar este artículo",
-              description: "Modificar contenido",
-              url: ~p"/articles/#{@article}/edit"
-            },
-            %{
-              icon: "hero-document-text",
-              title: "Todos los artículos",
-              description: "Ver listado completo",
-              url: ~p"/articles"
-            },
-            %{
-              icon: "hero-document-plus",
-              title: "Crear artículo",
-              description: "Publicar un nuevo artículo",
-              url: ~p"/articles/new"
-            }
-          ] ++
-            if @article.category do
+      <.sidebar_box
+        title="Panel de acciones"
+        highlight={true}
+        icon="admin"
+        role_name={
+          @current_user &&
+            case @current_user.role do
+              "writer" -> "Escritor"
+              "editor" -> "Editor"
+              "admin" -> "Admin"
+              role -> String.capitalize(role)
+            end
+        }
+        min_role="writer"
+        current_user={@current_user}
+        highlight_color="blue"
+      >
+        <.sidebar_links
+          current_user={@current_user}
+          items={
+            [
+              %{
+                icon: "hero-pencil-square",
+                title: "Editar este artículo",
+                description: "Modificar contenido",
+                url: ~p"/articles/#{@article}/edit"
+              },
+              %{
+                icon: "hero-document-text",
+                title: "Todos los artículos",
+                description: "Ver listado completo",
+                url: ~p"/articles"
+              },
+              %{
+                icon: "hero-document-plus",
+                title: "Crear artículo",
+                description: "Publicar un nuevo artículo",
+                url: ~p"/articles/new"
+              }
+            ] ++
+              if @article.category do
+                [
+                  %{
+                    icon: "hero-folder",
+                    title: "Ver categoría: #{@article.category.name}",
+                    description: "Detalles de la categoría",
+                    url: ~p"/categories/#{@article.category.id}"
+                  }
+                ]
+              else
+                []
+              end ++
               [
                 %{
                   icon: "hero-folder",
-                  title: "Ver categoría: #{@article.category.name}",
-                  description: "Detalles de la categoría",
-                  url: ~p"/categories/#{@article.category.id}"
+                  title: "Administrar categorías",
+                  description: "Añadir o modificar categorías",
+                  url: ~p"/categories"
+                },
+                %{
+                  icon: "hero-home",
+                  title: "Página principal",
+                  description: "Volver al inicio",
+                  url: ~p"/"
                 }
               ]
-            else
-              []
-            end ++
-            [
-              %{
-                icon: "hero-folder",
-                title: "Administrar categorías",
-                description: "Añadir o modificar categorías",
-                url: ~p"/categories"
-              },
-              %{
-                icon: "hero-home",
-                title: "Página principal",
-                description: "Volver al inicio",
-                url: ~p"/"
-              }
-            ]
-        } />
+          }
+        />
       </.sidebar_box>
     </div>
     <!-- Búsqueda -->
