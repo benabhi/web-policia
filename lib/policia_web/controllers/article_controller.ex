@@ -7,8 +7,32 @@ defmodule PoliciaWeb.ArticleController do
 
   @articles_per_page 9
 
+  # Verificar autenticación para todas las acciones protegidas
   plug :require_authenticated_user
        when action in [:new, :create, :edit, :update, :delete, :toggle_featured]
+
+  # Definir funciones de verificación de roles
+  defp check_writer_role(conn, _opts) do
+    PoliciaWeb.UserAuth.require_role(conn, "writer")
+  end
+
+  defp check_editor_role(conn, _opts) do
+    PoliciaWeb.UserAuth.require_role(conn, "editor")
+  end
+
+  defp check_admin_role(conn, _opts) do
+    PoliciaWeb.UserAuth.require_role(conn, "admin")
+  end
+
+  # Verificar roles específicos
+  plug :check_writer_role
+       when action in [:new, :create]
+
+  plug :check_editor_role
+       when action in [:edit, :update, :toggle_featured]
+
+  plug :check_admin_role
+       when action in [:delete]
 
   def index(conn, params) do
     page = params_to_integer(params["page"], 1)

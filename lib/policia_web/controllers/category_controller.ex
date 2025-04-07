@@ -3,8 +3,22 @@ defmodule PoliciaWeb.CategoryController do
 
   alias Policia.Articles
   alias Policia.Articles.Category
+  import PoliciaWeb.UserAuth
 
   @categories_per_page 9
+
+  # Verificar autenticación para todas las acciones protegidas
+  plug :require_authenticated_user
+       when action in [:new, :create, :edit, :update, :delete]
+
+  # Definir funciones de verificación de roles
+  defp check_editor_role(conn, _opts) do
+    PoliciaWeb.UserAuth.require_role(conn, "editor")
+  end
+
+  # Verificar roles específicos - todas las acciones de categorías requieren rol de editor
+  plug :check_editor_role
+       when action in [:index, :show, :new, :create, :edit, :update, :delete]
 
   def index(conn, params) do
     page = params_to_integer(params["page"], 1)

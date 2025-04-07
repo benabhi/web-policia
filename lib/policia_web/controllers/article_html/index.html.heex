@@ -109,38 +109,45 @@
     <!-- Enlaces administrativos -->
     <div class="mb-6">
       <.sidebar_box
-        title="Panel de administración"
+        title="Panel de acciones"
         highlight={true}
         icon="admin"
-        role_name="Editor"
+        role_name={@current_user && @current_user.role}
+        min_role="writer"
+        current_user={@current_user}
         highlight_color="blue"
       >
-        <.sidebar_links items={[
-          %{
-            icon: "hero-document-plus",
-            title: "Nuevo Artículo",
-            description: "Crear un nuevo artículo",
-            url: ~p"/articles/new"
-          },
-          %{
-            icon: "hero-document-text",
-            title: "Todos los artículos",
-            description: "Ver listado completo",
-            url: ~p"/articles"
-          },
-          %{
-            icon: "hero-folder",
-            title: "Administrar categorías",
-            description: "Añadir o modificar categorías",
-            url: ~p"/categories"
-          },
-          %{
-            icon: "hero-home",
-            title: "Página principal",
-            description: "Volver al inicio",
-            url: ~p"/"
-          }
-        ]} />
+        <.sidebar_links
+          current_user={@current_user}
+          items={[
+            %{
+              icon: "hero-document-plus",
+              title: "Nuevo Artículo",
+              description: "Crear un nuevo artículo",
+              url: ~p"/articles/new",
+              min_role: "writer"
+            },
+            %{
+              icon: "hero-document-text",
+              title: "Todos los artículos",
+              description: "Ver listado completo",
+              url: ~p"/articles"
+            },
+            %{
+              icon: "hero-folder",
+              title: "Administrar categorías",
+              description: "Añadir o modificar categorías",
+              url: ~p"/categories",
+              min_role: "editor"
+            },
+            %{
+              icon: "hero-home",
+              title: "Página principal",
+              description: "Volver al inicio",
+              url: ~p"/"
+            }
+          ]}
+        />
       </.sidebar_box>
     </div>
     <!-- Categorías -->

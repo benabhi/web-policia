@@ -108,6 +108,9 @@ defmodule PoliciaWeb.Router do
     put "/articles/:id", ArticleController, :update
     patch "/articles/:id", ArticleController, :update
     put "/articles/:id/toggle_featured", ArticleController, :toggle_featured
+
+    # Rutas de categorías para editores
+    resources "/categories", CategoryController
   end
 
   # Rutas para administradores
@@ -115,9 +118,6 @@ defmodule PoliciaWeb.Router do
     pipe_through [:browser, :require_authenticated_user, :require_admin]
 
     delete "/articles/:id", ArticleController, :delete
-
-    # Rutas protegidas de categorías
-    resources "/categories", CategoryController
   end
 
   scope "/", PoliciaWeb do

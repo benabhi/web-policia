@@ -19,34 +19,40 @@
   </div>
 
   <:sidebar>
-    <!-- Panel de administración -->
+    <!-- Panel de acciones -->
     <.sidebar_box
-      title="Panel de administración"
+      title="Panel de acciones"
       highlight={true}
       icon="admin"
-      role_name="Editor"
+      role_name={@current_user && @current_user.role}
+      min_role="editor"
+      current_user={@current_user}
       highlight_color="blue"
     >
-      <.sidebar_links items={[
-        %{
-          icon: "hero-folder",
-          title: "Todas las categorías",
-          description: "Ver listado completo",
-          url: ~p"/categories"
-        },
-        %{
-          icon: "hero-document-text",
-          title: "Todos los artículos",
-          description: "Ver listado completo",
-          url: ~p"/articles"
-        },
-        %{
-          icon: "hero-home",
-          title: "Página principal",
-          description: "Volver al inicio",
-          url: ~p"/"
-        }
-      ]} />
+      <.sidebar_links
+        current_user={@current_user}
+        items={[
+          %{
+            icon: "hero-folder",
+            title: "Todas las categorías",
+            description: "Ver listado completo",
+            url: ~p"/categories",
+            min_role: "editor"
+          },
+          %{
+            icon: "hero-document-text",
+            title: "Todos los artículos",
+            description: "Ver listado completo",
+            url: ~p"/articles"
+          },
+          %{
+            icon: "hero-home",
+            title: "Página principal",
+            description: "Volver al inicio",
+            url: ~p"/"
+          }
+        ]}
+      />
     </.sidebar_box>
     
 <!-- Panel de ayuda -->

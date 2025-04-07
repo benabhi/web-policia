@@ -9,7 +9,7 @@ Repo.delete_all(Category)
 Repo.delete_all(User)
 
 # Crear usuarios con diferentes roles
-# El primer usuario será automáticamente admin
+# Asignamos explícitamente el rol "admin" al primer usuario
 {:ok, admin_user} =
   %User{}
   |> User.registration_changeset(%{
@@ -17,7 +17,9 @@ Repo.delete_all(User)
     first_name: "Admin",
     last_name: "Usuario",
     email: "admin@ejemplo.com",
-    password: "123123123123"
+    password: "123123123123",
+    # Asignar explícitamente el rol admin
+    role: "admin"
   })
   |> Repo.insert()
 

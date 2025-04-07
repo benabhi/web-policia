@@ -78,6 +78,11 @@ defmodule Policia.Accounts.User do
     user_level = Map.get(role_level, user.role, 0)
     min_level = Map.get(role_level, min_role, 0)
 
+    # Añadir logging para depuración
+    IO.puts(
+      "User role: #{user.role}, User level: #{user_level}, Min role: #{min_role}, Min level: #{min_level}"
+    )
+
     user_level >= min_level
   end
 

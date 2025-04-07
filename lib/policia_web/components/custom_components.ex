@@ -1281,6 +1281,12 @@ defmodule PoliciaWeb.CustomComponents do
     default: nil,
     doc: "Nombre del rol para mostrar (cuando highlight=true)"
 
+  attr :min_role, :string,
+    default: nil,
+    doc: "Rol mínimo requerido para mostrar este sidebar_box (reader, writer, editor, admin)"
+
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
+
   slot :inner_block, required: true, doc: "Contenido de la barra lateral"
 
   def sidebar_box(assigns) do
@@ -1301,60 +1307,117 @@ defmodule PoliciaWeb.CustomComponents do
         assigns
       end
 
+    # Verificamos si el usuario tiene el rol mínimo requerido
+    # Si min_role es nil, mostramos el sidebar_box a todos los usuarios
+    current_user = Map.get(assigns, :current_user)
+    min_role = Map.get(assigns, :min_role)
+
+    # Depuración
+    if current_user do
+      IO.puts(
+        "Sidebar box - User: #{current_user.username}, Role: #{current_user.role}, Min role: #{min_role}"
+      )
+    else
+      IO.puts("Sidebar box - No user, Min role: #{min_role}")
+    end
+
+    # Si no hay usuario o no hay rol mínimo, mostramos el sidebar_box
+    show_sidebar =
+      cond do
+        is_nil(min_role) -> true
+        is_nil(current_user) -> false
+        # El admin siempre ve todos los sidebar_box
+        current_user.role == "admin" -> true
+        true -> Policia.Accounts.User.has_role_or_higher?(current_user, min_role)
+      end
+
+    assigns = assign(assigns, :show_sidebar, show_sidebar)
+
     ~H"""
-    <%= if @highlight do %>
-      <!-- Versión destacada del box (estilo admin) -->
-      <div class={"bg-white rounded-lg shadow-md overflow-hidden border-2 border-#{@highlight_color}-400 #{@class}"}>
-        <div class={"bg-gradient-to-r from-#{@highlight_color}-600 to-#{@highlight_color}-700 text-white p-4 flex items-center"}>
-          <%= if @icon do %>
-            <%= case @icon do %>
-              <% "users" -> %>
-                <.icon name="hero-user-group-solid" class="h-5 w-5 mr-2" />
-              <% "shield" -> %>
-                <.icon name="hero-shield-check-solid" class="h-5 w-5 mr-2" />
-              <% "key" -> %>
-                <.icon name="hero-key-solid" class="h-5 w-5 mr-2" />
-              <% "lock" -> %>
-                <.icon name="hero-lock-closed-solid" class="h-5 w-5 mr-2" />
-              <% "admin" -> %>
-                <.icon name="hero-cog-6-tooth-solid" class="h-5 w-5 mr-2" />
-              <% _ -> %>
-                <.icon name="hero-cog-6-tooth-solid" class="h-5 w-5 mr-2" />
+    <%= if @show_sidebar do %>
+      <%= if @highlight do %>
+        <!-- Versión destacada del box (estilo admin) -->
+        <div class={"bg-white rounded-lg shadow-md overflow-hidden border-2 border-#{@highlight_color}-400 #{@class}"}>
+          <div class={"bg-gradient-to-r from-#{@highlight_color}-600 to-#{@highlight_color}-700 text-white p-4 flex items-center"}>
+            <%= if @icon do %>
+              <%= case @icon do %>
+                <% "users" -> %>
+                  <.icon name="hero-user-group-solid" class="h-5 w-5 mr-2" />
+                <% "shield" -> %>
+                  <.icon name="hero-shield-check-solid" class="h-5 w-5 mr-2" />
+                <% "key" -> %>
+                  <.icon name="hero-key-solid" class="h-5 w-5 mr-2" />
+                <% "lock" -> %>
+                  <.icon name="hero-lock-closed-solid" class="h-5 w-5 mr-2" />
+                <% "admin" -> %>
+                  <.icon name="hero-cog-6-tooth-solid" class="h-5 w-5 mr-2" />
+                <% _ -> %>
+                  <.icon name="hero-cog-6-tooth-solid" class="h-5 w-5 mr-2" />
+              <% end %>
             <% end %>
-          <% end %>
-          <div class="flex-1">
-            <h2 class="font-semibold text-lg">{@title}</h2>
-            <%= if @role_name do %>
-              <span class={"text-xs font-medium text-#{@highlight_color}-100"}>
-                Rol: {@role_name}
-              </span>
-            <% end %>
+            <div class="flex-1">
+              <h2 class="font-semibold text-lg">{@title}</h2>
+              <%= if @role_name do %>
+                <span class={"text-xs font-medium text-#{@highlight_color}-100"}>
+                  Rol: {@role_name}
+                </span>
+              <% end %>
+            </div>
+          </div>
+          <div class={"p-4 border-t-2 border-#{@highlight_color}-100"}>
+            {render_slot(@inner_block)}
           </div>
         </div>
-        <div class={"p-4 border-t-2 border-#{@highlight_color}-100"}>
-          {render_slot(@inner_block)}
+      <% else %>
+        <!-- Versión estándar original del box -->
+        <div class={"bg-white rounded-lg shadow-md border border-#{@color_theme}-100 overflow-hidden #{@class}"}>
+          <div class={"bg-#{@color_theme}-900 text-white p-4"}>
+            <h2 class="font-semibold text-lg">{@title}</h2>
+          </div>
+          <div class="p-4">
+            {render_slot(@inner_block)}
+          </div>
         </div>
-      </div>
-    <% else %>
-      <!-- Versión estándar original del box -->
-      <div class={"bg-white rounded-lg shadow-md border border-#{@color_theme}-100 overflow-hidden #{@class}"}>
-        <div class={"bg-#{@color_theme}-900 text-white p-4"}>
-          <h2 class="font-semibold text-lg">{@title}</h2>
-        </div>
-        <div class="p-4">
-          {render_slot(@inner_block)}
-        </div>
-      </div>
+      <% end %>
     <% end %>
     """
   end
 
   # Componente para enlaces destacados en la barra lateral
-  attr :items, :list, default: [], doc: "Lista de ítems con :icon, :title y :url"
+  attr :items, :list,
+    default: [],
+    doc: "Lista de ítems con :icon, :title, :url y opcionalmente :min_role"
+
+  attr :current_user, :map, default: nil, doc: "Usuario actual para verificar permisos"
 
   def sidebar_links(assigns) do
+    # Filtrar los elementos según el rol del usuario
+    filtered_items =
+      if assigns[:current_user] do
+        # Si el usuario es admin, mostrar todos los elementos
+        if assigns.current_user.role == "admin" do
+          assigns.items
+        else
+          Enum.filter(assigns.items, fn item ->
+            # Si el elemento no tiene min_role, se muestra a todos los usuarios
+            # Si tiene min_role, se verifica que el usuario tenga al menos ese rol
+            case Map.get(item, :min_role) do
+              nil ->
+                true
+
+              min_role ->
+                Policia.Accounts.User.has_role_or_higher?(assigns.current_user, min_role)
+            end
+          end)
+        end
+      else
+        # Si no hay usuario, solo mostrar elementos sin min_role
+        Enum.filter(assigns.items, fn item -> is_nil(Map.get(item, :min_role)) end)
+      end
+
     assigns =
       assigns
+      |> assign(:filtered_items, filtered_items)
       |> assign(
         :color_theme,
         Config.webpage_theme()
@@ -1362,7 +1425,7 @@ defmodule PoliciaWeb.CustomComponents do
 
     ~H"""
     <ul class="space-y-2">
-      <%= for item <- @items do %>
+      <%= for item <- @filtered_items do %>
         <li>
           <a
             href={item.url}
