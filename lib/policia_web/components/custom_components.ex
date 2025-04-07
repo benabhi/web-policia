@@ -4,6 +4,40 @@ defmodule PoliciaWeb.CustomComponents do
   # alias Policia.Utils
   import PoliciaWeb.CoreComponents
 
+  # Componente para mensajes de "no hay elementos"
+  attr :message, :string, required: true, doc: "Mensaje principal a mostrar"
+  attr :description, :string, required: true, doc: "Descripción o texto secundario"
+  attr :icon, :string, default: "hero-information-circle", doc: "Nombre del icono a mostrar"
+  attr :color_theme, :string, default: nil, doc: "Tema de color (blue, green, etc.)"
+  attr :class, :string, default: "", doc: "Clases CSS adicionales"
+  attr :action_text, :string, default: nil, doc: "Texto opcional para el botón de acción"
+  attr :action_url, :string, default: nil, doc: "URL opcional para el botón de acción"
+  attr :action_icon, :string, default: nil, doc: "Icono opcional para el botón de acción"
+
+  def empty_state(assigns) do
+    assigns = assign_new(assigns, :color_theme, fn -> Config.webpage_theme() end)
+
+    ~H"""
+    <div class={[
+      "bg-#{@color_theme}-50 border border-#{@color_theme}-200 text-#{@color_theme}-800 rounded-md p-6 text-center",
+      @class
+    ]}>
+      <.icon name={@icon} class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"} />
+      <h3 class="text-lg font-semibold mb-2">{@message}</h3>
+      <p class={"text-#{@color_theme}-700 mb-4"}>
+        {@description}
+      </p>
+      <%= if @action_text && @action_url do %>
+        <.link href={@action_url}>
+          <.app_button icon={@action_icon} size="md">
+            {@action_text}
+          </.app_button>
+        </.link>
+      <% end %>
+    </div>
+    """
+  end
+
   # Componente para menu superior y lateral dinamico
   attr :menus, :list,
     default: [],
@@ -1935,13 +1969,12 @@ defmodule PoliciaWeb.CustomComponents do
       <% end %>
 
       <%= if Enum.empty?(@categories) do %>
-        <div class={"bg-#{@color_theme}-50 border border-#{@color_theme}-200 text-#{@color_theme}-800 rounded-md p-6 text-center"}>
-          <.icon name="hero-folder-open" class={"mx-auto h-12 w-12 text-#{@color_theme}-400 mb-4"} />
-          <h3 class="text-lg font-semibold mb-2">{@empty_message}</h3>
-          <p class={"text-#{@color_theme}-700"}>
-            {@empty_text}
-          </p>
-        </div>
+        <.empty_state
+          message={@empty_message}
+          description={@empty_text}
+          icon="hero-folder-open"
+          color_theme={@color_theme}
+        />
       <% else %>
         <div class={"grid gap-6 #{@columns}"}>
           <%= for category <- @categories do %>

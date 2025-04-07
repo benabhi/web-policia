@@ -90,13 +90,12 @@
         </.single_article>
       <% else %>
         <!-- Mensaje cuando no hay artículos destacados -->
-        <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-md p-6 text-center">
-          <.icon name="hero-star" class="mx-auto h-12 w-12 text-blue-400 mb-4" />
-          <h3 class="text-lg font-semibold mb-2">No hay artículos destacados</h3>
-          <p class="text-blue-700">
-            Actualmente no hay ningún artículo marcado como destacado de la semana.
-          </p>
-        </div>
+        <.empty_state
+          message="No hay artículos destacados"
+          description="Actualmente no hay ningún artículo marcado como destacado de la semana."
+          icon="hero-star"
+          color_theme="blue"
+        />
       <% end %>
     </div>
   </div>

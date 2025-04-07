@@ -6,16 +6,12 @@
   <!-- Panel principal con tabla de categorías -->
   <div class="space-y-6">
     <!-- Encabezado de la sección -->
-    <div class="flex items-center space-x-2 mb-6">
-      <.icon name="hero-folder-solid" class="h-5 w-5 text-blue-600" />
-      <h3 class="text-lg font-semibold text-gray-800">Listado de categorías</h3>
-    </div>
-    
+
 <!-- Grid de categorías usando el componente category_grid -->
     <.category_grid
       categories={@categories}
       with_actions={true}
-      show_border={false}
+      title="Listado de categorías"
       empty_message="No hay categorías"
       empty_text="Comience creando su primera categoría para organizar sus artículos."
     />
