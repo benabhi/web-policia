@@ -117,22 +117,28 @@
       >
         <.sidebar_links items={[
           %{
-            icon: "",
+            icon: "hero-document-plus",
             title: "Nuevo Artículo",
             description: "Crear un nuevo artículo",
             url: ~p"/articles/new"
           },
           %{
-            icon: "doc",
+            icon: "hero-document-text",
             title: "Todos los artículos",
             description: "Ver listado completo",
             url: ~p"/articles"
           },
           %{
-            icon: "edit",
+            icon: "hero-folder",
             title: "Administrar categorías",
             description: "Añadir o modificar categorías",
             url: ~p"/categories"
+          },
+          %{
+            icon: "hero-home",
+            title: "Página principal",
+            description: "Volver al inicio",
+            url: ~p"/"
           }
         ]} />
       </.sidebar_box>
