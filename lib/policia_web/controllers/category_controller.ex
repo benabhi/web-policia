@@ -4,10 +4,30 @@ defmodule PoliciaWeb.CategoryController do
   alias Policia.Articles
   alias Policia.Articles.Category
 
-  def index(conn, _params) do
-    categories = Articles.list_categories()
-    render(conn, :index, categories: categories)
+  @categories_per_page 9
+
+  def index(conn, params) do
+    page = params_to_integer(params["page"], 1)
+
+    # Obtener categorías paginadas
+    %{entries: categories, total_pages: total_pages} =
+      Articles.list_categories_paginated(page, @categories_per_page)
+
+    conn
+    |> assign(:page, page)
+    |> assign(:total_pages, total_pages)
+    |> render(:index, categories: categories)
   end
+
+  # Función auxiliar para convertir parámetros de página a enteros
+  defp params_to_integer(param, default) when is_binary(param) do
+    case Integer.parse(param) do
+      {num, _} -> num
+      :error -> default
+    end
+  end
+
+  defp params_to_integer(_, default), do: default
 
   def new(conn, _params) do
     changeset = Articles.change_category(%Category{})

@@ -16,6 +16,15 @@
       empty_text="Comience creando su primera categoría para organizar sus artículos."
     />
     
+<!-- Paginación -->
+    <%= if @total_pages > 1 do %>
+      <.pagination
+        page={@page}
+        total_pages={@total_pages}
+        route_func={fn page -> "/categories?page=#{page}" end}
+      />
+    <% end %>
+    
 <!-- Información sobre slugs -->
     <div class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
       <div class="flex items-start">
